@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { Layout, Text, Input, Icon, Button } from "@ui-kitten/components";
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -43,7 +43,13 @@ const Login = () => {
           <Text category="p1" style={styles.forgotPass}>
             Quên mật khẩu ?
           </Text>
-          <Button size="medium" style={styles.button}>
+          <Button
+            size="medium"
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("Home");
+            }}
+          >
             Đăng nhập
           </Button>
 

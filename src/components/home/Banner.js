@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { Text, Button } from "@ui-kitten/components";
 
-const Banner = () => {
+const Banner = ({ navigation }) => {
   return (
     <View>
       <View style={styles.row}>
@@ -13,7 +13,14 @@ const Banner = () => {
           <Text category="s2" style={styles.subtitle}>
             mini supermarke mini supermarket tmini supermarket
           </Text>
-          <Button size="small">Chi tiết</Button>
+          <Button
+            size="small"
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
+          >
+            Chi tiết
+          </Button>
         </View>
         <View style={styles.right}>
           <Image

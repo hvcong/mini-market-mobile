@@ -6,12 +6,15 @@ import Banner from "../../components/home/Banner";
 import Category from "../../components/home/Category";
 import Group from "../../components/home/Group";
 import Footer from "../../components/home/Footer";
+import Header from "../../components/header/Header";
+import { headerHeight } from "../../utils/constants";
 
-const Home = () => {
+const Home = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
+      <Header />
       <ScrollView style={styles.wrap}>
-        <Banner />
+        <Banner navigation={navigation} />
         <Category />
         <Group title="Bán chạy nhất" />
         {/* <Group title="Đồ uống" /> */}
@@ -24,13 +27,14 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#eee",
+    backgroundColor: "#fff",
     width: "100%",
   },
   wrap: {
     paddingHorizontal: 16,
     width: "100%",
     flexDirection: "column",
+    paddingTop: headerHeight + 12,
   },
 });
 
