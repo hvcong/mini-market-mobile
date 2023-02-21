@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import * as eva from "@eva-design/eva";
@@ -13,6 +14,7 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import Tab from "./src/navigation/Tab";
 import MainStack from "./src/navigation/MainStack";
+import Drawer from "./src/navigation/Drawer";
 
 export default function App() {
   return (
@@ -20,7 +22,8 @@ export default function App() {
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
         <NavigationContainer>
-          <MainStack />
+          {/* <MainStack /> */}
+          <Drawer />
         </NavigationContainer>
       </ApplicationProvider>
     </>

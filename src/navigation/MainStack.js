@@ -5,6 +5,8 @@ import Tab from "./Tab";
 import Login from "../screens/Login";
 import Register from "../screens/Register";
 import Payment from "../screens/Payment";
+import Search from "../screens/Search";
+import Test from "../screens/Test";
 
 const Stack = createNativeStackNavigator();
 const MainStack = () => {
@@ -14,6 +16,7 @@ const MainStack = () => {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Payment" component={Payment} />
+      <Stack.Screen name="Search" component={Search} />
     </Stack.Navigator>
   );
 };

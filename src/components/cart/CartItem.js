@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
 import { colors, fontSize } from "../../utils/constants";
 import { Icon } from "@ui-kitten/components";
+import ProductQuantityChange from "../common/ProductQuantityChange";
 
 const CartItem = () => {
   return (
@@ -21,23 +22,7 @@ const CartItem = () => {
       </View>
       <View style={styles.right}>
         <Text style={styles.price}>100.000đ</Text>
-        <View style={styles.quantityContainer}>
-          <View style={styles.quantityBtn}>
-            <Icon
-              name="minus-outline"
-              fill={colors.gray2}
-              style={styles.quantityIcon}
-            />
-          </View>
-          <Text style={styles.quantityValue}>5</Text>
-          <View style={styles.quantityBtn}>
-            <Icon
-              name="plus-outline"
-              fill={colors.gray2}
-              style={styles.quantityIcon}
-            />
-          </View>
-        </View>
+        <ProductQuantityChange />
         <Text style={styles.priceSub}>Giá 32.000đ/túi</Text>
       </View>
     </View>
@@ -50,6 +35,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderColor: "#ddd",
+    paddingHorizontal: 12,
   },
   imageContainer: {
     width: 100,
@@ -84,33 +70,6 @@ const styles = StyleSheet.create({
   price: {
     fontSize: fontSize.XL,
     fontWeight: "bold",
-  },
-  quantityContainer: {
-    flexDirection: "row",
-    marginVertical: 12,
-    borderRadius: 8,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  quantityBtn: {
-    backgroundColor: colors.grayLighter,
-    paddingHorizontal: 4,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  quantityIcon: {
-    width: 24,
-    height: 24,
-  },
-  quantityValue: {
-    fontSize: fontSize.XXL,
-    fontWeight: "bold",
-    textAlign: "center",
-    minWidth: 32,
-    minHeight: 32,
-    lineHeight: 32,
-    paddingHorizontal: 4,
   },
   priceSub: {
     color: colors.gray,

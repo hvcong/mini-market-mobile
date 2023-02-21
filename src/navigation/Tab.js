@@ -5,6 +5,7 @@ import HomeStack from "./HomeStack";
 import Cart from "../screens/Cart";
 import Profile from "../screens/Profile";
 import { Icon } from "@ui-kitten/components";
+import { bottomTabHeight } from "../utils/constants";
 
 const TabNavigator = createBottomTabNavigator();
 
@@ -16,6 +17,7 @@ const Tab = () => {
         tabBarStyle: {
           borderTopColor: "#ddd",
           borderTopWidth: 1,
+          height: bottomTabHeight,
         },
       }}
       initialRouteName="HomeStack"

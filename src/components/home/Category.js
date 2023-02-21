@@ -54,7 +54,8 @@ const Category = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 12,
+    paddingHorizontal: 12,
   },
   row: {
     flexDirection: "row",

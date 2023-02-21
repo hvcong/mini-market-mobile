@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CartItem from "../components/cart/CartItem";
@@ -8,68 +8,72 @@ import { colors, fontSize, headerHeight } from "../utils/constants";
 import { Icon } from "@ui-kitten/components";
 import SubmitOrder from "../components/cart/SubmitOrder";
 import { Shadow } from "react-native-shadow-2";
+import Voucher from "../components/common/Voucher";
+import SpaceLine from "../components/common/SpaceLine";
+import AddToCartModal from "../components/modal/AddToCartModal";
+import VoucherModal from "../components/modal/VoucherModal";
 
 const Cart = ({ navigation }) => {
+  const [isVisibleModal, setIsVisibleModal] = useState(false);
+  const [isVisibleVoucherModal, setIsVisibleVoucherModal] = useState(false);
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header />
-      <ScrollView style={styles.scroll}>
-        <View style={styles.container}>
-          <RedirectRouter title={"Giỏ hàng của bạn"} />
-          <View style={styles.body}>
-            <Text style={styles.title}>Hàng có sẵn</Text>
-            <View style={styles.list}>
-              <CartItem />
-              <CartItem />
-              <CartItem />
-              <CartItem />
-            </View>
-            <View style={styles.btnList}>
-              <View style={styles.btnWithCartItem}>
-                <Icon
-                  name="trash-2-outline"
-                  fill={colors.gray2}
-                  style={styles.trashIcon}
-                />
-                <Text style={styles.btnWithCartItemText}>Xóa hết giỏ hàng</Text>
+      <Header navigation={navigation} />
+      <View style={styles.wrap2}>
+        <ScrollView style={styles.scroll}>
+          <View style={styles.container}>
+            <RedirectRouter title={"Giỏ hàng của bạn"} isTitleCenter={true} />
+            <View style={styles.body}>
+              <Text style={styles.title}>Hàng có sẵn</Text>
+              <View style={styles.list}>
+                <CartItem />
+                <CartItem />
+                <CartItem />
+                <CartItem />
               </View>
-              <View style={styles.btnWithCartItem}>
-                <Icon
-                  name="diagonal-arrow-right-up-outline"
-                  fill={colors.gray2}
-                  style={styles.trashIcon}
-                />
-                <Text style={styles.btnWithCartItemText}>Tiếp tục mua sắm</Text>
+              <View style={styles.btnList}>
+                <View style={styles.btnWithCartItem}>
+                  <Icon
+                    name="trash-2-outline"
+                    fill={colors.gray2}
+                    style={styles.trashIcon}
+                  />
+                  <Text style={styles.btnWithCartItemText}>
+                    Xóa hết giỏ hàng
+                  </Text>
+                </View>
+                <View style={styles.btnWithCartItem}>
+                  <Icon
+                    name="diagonal-arrow-right-up-outline"
+                    fill={colors.gray2}
+                    style={styles.trashIcon}
+                  />
+                  <Text style={styles.btnWithCartItemText}>
+                    Tiếp tục mua sắm
+                  </Text>
+                </View>
               </View>
-            </View>
+              <SpaceLine />
+              <Voucher setIsVisibleVoucherModal={setIsVisibleVoucherModal} />
 
-            <View style={styles.voucherContainer}>
-              <View style={styles.voucherTop}>
-                <Icon
-                  name="credit-card-outline"
-                  fill={colors.green}
-                  style={styles.voucherIcon}
-                />
-                <Text style={styles.voucerTitle}>Phiếu mua hàng</Text>
-                <Icon
-                  name="arrow-ios-forward-outline"
-                  fill={colors.green}
-                  style={styles.voucherRightIcon}
-                />
+              <View style={styles.totalPrice}>
+                <Text style={styles.totalPriceLabel}>Tạm tính:</Text>
+                <Text style={styles.totalPriceValue}>211.000đ</Text>
               </View>
-            </View>
-
-            <View style={styles.totalPrice}>
-              <Text style={styles.totalPriceLabel}>Tạm tính:</Text>
-              <Text style={styles.totalPriceValue}>211.000đ</Text>
             </View>
           </View>
-        </View>
-      </ScrollView>
-      <View style={styles.submitOrderContainer}>
-        <Shadow distance={24} style={styles.shadow} startColor="#00000021">
+        </ScrollView>
+        <View style={styles.submitOrderContainer}>
           <SubmitOrder navigation={navigation} />
-        </Shadow>
+        </View>
+        <AddToCartModal
+          visible={isVisibleModal}
+          setVisible={setIsVisibleModal}
+        />
+        <VoucherModal
+          visible={isVisibleVoucherModal}
+          setVisible={setIsVisibleVoucherModal}
+        />
       </View>
     </SafeAreaView>
   );
@@ -78,17 +82,19 @@ const Cart = ({ navigation }) => {
 const submitOrderHeight = 98;
 
 const styles = StyleSheet.create({
-  wrap: {
-    backgroundColor: "#fff",
+  wrap: {},
+  wrap2: {
+    backgroundColor: colors.white,
   },
   scroll: {
-    marginBottom: submitOrderHeight + 12,
+    marginBottom: submitOrderHeight,
   },
   container: {
     paddingTop: headerHeight,
+    position: "relative",
   },
   body: {
-    paddingHorizontal: 12,
+    // paddingHorizontal: 12,
   },
   title: {
     fontSize: fontSize.XL,
@@ -96,6 +102,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     fontWeight: "bold",
     color: colors.gray2,
+    paddingLeft: 12,
   },
   list: {},
   btnList: {
@@ -120,39 +127,12 @@ const styles = StyleSheet.create({
     color: colors.gray2,
     paddingLeft: 4,
   },
-  voucherContainer: {
-    borderTopWidth: 6,
-    borderColor: "#ddd",
-    marginHorizontal: -12,
-    paddingHorizontal: 12,
-    borderBottomWidth: 1,
-  },
-  voucherTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-  },
-  voucherIcon: {
-    width: 28,
-    height: 28,
-  },
-  voucerTitle: {
-    flex: 1,
-    fontSize: fontSize.XL,
-    color: colors.green,
-    paddingLeft: 8,
-  },
-  voucherRightIcon: {
-    width: 24,
-    height: 24,
-  },
+
   totalPrice: {
     flexDirection: "row",
-    paddingVertical: 12,
-    marginHorizontal: -12,
-    paddingHorizontal: 12,
-    borderBottomColor: "#ddd",
-    borderBottomWidth: 6,
+    padding: 12,
+    borderTopColor: colors.grayLighter,
+    borderTopWidth: 1,
   },
   totalPriceLabel: {
     fontSize: fontSize.XL,
@@ -168,10 +148,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     left: 0,
-    height: submitOrderHeight,
-  },
-  shadow: {
-    width: "100%",
+    backgroundColor: colors.white,
+    // height: submitOrderHeight,
   },
 });
 

@@ -1,37 +1,51 @@
 import { Text } from "@ui-kitten/components";
 import React from "react";
 import { View, StyleSheet, Image, FlatList } from "react-native";
+import { backgroundColors, colors } from "../../utils/constants";
+import LabelHeading from "../common/LabelHeading";
 import Product from "./Product";
 
-const Group = ({ title }) => {
+const Group = ({ title, type, setIsVisibleModal, backgroundColor }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <View style={styles.head}>
-        <Text category="h4">{title}</Text>
-        <Text category="s2">Xem tất cả</Text>
+        <LabelHeading
+          title={title}
+          type={type}
+          backgroundColor={backgroundColor}
+        />
       </View>
-      <View style={styles.list}>
-        <Product />
-        <Product />
-        <Product />
-        <Product />
+      <View
+        style={[
+          styles.body,
+          backgroundColor && { backgroundColor: backgroundColor },
+        ]}
+      >
+        <View style={[styles.list]}>
+          <Product setIsVisibleModal={setIsVisibleModal} />
+          <Product setIsVisibleModal={setIsVisibleModal} />
+          <Product setIsVisibleModal={setIsVisibleModal} />
+          <Product setIsVisibleModal={setIsVisibleModal} />
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
-  head: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingBottom: 12,
+  container: {
+    width: "100%",
+    backgroundColor: colors.white,
+  },
+  head: {},
+  body: {
+    backgroundColor: colors.white,
   },
   list: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
+    paddingHorizontal: 12,
   },
 });
 

@@ -4,7 +4,7 @@ import { Text, Button } from "@ui-kitten/components";
 
 const Banner = ({ navigation }) => {
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.row}>
         <View style={styles.left}>
           <Text category="h2" style={styles.title}>
@@ -34,6 +34,9 @@ const Banner = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 12,
+  },
   row: {
     flexDirection: "row",
     padding: 16,

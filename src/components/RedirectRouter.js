@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Pressable } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { colors, fontSize } from "../utils/constants";
 
-const RedirectRouter = ({ title, navigation }) => {
+const RedirectRouter = ({ title, navigation, isTitleCenter }) => {
   return (
     <View style={styles.container}>
       <Pressable
@@ -21,8 +21,13 @@ const RedirectRouter = ({ title, navigation }) => {
           style={styles.iconBack}
         />
       </Pressable>
-      <View style={styles.right}>
-        <Text style={styles.title}>{title}</Text>
+
+      <View style={isTitleCenter ? styles.centerTitle : styles.leftTitle}>
+        <Text
+          style={isTitleCenter ? styles.centerTitleText : styles.leftTitleText}
+        >
+          {title}
+        </Text>
       </View>
     </View>
   );
@@ -40,13 +45,21 @@ const styles = StyleSheet.create({
     height: 32,
     marginLeft: 4,
   },
-  right: {
+  centerTitle: {
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
   },
-  title: {
+  leftTitle: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  centerTitleText: {
     fontSize: fontSize.XXL,
+    fontWeight: "bold",
+  },
+  leftTitleText: {
+    fontSize: fontSize.L,
     fontWeight: "bold",
   },
 });

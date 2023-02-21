@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, Text, Image, Pressable } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import {
   backgroundColors,
@@ -7,62 +7,77 @@ import {
   colors,
   fontSize,
   headerHeight,
+  headerInputHeight,
+  headerSearchHeight,
 } from "../../utils/constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LocationModal from "../modal/LocationModal";
 
-const Header = () => {
+const Header = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.wrap}>
       <View style={styles.container}>
         <View style={styles.top}>
-          <Image
-            source={require("../../../assets/logo.png")}
-            style={styles.logo}
-          />
-          <LinearGradient
-            colors={[btnColors.greenLighter, btnColors.green]}
-            style={styles.location}
-          >
-            <Text style={styles.locationLabel}>Giao tại</Text>
-            <Text style={styles.locationValue}>TP.HCM</Text>
-          </LinearGradient>
-          <LinearGradient
-            style={styles.payment}
-            colors={[btnColors.greenLighter, btnColors.green]}
-          >
-            <Icon
-              fill={colors.white}
-              name="shopping-cart-outline"
-              style={styles.cartIcon}
+          {/* <View style={styles.logoContainer}>
+            <Image
+              source={require("../../../assets/logo.png")}
+              style={styles.logo}
             />
-            <Text style={styles.paymentLabel}>Thanh toán</Text>
-          </LinearGradient>
+          </View> */}
+          <View style={styles.location}>
+            <View style={styles.locationIconContainer}>
+              <Icon
+                name="pin-outline"
+                fill="#eb9f13"
+                style={styles.locationIcon}
+              />
+            </View>
+            <Text style={styles.locationValue}>TP.HCM</Text>
+          </View>
         </View>
-        <View style={styles.bottom}>
-          <View style={styles.menuBar}>
+        <Pressable
+          onPress={() => navigation.navigate("Search")}
+          style={styles.bottom}
+        >
+          <Pressable
+            onPress={() => {
+              navigation.openDrawer();
+            }}
+            style={styles.menuBar}
+          >
             <Icon
-              fill={colors.green}
+              fill={colors.green2}
               name="menu-outline"
               style={styles.menuBarIcon}
             />
             <Text style={styles.menuText}>MENU</Text>
-          </View>
+          </Pressable>
           <View style={styles.searchContainer}>
             <Icon
-              fill={colors.gray}
+              fill={colors.gray1}
               name="search-outline"
               style={styles.searchIcon}
             />
             <Text style={styles.searchPlace}>Giao nhanh, đơn gì cũng giao</Text>
-            <Icon
-              fill={colors.gray1}
-              name="mic-outline"
-              style={styles.micIcon}
-            />
+            <View style={styles.micIconContainer}>
+              <Icon
+                fill={colors.green2}
+                name="mic-outline"
+                style={styles.micIcon}
+              />
+            </View>
+            <View style={styles.cartIconContainer}>
+              <Icon
+                fill={colors.green2}
+                name="shopping-cart-outline"
+                style={styles.cartIcon}
+              />
+            </View>
           </View>
-        </View>
+        </Pressable>
       </View>
+      <LocationModal />
     </SafeAreaView>
   );
 };
@@ -71,95 +86,110 @@ const styles = StyleSheet.create({
   wrap: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 100 },
   container: {
     paddingHorizontal: 12,
-    backgroundColor: backgroundColors.greenLighter,
-    height: headerHeight,
-    marginBottom: 12,
+    backgroundColor: colors.green2,
+    paddingTop: 8,
     justifyContent: "center",
+    height: headerHeight,
   },
   top: {
     flexDirection: "row",
-  },
-  logo: {
-    width: 40,
-    height: 40,
+    // backgroundColor: "red",
+    flex: 1,
   },
   location: {
-    borderWidth: 1,
-    borderColor: "#bbb",
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 4,
     marginLeft: "auto",
-  },
-
-  locationLabel: {
-    fontSize: fontSize.S,
-    color: "white",
-  },
-  locationValue: {
-    fontWeight: "bold",
-    color: "white",
-  },
-  payment: {
-    borderWidth: 1,
-    borderColor: "#bbb",
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#aaa",
+  },
+  locationIconContainer: {},
+  locationIcon: {
+    width: 24,
+    height: 24,
+  },
+
+  locationValue: {
+    fontWeight: "bold",
+    color: "#eb9f13",
+    paddingLeft: 8,
+    fontSize: fontSize.L,
+  },
+
+  cartIconContainer: {
+    paddingHorizontal: 12,
+    borderRadius: 50,
+    backgroundColor: backgroundColors.gray,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8,
   },
   cartIcon: {
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
   },
-  paymentLabel: {
-    color: "white",
-  },
+
   bottom: {
     flexDirection: "row",
-    backgroundColor: "#eee",
-    height: 52,
-    marginTop: 12,
+    height: headerSearchHeight,
     borderRadius: 4,
     borderColor: "#bbb",
+    justifyContent: "center",
+    alignItems: "center",
   },
   menuBar: {
-    borderRadius: 4,
-    borderColor: "#bbb",
-    borderWidth: 1,
     paddingHorizontal: 8,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#c8e0cd",
+    backgroundColor: backgroundColors.gray,
+    height: headerInputHeight,
+    borderTopLeftRadius: 4,
+    borderBottomLeftRadius: 4,
   },
   menuBarIcon: {
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
   },
   menuText: {
     fontSize: fontSize.S,
     fontWeight: "bold",
-    color: colors.green,
+    color: colors.green2,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
+    height: headerInputHeight,
+    backgroundColor: colors.white,
+    borderTopRightRadius: 4,
+    borderBottomRightRadius: 4,
   },
   searchIcon: {
-    width: 44,
+    width: 32,
     height: 24,
   },
   searchPlace: {
     flex: 1,
     color: colors.gray,
-    fontSize: fontSize.L,
+  },
+  micIconContainer: {
+    paddingHorizontal: 12,
+    borderRadius: 50,
+    backgroundColor: backgroundColors.gray,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8,
   },
   micIcon: {
-    width: 44,
-    height: 32,
+    width: 28,
+    height: 28,
   },
 });
 
