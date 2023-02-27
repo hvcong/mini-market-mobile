@@ -17,6 +17,7 @@ import AddToCartModal from "../../components/modal/AddToCartModal";
 
 const Home = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
+
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
       <Header navigation={navigation} />

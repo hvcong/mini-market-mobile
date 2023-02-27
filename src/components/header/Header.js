@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, Image, Pressable } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import {
@@ -13,19 +13,27 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LocationModal from "../modal/LocationModal";
+import { useGlobalContext } from "../../store/contexts/GlobalContext";
 
 const Header = ({ navigation }) => {
+  const [isShowLocationModal, setIsShowLocationModal] = useState(false);
+  const { account } = useGlobalContext();
   return (
     <SafeAreaView style={styles.wrap}>
       <View style={styles.container}>
         <View style={styles.top}>
-          {/* <View style={styles.logoContainer}>
-            <Image
-              source={require("../../../assets/logo.png")}
-              style={styles.logo}
-            />
-          </View> */}
-          <View style={styles.location}>
+          <View style={styles.helloUserContainer}>
+            <Text style={styles.helloUserLabel}>Xin chào bạn </Text>
+            <Text style={styles.helloUserName}>
+              {account && account.User.lastName}
+            </Text>
+          </View>
+          <Pressable
+            style={styles.location}
+            onPress={() => {
+              setIsShowLocationModal(true);
+            }}
+          >
             <View style={styles.locationIconContainer}>
               <Icon
                 name="pin-outline"
@@ -34,7 +42,7 @@ const Header = ({ navigation }) => {
               />
             </View>
             <Text style={styles.locationValue}>TP.HCM</Text>
-          </View>
+          </Pressable>
         </View>
         <Pressable
           onPress={() => navigation.navigate("Search")}
@@ -77,7 +85,10 @@ const Header = ({ navigation }) => {
           </View>
         </Pressable>
       </View>
-      <LocationModal />
+      <LocationModal
+        visible={isShowLocationModal}
+        setVisible={setIsShowLocationModal}
+      />
     </SafeAreaView>
   );
 };
@@ -95,6 +106,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     // backgroundColor: "red",
     flex: 1,
+  },
+  helloUserContainer: {
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "center",
+  },
+  helloUserLabel: {
+    color: colors.white,
+  },
+  helloUserName: {
+    color: colors.white,
+    fontWeight: "bold",
   },
   location: {
     marginLeft: "auto",

@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
     paddingVertical: 4,
+    backgroundColor: colors.white,
   },
   iconBack: {
     width: 32,

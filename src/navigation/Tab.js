@@ -6,6 +6,7 @@ import Cart from "../screens/Cart";
 import Profile from "../screens/Profile";
 import { Icon } from "@ui-kitten/components";
 import { bottomTabHeight } from "../utils/constants";
+import Account from "../screens/account/Account";
 
 const TabNavigator = createBottomTabNavigator();
 
@@ -39,6 +40,42 @@ const Tab = () => {
           tabBarLabel: "Sản phẩm",
         }}
       />
+
+      <TabNavigator.Screen
+        name="Promotion"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon
+              name="person-outline"
+              fill={color}
+              style={{
+                width: 32,
+                height: 32,
+              }}
+            />
+          ),
+          tabBarLabel: "Khuyến mãi",
+        }}
+      />
+      <TabNavigator.Screen
+        name="Notification"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon
+              name="person-outline"
+              fill={color}
+              style={{
+                width: 32,
+                height: 32,
+              }}
+            />
+          ),
+          tabBarLabel: "Thông báo",
+        }}
+      />
+
       <TabNavigator.Screen
         name="Cart"
         component={Cart}
@@ -60,8 +97,8 @@ const Tab = () => {
         }}
       />
       <TabNavigator.Screen
-        name="Profile"
-        component={Profile}
+        name="Account"
+        component={Account}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon
@@ -73,7 +110,7 @@ const Tab = () => {
               }}
             />
           ),
-          tabBarLabel: "Giỏ hàng",
+          tabBarLabel: "Tài khoản",
         }}
       />
     </TabNavigator.Navigator>

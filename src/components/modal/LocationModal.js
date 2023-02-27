@@ -6,7 +6,7 @@ import Select from "../common/Select";
 
 const LocationModal = ({ visible, setVisible }) => {
   return (
-    <Modal visible={true}>
+    <Modal visible={false}>
       <View style={styles.layer}>
         <View style={styles.container}>
           <Text style={styles.noteText}>

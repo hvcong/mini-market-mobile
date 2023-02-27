@@ -15,16 +15,21 @@ import { NavigationContainer } from "@react-navigation/native";
 import Tab from "./src/navigation/Tab";
 import MainStack from "./src/navigation/MainStack";
 import Drawer from "./src/navigation/Drawer";
+import GlobalContextProvider from "./src/store/contexts/GlobalContext";
+import LoadingModal from "./src/components/modal/LoadingModal";
 
 export default function App() {
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
-        <NavigationContainer>
-          {/* <MainStack /> */}
-          <Drawer />
-        </NavigationContainer>
+        <GlobalContextProvider>
+          <NavigationContainer>
+            {/* <MainStack /> */}
+            <Drawer />
+          </NavigationContainer>
+          <LoadingModal />
+        </GlobalContextProvider>
       </ApplicationProvider>
     </>
   );
