@@ -9,8 +9,10 @@ import Search from "../screens/Search";
 import Test from "../screens/Test";
 import Account from "../screens/account/Account";
 import Intro from "../screens/Intro";
-import Demo from "../screens/Demo";
 import InforUpdate from "../screens/account/InforUpdate";
+import Level from "../screens/account/Level";
+import History from "./../screens/account/History";
+import DeliveryAddress from "../screens/account/DeliveryAddress";
 
 const Stack = createNativeStackNavigator();
 const MainStack = () => {
@@ -27,6 +29,9 @@ const MainStack = () => {
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="Account" component={Account} />
       <Stack.Screen name="InforUpdate" component={InforUpdate} />
+      <Stack.Screen name="Level" component={Level} />
+      <Stack.Screen name="History" component={History} />
+      <Stack.Screen name="DeliveryAddress" component={DeliveryAddress} />
     </Stack.Navigator>
   );
 };

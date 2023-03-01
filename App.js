@@ -16,7 +16,7 @@ import Tab from "./src/navigation/Tab";
 import MainStack from "./src/navigation/MainStack";
 import Drawer from "./src/navigation/Drawer";
 import GlobalContextProvider from "./src/store/contexts/GlobalContext";
-import LoadingModal from "./src/components/modal/LoadingModal";
+// import LoadingModal from "./src/components/modal/LoadingModal";
 
 export default function App() {
   return (
@@ -25,10 +25,9 @@ export default function App() {
       <ApplicationProvider {...eva} theme={eva.light}>
         <GlobalContextProvider>
           <NavigationContainer>
-            {/* <MainStack /> */}
             <Drawer />
           </NavigationContainer>
-          <LoadingModal />
+          {/* <LoadingModal /> */}
         </GlobalContextProvider>
       </ApplicationProvider>
     </>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput } from "react-native";
+import { View, StyleSheet, Text, TextInput, Pressable } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import Header from "../../components/header/Header";
 import {
@@ -13,8 +13,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import VerifyOTPModal from "../../components/modal/VerifyOTPModal";
 
 const Account = ({ navigation }) => {
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("0868283915");
+  const isLogin = false;
   const [isShowVerifyModal, setIsShowVerifyModal] = useState(false);
+
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
@@ -24,7 +26,7 @@ const Account = ({ navigation }) => {
             <View style={styles.infor}>
               <Text style={styles.title}>Thông tin cá nhân</Text>
               <View style={styles.group}>
-                {phone ? (
+                {isLogin ? (
                   <View style={styles.row}>
                     <Text style={styles.nameUser}>Bạn Hoàng Văn Công</Text>
                     <Text style={styles.phone}>{phone}</Text>
@@ -38,10 +40,15 @@ const Account = ({ navigation }) => {
                       <TextInput
                         style={styles.input}
                         placeholder="Số điện thoại"
+                        value={phone}
+                        onChangeText={setPhone}
                       />
                       <Text
                         style={styles.btnSubmit}
-                        onPress={() => setIsShowVerifyModal(true)}
+                        onPress={() => {
+                          console.log("login");
+                          setIsShowVerifyModal(true);
+                        }}
                       >
                         Đăng nhập
                       </Text>
@@ -50,7 +57,12 @@ const Account = ({ navigation }) => {
                 )}
               </View>
 
-              <View style={styles.item}>
+              <Pressable
+                style={styles.item}
+                onPress={() => {
+                  navigation.navigate("Level");
+                }}
+              >
                 <Icon
                   name="layers-outline"
                   fill={colors.black}
@@ -67,11 +79,16 @@ const Account = ({ navigation }) => {
                   fill={colors.black}
                   style={styles.rightIcon}
                 />
-              </View>
+              </Pressable>
 
-              <View style={styles.item}>
+              <Pressable
+                style={styles.item}
+                onPress={() => {
+                  navigation.navigate("InforUpdate");
+                }}
+              >
                 <Icon
-                  name="layers-outline"
+                  name="person-outline"
                   fill={colors.black}
                   style={styles.icon}
                 />
@@ -81,10 +98,15 @@ const Account = ({ navigation }) => {
                   fill={colors.black}
                   style={styles.rightIcon}
                 />
-              </View>
-              <View style={styles.item}>
+              </Pressable>
+              <Pressable
+                style={styles.item}
+                onPress={() => {
+                  navigation.navigate("DeliveryAddress");
+                }}
+              >
                 <Icon
-                  name="layers-outline"
+                  name="pin-outline"
                   fill={colors.black}
                   style={styles.icon}
                 />
@@ -94,10 +116,15 @@ const Account = ({ navigation }) => {
                   fill={colors.black}
                   style={styles.rightIcon}
                 />
-              </View>
-              <View style={styles.item}>
+              </Pressable>
+              <Pressable
+                style={styles.item}
+                onPress={() => {
+                  navigation.navigate("History");
+                }}
+              >
                 <Icon
-                  name="layers-outline"
+                  name="shopping-bag-outline"
                   fill={colors.black}
                   style={styles.icon}
                 />
@@ -107,7 +134,7 @@ const Account = ({ navigation }) => {
                   fill={colors.black}
                   style={styles.rightIcon}
                 />
-              </View>
+              </Pressable>
             </View>
             <View style={styles.logOut}>
               <View style={styles.btnLogOutContainer}>
@@ -125,6 +152,7 @@ const Account = ({ navigation }) => {
       <VerifyOTPModal
         visible={isShowVerifyModal}
         setVisible={setIsShowVerifyModal}
+        phone={phone}
       />
     </View>
   );

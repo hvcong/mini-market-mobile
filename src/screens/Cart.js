@@ -22,7 +22,11 @@ const Cart = ({ navigation }) => {
       <View style={styles.wrap2}>
         <ScrollView style={styles.scroll}>
           <View style={styles.container}>
-            <RedirectRouter title={"Giỏ hàng của bạn"} isTitleCenter={true} />
+            <RedirectRouter
+              title={"Giỏ hàng của bạn"}
+              isTitleCenter={true}
+              navigation={navigation}
+            />
             <View style={styles.body}>
               <Text style={styles.title}>Hàng có sẵn</Text>
               <View style={styles.list}>
