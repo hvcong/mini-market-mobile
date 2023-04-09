@@ -19,7 +19,7 @@ const MainStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="Account"
+      initialRouteName="Tab"
     >
       <Stack.Screen name="Tab" component={Tab} />
       <Stack.Screen name="Intro" component={Intro} />

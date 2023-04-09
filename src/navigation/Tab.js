@@ -58,7 +58,7 @@ const Tab = () => {
           tabBarLabel: "Khuyến mãi",
         }}
       />
-      <TabNavigator.Screen
+      {/* <TabNavigator.Screen
         name="Notification"
         component={Profile}
         options={{
@@ -74,7 +74,7 @@ const Tab = () => {
           ),
           tabBarLabel: "Thông báo",
         }}
-      />
+      /> */}
 
       <TabNavigator.Screen
         name="Cart"
