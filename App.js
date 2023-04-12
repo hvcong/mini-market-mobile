@@ -17,6 +17,7 @@ import MainStack from "./src/navigation/MainStack";
 import Drawer from "./src/navigation/Drawer";
 import GlobalContextProvider from "./src/store/contexts/GlobalContext";
 // import LoadingModal from "./src/components/modal/LoadingModal";
+import { OrderProvider } from "./src/store/contexts/OrderContext";
 
 export default function App() {
   return (
@@ -24,10 +25,11 @@ export default function App() {
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
         <GlobalContextProvider>
+          <OrderProvider>
           <NavigationContainer>
             <Drawer />
           </NavigationContainer>
-          {/* <LoadingModal /> */}
+          </OrderProvider>          
         </GlobalContextProvider>
       </ApplicationProvider>
     </>

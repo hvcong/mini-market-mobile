@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button } from "@ui-kitten/components";
@@ -17,6 +17,7 @@ import AddToCartModal from "../../components/modal/AddToCartModal";
 
 const Home = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
+  // useEffect()
 
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
@@ -31,6 +32,7 @@ const Home = ({ navigation }) => {
               type="special"
               setIsVisibleModal={setIsVisibleModal}
               backgroundColor="#d3db76"
+              navigation={navigation}
             />
             <Group
               title="Thịt, cá, trứng sữa abc aaaaaaaa"
@@ -42,9 +44,7 @@ const Home = ({ navigation }) => {
               title="Mua nhiều nhất"
               type="nomal"
               setIsVisibleModal={setIsVisibleModal}
-            />
-            {/* <Group title="Đồ uống" /> */}
-            {/* <Group title="Hoa quả" /> */}
+            />          
             <Footer />
           </View>
         </ScrollView>

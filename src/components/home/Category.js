@@ -1,8 +1,25 @@
 import React from "react";
-import { View, StyleSheet, Image, ScrollView } from "react-native";
-import { Text } from "@ui-kitten/components";
+import {
+  View,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Pressable,
+  Text,
+} from "react-native";
+// import { Text } from "@ui-kitten/components";
 
 const Category = () => {
+  const data = [
+    {
+      name: "nước uống",
+      image: require('../../../assets/cate_drink.png'),
+    },
+    {
+      name: "thuc pham",
+      image: require('../../../assets/cate_drink.png'),
+    },
+  ];
   return (
     <View style={styles.container}>
       <Text category="h4">Danh mục sản phẩm</Text>
@@ -11,42 +28,14 @@ const Category = () => {
         showsHorizontalScrollIndicator={false}
         style={styles.row}
       >
-        <View style={styles.item}>
-          <Image
-            source={require("../../../assets/cate_drink.png")}
-            style={styles.image}
-          />
-          <Text category="s1" style={styles.text}>
-            Đồ uống
-          </Text>
-        </View>
-        <View style={styles.item}>
-          <Image
-            source={require("../../../assets/cate_drink.png")}
-            style={styles.image}
-          />
-          <Text category="s1" style={styles.text}>
-            Đồ uống
-          </Text>
-        </View>
-        <View style={styles.item}>
-          <Image
-            source={require("../../../assets/cate_drink.png")}
-            style={styles.image}
-          />
-          <Text category="s1" style={styles.text}>
-            Đồ uống
-          </Text>
-        </View>
-        <View style={styles.item}>
-          <Image
-            source={require("../../../assets/cate_drink.png")}
-            style={styles.image}
-          />
-          <Text category="s1" style={styles.text}>
-            Đồ uống
-          </Text>
-        </View>
+        {data.map((item, index) => (
+          <Pressable key={index} onPress={() => {}}>
+            <View style = {styles.item}>
+              <Image source={item.image} style={styles.image} />
+              <Text style = {styles.text}> {item.name}</Text>       
+            </View>
+          </Pressable>
+        ))}
       </ScrollView>
     </View>
   );

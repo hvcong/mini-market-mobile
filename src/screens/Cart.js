@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CartItem from "../components/cart/CartItem";
@@ -12,30 +12,35 @@ import Voucher from "../components/common/Voucher";
 import SpaceLine from "../components/common/SpaceLine";
 import AddToCartModal from "../components/modal/AddToCartModal";
 import VoucherModal from "../components/modal/VoucherModal";
+import { FlatList } from "react-native";
+import { OrderContext } from "../store/contexts/OrderContext";
 
 const Cart = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [isVisibleVoucherModal, setIsVisibleVoucherModal] = useState(false);
+  const { listOrders, setListOrders } = useContext(OrderContext);
+  const list = [...listOrders];
+
+  var sum = list.reduce((money, item) => Number(money) + Number(item.price), 0);
+
+  const [total, setTotal] = useState(sum);
   return (
     <SafeAreaView style={styles.wrap}>
       <Header navigation={navigation} />
-      <View style={styles.wrap2}>
-        <ScrollView style={styles.scroll}>
-          <View style={styles.container}>
-            <RedirectRouter
-              title={"Giỏ hàng của bạn"}
-              isTitleCenter={true}
-              navigation={navigation}
-            />
-            <View style={styles.body}>
-              <Text style={styles.title}>Hàng có sẵn</Text>
+      {/* <View style={styles.wrap2}> */}
+      {/* <ScrollView style={styles.scroll}> */}
+      <SafeAreaView style={styles.container}>
+        <RedirectRouter
+          title={"Giỏ hàng của bạn"}
+          isTitleCenter={true}
+          navigation={navigation}
+        />
+        {/* <View style={styles.body}>
+              
               <View style={styles.list}>
-                <CartItem />
-                <CartItem />
-                <CartItem />
-                <CartItem />
-              </View>
-              <View style={styles.btnList}>
+                <CartItem />              
+              </View> */}
+        {/* <View style={styles.btnList}>
                 <View style={styles.btnWithCartItem}>
                   <Icon
                     name="trash-2-outline"
@@ -56,29 +61,39 @@ const Cart = ({ navigation }) => {
                     Tiếp tục mua sắm
                   </Text>
                 </View>
-              </View>
-              <SpaceLine />
-              <Voucher setIsVisibleVoucherModal={setIsVisibleVoucherModal} />
+              </View> */}
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={list}
+          key={[list]}
+          renderItem={({ item }) => (
+            <CartItem              
+              item={item}
+              list={list}
+              total={total}
+              setTotal={setTotal}
+            />
+          )}
+        />
+        <SpaceLine />
+        <Voucher setIsVisibleVoucherModal={setIsVisibleVoucherModal} />
 
-              <View style={styles.totalPrice}>
-                <Text style={styles.totalPriceLabel}>Tạm tính:</Text>
-                <Text style={styles.totalPriceValue}>211.000đ</Text>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-        <View style={styles.submitOrderContainer}>
-          <SubmitOrder navigation={navigation} />
+        <View style={styles.totalPrice}>
+          <Text style={styles.totalPriceLabel}>Tạm tính:</Text>
+          <Text style={styles.totalPriceValue}>{total}đ</Text>
         </View>
-        <AddToCartModal
-          visible={isVisibleModal}
-          setVisible={setIsVisibleModal}
-        />
-        <VoucherModal
-          visible={isVisibleVoucherModal}
-          setVisible={setIsVisibleVoucherModal}
-        />
+        {/* </View> */}
+      </SafeAreaView>
+      {/* </ScrollView> */}
+      <View style={styles.submitOrderContainer}>
+        <SubmitOrder navigation={navigation} />
       </View>
+      <AddToCartModal visible={isVisibleModal} setVisible={setIsVisibleModal} />
+      <VoucherModal
+        visible={isVisibleVoucherModal}
+        setVisible={setIsVisibleVoucherModal}
+      />
+      {/* </View> */}
     </SafeAreaView>
   );
 };
@@ -91,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   scroll: {
-    marginBottom: submitOrderHeight,
+    // marginBottom: submitOrderHeight,
   },
   container: {
     paddingTop: headerHeight,

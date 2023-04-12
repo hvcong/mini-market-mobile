@@ -13,6 +13,8 @@ import InforUpdate from "../screens/account/InforUpdate";
 import Level from "../screens/account/Level";
 import History from "./../screens/account/History";
 import DeliveryAddress from "../screens/account/DeliveryAddress";
+import Details from "../screens/Details";
+import Product from "../components/home/Product";
 
 const Stack = createNativeStackNavigator();
 const MainStack = () => {
@@ -32,6 +34,8 @@ const MainStack = () => {
       <Stack.Screen name="Level" component={Level} />
       <Stack.Screen name="History" component={History} />
       <Stack.Screen name="DeliveryAddress" component={DeliveryAddress} />
+      <Stack.Screen name="Details" component={Details}/>
+      <Stack.Screen name="Product" component={Product}/>
     </Stack.Navigator>
   );
 };

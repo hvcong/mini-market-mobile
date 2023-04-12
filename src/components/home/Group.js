@@ -1,11 +1,25 @@
-import { Text } from "@ui-kitten/components";
 import React from "react";
-import { View, StyleSheet, Image, FlatList } from "react-native";
+import { View, StyleSheet, Image, FlatList, Text } from "react-native";
 import { backgroundColors, colors } from "../../utils/constants";
 import LabelHeading from "../common/LabelHeading";
 import Product from "./Product";
 
-const Group = ({ title, type, setIsVisibleModal, backgroundColor }) => {
+const Group = ({
+  title,
+  type,
+  setIsVisibleModal,
+  backgroundColor,
+  navigation,
+}) => {
+  const data = [
+    {
+      id: "sp1",
+      name: "Calo asdf Cacoaa",
+      images: require("../../../assets/cate_drink.png"),
+      description: "ca mà cô",
+      price: 1000,
+    },
+  ];
   return (
     <View style={[styles.container]}>
       <View style={styles.head}>
@@ -21,12 +35,11 @@ const Group = ({ title, type, setIsVisibleModal, backgroundColor }) => {
           backgroundColor && { backgroundColor: backgroundColor },
         ]}
       >
-        <View style={[styles.list]}>
-          <Product setIsVisibleModal={setIsVisibleModal} />
-          <Product setIsVisibleModal={setIsVisibleModal} />
-          <Product setIsVisibleModal={setIsVisibleModal} />
-          <Product setIsVisibleModal={setIsVisibleModal} />
-        </View>
+        {data.map((item, index) => (
+          <View style={[styles.list]}>
+            <Product navigation={navigation} item={item} key={index} />
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -42,10 +55,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   list: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    paddingHorizontal: 12,
+    // flexDirection: "row",
+    // flexWrap: "wrap",
+    // justifyContent: "space-between",
+    // paddingHorizontal: 12,
   },
 });
 
