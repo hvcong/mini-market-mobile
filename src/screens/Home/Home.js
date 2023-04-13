@@ -28,30 +28,14 @@ const Home = ({ navigation }) => {
             <Banner navigation={navigation} />
             <Category />
             <Group
-              title="Khuyến mãi sốc"
-              type="special"
-              setIsVisibleModal={setIsVisibleModal}
-              backgroundColor="#d3db76"
-              navigation={navigation}
-            />
-            <Group
-              title="Thịt, cá, trứng sữa abc aaaaaaaa"
-              type="nomal"
-              setIsVisibleModal={setIsVisibleModal}
+              title="các sản phẩm"
+              type="nomal"              
               backgroundColor="#eee"
-            />
-            <Group
-              title="Mua nhiều nhất"
-              type="nomal"
-              setIsVisibleModal={setIsVisibleModal}
-            />          
+              navigation={navigation}
+            />                     
             <Footer />
           </View>
         </ScrollView>
-        <AddToCartModal
-          visible={isVisibleModal}
-          setVisible={setIsVisibleModal}
-        />
       </View>
     </SafeAreaView>
   );
@@ -64,10 +48,12 @@ const styles = StyleSheet.create({
   },
   wrap: {
     width: "100%",
+    
   },
   content: {
     width: "100%",
     paddingTop: headerHeight + 12,
+    flex:1
   },
 });
 

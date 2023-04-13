@@ -3,23 +3,25 @@ import { View, StyleSheet, Image, FlatList, Text } from "react-native";
 import { backgroundColors, colors } from "../../utils/constants";
 import LabelHeading from "../common/LabelHeading";
 import Product from "./Product";
+import priceHeaderApi from "../../api/priceHeaderApi";
+import { useEffect } from "react";
+import { useState } from "react";
+const Group = ({ title, type, backgroundColor, navigation }) => {
+  const [listData, setListData] = useState();
 
-const Group = ({
-  title,
-  type,
-  setIsVisibleModal,
-  backgroundColor,
-  navigation,
-}) => {
-  const data = [
-    {
-      id: "sp1",
-      name: "Calo asdf Cacoaa",
-      images: require("../../../assets/cate_drink.png"),
-      description: "ca mà cô",
-      price: 1000,
-    },
-  ];
+  const getData = async () => {
+    const dt = await priceHeaderApi.getAllOnActive();
+    setListData(dt);
+  };
+
+  useEffect(() => {
+    getData();
+  },[]);
+  
+  let data = []
+  if(listData){
+    data = listData.headers[0].Prices
+  }
   return (
     <View style={[styles.container]}>
       <View style={styles.head}>
@@ -35,11 +37,13 @@ const Group = ({
           backgroundColor && { backgroundColor: backgroundColor },
         ]}
       >
-        {data.map((item, index) => (
-          <View style={[styles.list]}>
+        {
+        data.map((item, index) => (
+          <View style={styles.list}>
             <Product navigation={navigation} item={item} key={index} />
           </View>
-        ))}
+        ))
+        }
       </View>
     </View>
   );
@@ -50,15 +54,14 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: colors.white,
   },
-  head: {},
   body: {
     backgroundColor: colors.white,
   },
   list: {
-    // flexDirection: "row",
-    // flexWrap: "wrap",
-    // justifyContent: "space-between",
-    // paddingHorizontal: 12,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: 8,
   },
 });
 

@@ -2,44 +2,41 @@ import React from "react";
 import { View, StyleSheet, Text, Image, Pressable } from "react-native";
 import { colors, fontSize } from "../../utils/constants";
 import { Icon } from "@ui-kitten/components";
-import ProductQuantityChange from "../common/ProductQuantityChange";
 import { OrderContext } from "../../store/contexts/OrderContext";
 import { useContext, useState, useEffect } from "react";
-const CartItem = ({ item, list, total, setTotal }) => {
-  console.log(item)
+const CartItem = ({ item, total, setTotal }) => {
   const { listOrders, setListOrders } = useContext(OrderContext);
+  const list = [...listOrders];
 
-  const [price, setPrice] = useState(item.price);
-  const [amout, setAmout] = useState(item.quantity);
-  const itemb = { ...item };
-  const singleItemCost = itemb.price / itemb.quantity;
+  const [cost, setCost] = useState(item.price);
+  const [amout, setAmout] = useState(item.amout);
 
-  // useEffect(() => {
-  //   var sum = list.reduce(
-  //     (money, item) => Number(money) + Number(item.price),
-  //     0
-  //   );
-  //   setTotal(sum);
-  // }, [item.quantity]);
+  useEffect(() => {
+    let sum = list.reduce(
+      (money, item) => Number(money) + Number(item.price) * Number(item.amout),
+      0
+    );
+    setTotal(sum)
+  }, [amout],[list]);
 
   const onpressIncrease = () => {
     setAmout(amout + 1);
-    setPrice(singleItemCost * (amout + 1));
-    item.quantity = amout + 1;
-    item.price = singleItemCost * (amout + 1);
+    setCost(item.price * (amout + 1));
+    item.amout = amout + 1;
+    item.cost = item.price * (amout + 1);
   };
   const onpressDecrease = () => {
-    if (amout == 1) {      
-      const i = list.findIndex((e) => e.id == item.id);    
+    if (amout == 1) {
+      const i = list.indexOf(item);
       if (i > -1) {
         list.splice(i, 1);
         setListOrders(list);
       }
     } else {
       setAmout(amout - 1);
-      setPrice(singleItemCost * (amout - 1));
-      item.quantity = amout - 1;
-      item.price = singleItemCost * (amout - 1);
+      setCost(item.price * (amout - 1));
+      item.amout = amout - 1;
+      item.cost = item.price * (amout - 1);
     }
     if (list.length == 0) {
       setTotal(0);
@@ -50,18 +47,20 @@ const CartItem = ({ item, list, total, setTotal }) => {
       <View style={styles.imageContainer}>
         <Image
           style={styles.image}
-          source={require("../../../assets/product_tao.jpg")}
+          source={{ uri: item.ProductUnitType.Product.images[0].uri }}
         />
       </View>
       <View style={styles.body}>
-        <Text style={styles.nameProduct}>{item.name}</Text>
+        <Text style={styles.nameProduct}>
+          {item.ProductUnitType.Product.name}
+        </Text>
         <View style={styles.preserveContainer}>
           <Icon name="sun-outline" fill={colors.gray} style={styles.coldIcon} />
           <Text style={styles.preserveText}></Text>
         </View>
       </View>
       <View style={styles.right}>
-        <Text style={styles.price}>{item.price}</Text>      
+        <Text style={styles.price}> {cost} VND</Text>
         <View style={styles.quantityContainer}>
           <Pressable style={styles.quantityBtn} onPress={onpressDecrease}>
             <Icon
@@ -70,7 +69,7 @@ const CartItem = ({ item, list, total, setTotal }) => {
               style={styles.quantityIcon}
             />
           </Pressable>
-          <Text style={styles.quantityValue}>{amout}</Text>
+          <Text style={styles.quantityValue}>{Number(item.amout)}</Text>
           <Pressable style={styles.quantityBtn} onPress={onpressIncrease}>
             <Icon
               name="plus-outline"
@@ -80,7 +79,7 @@ const CartItem = ({ item, list, total, setTotal }) => {
           </Pressable>
         </View>
 
-        <Text style={styles.priceSub}>Giá {item.price}</Text>
+        <Text style={styles.priceSub}> đơn giá: {item.price} đ</Text>
       </View>
     </View>
   );

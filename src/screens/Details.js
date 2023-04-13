@@ -3,6 +3,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { OrderContext } from "../store/contexts/OrderContext";
 import { AntDesign } from "@expo/vector-icons";
 import { useContext,useState } from "react";
+import { colors, btnColors, backgroundColors } from "../utils/constants";
 
 const Details = ({ navigation, route }) => {
   const item = route.params;
@@ -10,21 +11,21 @@ const Details = ({ navigation, route }) => {
   var newListOrders = [...listOrders];
   const buyItem = { ...item };
 
-  const [price, setPrice] = useState(item.price);
-  const [amout, setAmout] = useState(1);
+  // const [cost, setCost] = useState(item.price);
+  // const [amout, setAmout] = useState(1);
 
-  const onpressIncrease = () => {
-    setAmout(amout + 1);
-    setPrice(item.price * (amout + 1));
-  };
-  const onpressDecrease = () => {
-    if (amout < 2) {
-      setAmout(1);
-    } else {
-      setAmout(amout - 1);
-      setPrice(item.price * (amout - 1));
-    }
-  };
+  // const onpressIncrease = () => {
+  //   setAmout(amout + 1);
+  //   setPrice(item.price * (amout + 1));
+  // };
+  // const onpressDecrease = () => {
+  //   if (amout < 2) {
+  //     setAmout(1);
+  //   } else {
+  //     setAmout(amout - 1);
+  //     setPrice(item.price * (amout - 1));
+  //   }
+  // };
 
   return (
     <SafeAreaView style = {style.container}>
@@ -38,7 +39,7 @@ const Details = ({ navigation, route }) => {
             height: 280,
           }}
         >
-          <Image source={item.image} style={{ height: 220, width: 220 }} />
+          <Image source={{uri: item.ProductUnitType.Product.images[0].uri}} style={{ height: 220, width: 220 }} />
         </View>
         <View style={style.details}>
           <View
@@ -51,18 +52,18 @@ const Details = ({ navigation, route }) => {
             <Text
               style={{ fontSize: 25, fontWeight: "bold", color: "white" }}
             >
-              {item.name}
+              {item.ProductUnitType.Product.name}
             </Text>            
           </View>
           <View style={style.behavior}>
-            <TouchableOpacity onPress={onpressDecrease}>
-              <AntDesign name="minuscircle" size={24} color="black" />
-            </TouchableOpacity>
-            <Text style={style.amout}>{amout}</Text>
-            <TouchableOpacity onPress={onpressIncrease}>
+            {/* <TouchableOpacity onPress={onpressDecrease}>
+              <AntDesign name="minuscircle" size={24}  colors= "black"  />
+            </TouchableOpacity> */}
+            <Text style={style.amout}>1</Text>
+            {/* <TouchableOpacity onPress={onpressIncrease}>
               <AntDesign name="pluscircle" size={24} color="black" />
-            </TouchableOpacity>
-            <Text style={style.money}> {price} $</Text>
+            </TouchableOpacity> */}
+            <Text style={style.money}> {item.price} VND</Text>
           </View>
           <Text style={style.detailsText}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -71,12 +72,9 @@ const Details = ({ navigation, route }) => {
             and scrambled it to make a type specimen book. It has survived not
             only five centuries.
           </Text>
-          <View style={{ marginTop: 40, marginBottom: 40 }}>
-            <TouchableOpacity
-              
-              onPress={() => {
-                buyItem.quantity = amout;
-                buyItem.price = price;
+          <View style={{ marginTop: 40, marginBottom: 40 , height: 50}}>
+            <TouchableOpacity              
+              onPress={() => {                
                 var found = false;
                 for (var i = 0; i < newListOrders.length; i++) {
                   if (newListOrders[i].name == buyItem.name) {
@@ -85,20 +83,22 @@ const Details = ({ navigation, route }) => {
                   }
                 }
                 if (!found) {
+                  buyItem.amout = 1;
                   newListOrders.push(buyItem);
-                } else {
-                  const i = newListOrders.findIndex(
-                    (e) => e.name == buyItem.name
-                  );
-                  if (i > -1) {
-                    newListOrders[i].quantity =
-                      buyItem.quantity + newListOrders[i].quantity;
-                    newListOrders[i].price =
-                      Number(price) + Number(newListOrders[i].price);
-                  }
-                }                
-                setListOrders(newListOrders);
-                ToastAndroid.showWithGravityAndOffset(
+                  setListOrders(newListOrders);
+                } 
+                // else {
+                //   const i = newListOrders.findIndex(
+                //     (e) => e.name == buyItem.name
+                //   );
+                //   if (i > -1) {
+                //     newListOrders[i].quantity =
+                //       buyItem.quantity + newListOrders[i].quantity;
+                //     newListOrders[i].price =
+                //       Number(price) + Number(newListOrders[i].price);
+                //   }
+                // }                
+                  ToastAndroid.showWithGravityAndOffset(
                   "Add to cart successfully!",
                   ToastAndroid.LONG,
                   ToastAndroid.BOTTOM,
@@ -107,8 +107,9 @@ const Details = ({ navigation, route }) => {
                 );
                 navigation.navigate("Home");                
               }}
+              style = {style.button}
             >
-            <Text> Add to cart</Text>
+            <Text style = {style.text}> Add to cart</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -132,7 +133,7 @@ const style = StyleSheet.create({
       paddingHorizontal: 20,
       paddingTop: 40,
       paddingBottom: 60,
-    //   backgroundColor: COLORS.primary,
+      backgroundColor: backgroundColors.greenLighter,
       borderTopRightRadius: 40,
       borderTopLeftRadius: 40,
     },
@@ -147,8 +148,7 @@ const style = StyleSheet.create({
     detailsText: {
       marginTop: 10,
       lineHeight: 22,
-      fontSize: 16,
-    //   color: COLORS.white,
+      fontSize: 16,      
     },
     behavior: {
       flexDirection: "row",
@@ -165,6 +165,18 @@ const style = StyleSheet.create({
     amout: {
       paddingHorizontal: 16,
       fontSize: 17,
+      fontWeight: "500"
     },
+    button: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.green2,
+      borderRadius: 10
+    },
+    text: {
+      fontSize: 18,
+      fontWeight: '500',
+    }
   });
 export default Details

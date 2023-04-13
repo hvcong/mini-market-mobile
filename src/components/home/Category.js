@@ -19,6 +19,18 @@ const Category = () => {
       name: "thuc pham",
       image: require('../../../assets/cate_drink.png'),
     },
+    {
+      name: "thuc pham",
+      image: require('../../../assets/cate_drink.png'),
+    },
+    {
+      name: "thuc pham",
+      image: require('../../../assets/cate_drink.png'),
+    },
+    {
+      name: "thuc pham",
+      image: require('../../../assets/cate_drink.png'),
+    },
   ];
   return (
     <View style={styles.container}>

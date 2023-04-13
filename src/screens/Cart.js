@@ -21,26 +21,30 @@ const Cart = ({ navigation }) => {
   const { listOrders, setListOrders } = useContext(OrderContext);
   const list = [...listOrders];
 
-  var sum = list.reduce((money, item) => Number(money) + Number(item.price), 0);
+
+  var sum = list.reduce((money, item) => Number(money) + Number(item.price)* Number(item.amout), 0);
 
   const [total, setTotal] = useState(sum);
   return (
     <SafeAreaView style={styles.wrap}>
       <Header navigation={navigation} />
-      {/* <View style={styles.wrap2}> */}
-      {/* <ScrollView style={styles.scroll}> */}
-      <SafeAreaView style={styles.container}>
-        <RedirectRouter
-          title={"Giỏ hàng của bạn"}
-          isTitleCenter={true}
-          navigation={navigation}
-        />
-        {/* <View style={styles.body}>
-              
+      <View style={styles.wrap2}>
+        <ScrollView style={styles.scroll}>
+          <View style={styles.container}>
+            <RedirectRouter
+              title={"Giỏ hàng của bạn"}
+              isTitleCenter={true}
+              navigation={navigation}
+            />
+            <View style={styles.body}>
               <View style={styles.list}>
-                <CartItem />              
-              </View> */}
-        {/* <View style={styles.btnList}>
+                {
+                  list.map((item,index) => (
+                    <CartItem item={item} key={index} total={total} setTotal={setTotal}/>
+                  ))
+                }
+              </View>
+              {/* <View style={styles.btnList}>
                 <View style={styles.btnWithCartItem}>
                   <Icon
                     name="trash-2-outline"
@@ -62,38 +66,28 @@ const Cart = ({ navigation }) => {
                   </Text>
                 </View>
               </View> */}
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={list}
-          key={[list]}
-          renderItem={({ item }) => (
-            <CartItem              
-              item={item}
-              list={list}
-              total={total}
-              setTotal={setTotal}
-            />
-          )}
-        />
-        <SpaceLine />
-        <Voucher setIsVisibleVoucherModal={setIsVisibleVoucherModal} />
+              <SpaceLine />
+              <Voucher setIsVisibleVoucherModal={setIsVisibleVoucherModal} />
 
-        <View style={styles.totalPrice}>
-          <Text style={styles.totalPriceLabel}>Tạm tính:</Text>
-          <Text style={styles.totalPriceValue}>{total}đ</Text>
+              <View style={styles.totalPrice}>
+                <Text style={styles.totalPriceLabel}>Tạm tính: </Text>
+                <Text style={styles.totalPriceValue}>{total} VND</Text>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+        <View style={styles.submitOrderContainer}>
+          <SubmitOrder navigation={navigation} />
         </View>
-        {/* </View> */}
-      </SafeAreaView>
-      {/* </ScrollView> */}
-      <View style={styles.submitOrderContainer}>
-        <SubmitOrder navigation={navigation} />
+        {/* <AddToCartModal
+          visible={isVisibleModal}
+          setVisible={setIsVisibleModal}
+        /> */}
+        <VoucherModal
+          visible={isVisibleVoucherModal}
+          setVisible={setIsVisibleVoucherModal}
+        />
       </View>
-      <AddToCartModal visible={isVisibleModal} setVisible={setIsVisibleModal} />
-      <VoucherModal
-        visible={isVisibleVoucherModal}
-        setVisible={setIsVisibleVoucherModal}
-      />
-      {/* </View> */}
     </SafeAreaView>
   );
 };
@@ -101,19 +95,22 @@ const Cart = ({ navigation }) => {
 const submitOrderHeight = 98;
 
 const styles = StyleSheet.create({
-  wrap: {},
+  wrap: {    
+    flex:1,
+  },
   wrap2: {
     backgroundColor: colors.white,
+    flex:1,
   },
   scroll: {
-    // marginBottom: submitOrderHeight,
+    marginBottom: submitOrderHeight,
   },
   container: {
     paddingTop: headerHeight,
-    position: "relative",
+    position: "relative",    
   },
   body: {
-    // paddingHorizontal: 12,
+    paddingHorizontal: 12,
   },
   title: {
     fontSize: fontSize.XL,
@@ -146,7 +143,6 @@ const styles = StyleSheet.create({
     color: colors.gray2,
     paddingLeft: 4,
   },
-
   totalPrice: {
     flexDirection: "row",
     padding: 12,
@@ -168,6 +164,7 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
     backgroundColor: colors.white,
+    backgroundColor:'skyblue',
     // height: submitOrderHeight,
   },
 });

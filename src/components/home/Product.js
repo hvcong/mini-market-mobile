@@ -21,14 +21,14 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
       onPress={() => navigation.navigate("Details", item)}
     >
       <View style={styles.imageContainer}>
-        <Image
-          source={require("../../../assets/product_tao.jpg")}
+        <Image        
+          source={{uri: item.ProductUnitType.Product.images[0].uri}}          
           style={styles.image}
         />
       </View>
       <View style={styles.content}>
         <View style={styles.information}>
-          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.name}>{item.ProductUnitType.Product.name}</Text>
           <Text style={styles.newPrice}>{item.price}</Text>
           <View style={styles.priceContainer}>
             <Text style={styles.price}>{item.price}</Text>
@@ -38,22 +38,18 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
         <TouchableOpacity
           style={styles.btnContainer}
           onPress={() => {
-            let found = false;
-            let index = -1;
+            let found = false;            
             for (let i = 0; i < newListOrders.length; i++) {
-              if (newListOrders[i].name == buyItem.name) {
-                found = true;
-                index = i;
+              if (newListOrders[i].ProductUnitTypeId == buyItem.ProductUnitTypeId) {
+                found = true;                
                 break;
               }
             }
             if (!found) {
-              buyItem.quantity = 1;
-              newListOrders.push(buyItem);
-            } else {
-              newListOrders[index].quantity += 1;
-            }
-            setListOrders(newListOrders);
+              buyItem.amout = 1;              
+              newListOrders.push(buyItem);                 
+              setListOrders(newListOrders);              
+            }             
             ToastAndroid.showWithGravityAndOffset(
               "Add to cart successfully!",
               ToastAndroid.LONG,
@@ -78,13 +74,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 8,
     backgroundColor: "white",
-    width: "48%",
+    width: "45%",    
     alignItems: "center",
     marginBottom: 12,
     overflow: "hidden",
     position: "relative",
     borderWidth: 1,
     borderColor: colors.grayLighter,
+    
   },
   imageContainer: {
     width: "100%",
