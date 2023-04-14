@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import cateApi from "../../api/cateApi";
 import {
   View,
   StyleSheet,
@@ -7,31 +8,23 @@ import {
   Pressable,
   Text,
 } from "react-native";
-// import { Text } from "@ui-kitten/components";
 
 const Category = () => {
-  const data = [
-    {
-      name: "nước uống",
-      image: require('../../../assets/cate_drink.png'),
-    },
-    {
-      name: "thuc pham",
-      image: require('../../../assets/cate_drink.png'),
-    },
-    {
-      name: "thuc pham",
-      image: require('../../../assets/cate_drink.png'),
-    },
-    {
-      name: "thuc pham",
-      image: require('../../../assets/cate_drink.png'),
-    },
-    {
-      name: "thuc pham",
-      image: require('../../../assets/cate_drink.png'),
-    },
-  ];
+  const [listData, setListData] = useState();
+  const getData = async () => {
+    const dt = await cateApi.getMany(0, 10);
+    setListData(dt);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  let data = [];
+
+  if (listData) {
+    data = listData.cates.rows;   
+  }
   return (
     <View style={styles.container}>
       <Text category="h4">Danh mục sản phẩm</Text>
@@ -42,9 +35,9 @@ const Category = () => {
       >
         {data.map((item, index) => (
           <Pressable key={index} onPress={() => {}}>
-            <View style = {styles.item}>
-              <Image source={item.image} style={styles.image} />
-              <Text style = {styles.text}> {item.name}</Text>       
+            <View style={styles.item}>
+              <Image source={{ uri: item.image }} style={styles.image} />
+              <Text style={styles.text}> {item.name}</Text>
             </View>
           </Pressable>
         ))}

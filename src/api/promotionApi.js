@@ -128,6 +128,15 @@ class PromotionApi {
   addResult(formData) {
     let url = "result/add";
     return axiosClient.post(url, formData);
+  }  
+  
+  getProductPromtion(limit,page){
+    let url = `promotion/productPr?_limit=${limit}&_page=${page}`
+    return axiosClient.get(url)
+  }
+  getRatePromotion(limit,page){
+    let url = `promotion/ratePr?_limit=${limit}&_page=${page}`
+    return axiosClient.get(url)
   }
 }
 

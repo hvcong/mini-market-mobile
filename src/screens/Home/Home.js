@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, ScrollView } from "react-native";
+import { View, StyleSheet, Image, ScrollView,TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button } from "@ui-kitten/components";
 import Banner from "../../components/home/Banner";
@@ -7,6 +7,7 @@ import Category from "../../components/home/Category";
 import Group from "../../components/home/Group";
 import Footer from "../../components/home/Footer";
 import Header from "../../components/header/Header";
+import priceHeaderApi from "../../api/priceHeaderApi";
 import {
   backgroundColors,
   bottomTabHeight,
@@ -17,8 +18,22 @@ import AddToCartModal from "../../components/modal/AddToCartModal";
 
 const Home = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
-  // useEffect()
+  const [listData, setListData] = useState();
 
+  const getData = async () => {
+    const dt = await priceHeaderApi.getAllOnActive();
+    setListData(dt);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  let data = [];
+  if (listData) {
+    data = listData.headers[0].Prices;    
+  }
+  
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
       <Header navigation={navigation} />
@@ -30,9 +45,10 @@ const Home = ({ navigation }) => {
             <Group
               title="các sản phẩm"
               type="nomal"              
-              backgroundColor="#eee"
+              backgroundColor= '#eee'
               navigation={navigation}
-            />                     
+              data = {data}
+            />          
             <Footer />
           </View>
         </ScrollView>
@@ -54,6 +70,12 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingTop: headerHeight + 12,
     flex:1
+  },
+  more: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 4,
+    backgroundColor: "#eee",
   },
 });
 

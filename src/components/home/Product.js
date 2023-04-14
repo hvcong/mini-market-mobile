@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 8,
     backgroundColor: "white",
-    width: "45%",    
+    width: "32%",
     alignItems: "center",
     marginBottom: 12,
     overflow: "hidden",
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 120,
+    height: 80,
   },
   content: {
     paddingBottom: 12,
@@ -100,12 +100,12 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   name: {
-    fontSize: 16,
-    paddingTop: 12,
-    paddingBottom: 8,
+    fontSize: 14,
+    paddingTop: 4,
+    paddingBottom: 4,
   },
   newPrice: {
-    fontSize: fontSize.XL,
+    fontSize: fontSize.L,
     fontWeight: "bold",
   },
   priceContainer: {

@@ -28,7 +28,7 @@ const Header = ({ navigation }) => {
               {account && account.User.lastName}
             </Text>
           </View>
-          <Pressable
+          {/* <Pressable
             style={styles.location}
             onPress={() => {
               setIsShowLocationModal(true);
@@ -42,7 +42,7 @@ const Header = ({ navigation }) => {
               />
             </View>
             <Text style={styles.locationValue}>TP.HCM</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
         <Pressable
           onPress={() => navigation.navigate("Search")}
@@ -67,8 +67,8 @@ const Header = ({ navigation }) => {
               name="search-outline"
               style={styles.searchIcon}
             />
-            <Text style={styles.searchPlace}>Giao nhanh, đơn gì cũng giao</Text>
-            <View style={styles.micIconContainer}>
+            <Text style={styles.searchPlace}>tìm kiếm</Text>
+            {/* <View style={styles.micIconContainer}>
               <Icon
                 fill={colors.green2}
                 name="mic-outline"
@@ -81,7 +81,7 @@ const Header = ({ navigation }) => {
                 name="shopping-cart-outline"
                 style={styles.cartIcon}
               />
-            </View>
+            </View> */}
           </View>
         </Pressable>
       </View>

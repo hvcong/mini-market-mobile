@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Text, Image, Pressable } from "react-native";
-import { colors, fontSize } from "../../utils/constants";
+import { colors, fontSize,backgroundColors } from "../../utils/constants";
 import { Icon } from "@ui-kitten/components";
 import { OrderContext } from "../../store/contexts/OrderContext";
 import { useContext, useState, useEffect } from "react";
@@ -58,6 +58,9 @@ const CartItem = ({ item, total, setTotal }) => {
           <Icon name="sun-outline" fill={colors.gray} style={styles.coldIcon} />
           <Text style={styles.preserveText}></Text>
         </View>
+        <View>
+          <Text> {item.ProductUnitType.UnitType.name}</Text>
+        </View>
       </View>
       <View style={styles.right}>
         <Text style={styles.price}> {cost} VND</Text>
@@ -88,18 +91,23 @@ const CartItem = ({ item, total, setTotal }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderColor: "#ddd",
     paddingHorizontal: 12,
   },
   imageContainer: {
     width: 100,
-    height: 100,
+    height: 100,    
+    borderRadius: 5,
+    backgroundColor: backgroundColors.greenLighter,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    width: "100%",
-    height: "100%",
+    width: "90%",
+    height: "90%",
+    borderRadius: 10
   },
   body: {
     flex: 1,
@@ -124,8 +132,8 @@ const styles = StyleSheet.create({
   },
   right: {},
   price: {
-    fontSize: fontSize.XL,
-    fontWeight: "bold",
+    fontSize: fontSize.L,
+    fontWeight: "500",
   },
   priceSub: {
     color: colors.gray,
