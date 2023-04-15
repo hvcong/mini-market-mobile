@@ -6,6 +6,7 @@ import { View, StyleSheet } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { Pressable } from "react-native";
 import { colors, fontSize } from "../../utils/constants";
+
 import firebase from "../../../firebaseConfig";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 
