@@ -1,38 +1,71 @@
-import React from "react";
-import { Image, Pressable, Text } from "react-native";
+import React, { useContext, useState } from "react";
+import {
+  Image,
+  Pressable,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+} from "react-native";
 import { View, StyleSheet } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { backgroundColors, colors, fontSize } from "../../utils/constants";
+import { OrderContext } from "../../store/contexts/OrderContext";
 
-const Product = ({ setIsVisibleModal }) => {
+const Product = ({ navigation, setIsVisibleModal, item }) => {
+  const { listOrders, setListOrders } = useContext(OrderContext);
+  var newListOrders = [...listOrders];
+  const buyItem = { ...item };
   return (
-    <View style={styles.item}>
+    <Pressable
+      style={styles.item}
+      onPress={() => navigation.navigate("Details", item)}
+    >
       <View style={styles.imageContainer}>
-        <Image
-          source={require("../../../assets/product_tao.jpg")}
+        <Image        
+          source={{uri: item.ProductUnitType.Product.images[0].uri}}          
           style={styles.image}
         />
       </View>
       <View style={styles.content}>
         <View style={styles.information}>
-          <Text style={styles.name}>Táo đỏ USA</Text>
-          <Text style={styles.newPrice}>80.000 /kg</Text>
+          <Text style={styles.name}>{item.ProductUnitType.Product.name}</Text>
+          <Text style={styles.newPrice}>{item.price}</Text>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>100.000 /kg</Text>
+            <Text style={styles.price}>{item.price}</Text>
             <Text style={styles.percent}>-50%</Text>
           </View>
         </View>
-        <Pressable
+        <TouchableOpacity
           style={styles.btnContainer}
-          onPress={() => setIsVisibleModal(true)}
+          onPress={() => {
+            let found = false;            
+            for (let i = 0; i < newListOrders.length; i++) {
+              if (newListOrders[i].ProductUnitTypeId == buyItem.ProductUnitTypeId) {
+                found = true;                
+                break;
+              }
+            }
+            if (!found) {
+              buyItem.amout = 1;              
+              newListOrders.push(buyItem);                 
+              setListOrders(newListOrders);              
+            }             
+            ToastAndroid.showWithGravityAndOffset(
+              "Add to cart successfully!",
+              ToastAndroid.LONG,
+              ToastAndroid.BOTTOM,
+              25,
+              50
+            );
+          }}
         >
           <Text style={styles.btnLabel}>MUA</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <View style={styles.heartContainer}>
         <Icon name="heart" fill={colors.white} style={styles.heartIcon} />
       </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -41,20 +74,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 8,
     backgroundColor: "white",
-    width: "48%",
+    width: "32%",
     alignItems: "center",
     marginBottom: 12,
     overflow: "hidden",
     position: "relative",
     borderWidth: 1,
     borderColor: colors.grayLighter,
+    
   },
   imageContainer: {
     width: "100%",
   },
   image: {
     width: "100%",
-    height: 120,
+    height: 80,
   },
   content: {
     paddingBottom: 12,
@@ -66,12 +100,12 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   name: {
-    fontSize: 16,
-    paddingTop: 12,
-    paddingBottom: 8,
+    fontSize: 14,
+    paddingTop: 4,
+    paddingBottom: 4,
   },
   newPrice: {
-    fontSize: fontSize.XL,
+    fontSize: fontSize.L,
     fontWeight: "bold",
   },
   priceContainer: {

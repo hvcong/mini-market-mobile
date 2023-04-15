@@ -71,13 +71,14 @@ const SearchHeader = ({ isShowResult, setIsShowResult, navigation }) => {
           </Pressable>
         ) : (
           <View style={styles.micIconContainer}>
-            <Icon
+            {/* <Icon
               name="mic-outline"
               fill={colors.gray2}
               style={styles.micIcon}
-            />
+            /> */}
           </View>
-        )}
+        )
+        }
       </View>
     </View>
   );

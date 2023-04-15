@@ -14,7 +14,7 @@ const Footer = () => {
           Địa chỉ:
         </Text>
         <Text category="s2" style={styles.sub}>
-          Tầng 2 , tòa nhà HCMCC. 249A Thụy Khuê, Tây Hồ, Hà Nội
+          29/8/7 đại lộ 15, tòa nhà 7, Hiệp Bình Chánh, Thủ Đức
         </Text>
       </View>
       <View style={styles.hotline}>
@@ -22,7 +22,7 @@ const Footer = () => {
           Hotline:
         </Text>
         <Text category="s2" style={styles.sub}>
-          083732322
+          0977 777 777 - mr. butle
         </Text>
       </View>
     </View>
@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     flexDirection: "column",
-    paddingBottom: 24,
+    paddingBottom: 8,
+    paddingHorizontal: 8
   },
   title: {
     paddingBottom: 12,

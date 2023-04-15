@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Image, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Image, ScrollView,TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button } from "@ui-kitten/components";
 import Banner from "../../components/home/Banner";
@@ -7,6 +7,7 @@ import Category from "../../components/home/Category";
 import Group from "../../components/home/Group";
 import Footer from "../../components/home/Footer";
 import Header from "../../components/header/Header";
+import priceHeaderApi from "../../api/priceHeaderApi";
 import {
   backgroundColors,
   bottomTabHeight,
@@ -17,7 +18,22 @@ import AddToCartModal from "../../components/modal/AddToCartModal";
 
 const Home = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
+  const [listData, setListData] = useState();
 
+  const getData = async () => {
+    const dt = await priceHeaderApi.getAllOnActive();
+    setListData(dt);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  let data = [];
+  if (listData) {
+    data = listData.headers[0].Prices;    
+  }
+  
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
       <Header navigation={navigation} />
@@ -27,31 +43,15 @@ const Home = ({ navigation }) => {
             <Banner navigation={navigation} />
             <Category />
             <Group
-              title="Khuyến mãi sốc"
-              type="special"
-              setIsVisibleModal={setIsVisibleModal}
-              backgroundColor="#d3db76"
-            />
-            <Group
-              title="Thịt, cá, trứng sữa abc aaaaaaaa"
-              type="nomal"
-              setIsVisibleModal={setIsVisibleModal}
-              backgroundColor="#eee"
-            />
-            <Group
-              title="Mua nhiều nhất"
-              type="nomal"
-              setIsVisibleModal={setIsVisibleModal}
-            />
-            {/* <Group title="Đồ uống" /> */}
-            {/* <Group title="Hoa quả" /> */}
+              title="các sản phẩm"
+              type="nomal"              
+              backgroundColor= '#eee'
+              navigation={navigation}
+              data = {data}
+            />          
             <Footer />
           </View>
         </ScrollView>
-        <AddToCartModal
-          visible={isVisibleModal}
-          setVisible={setIsVisibleModal}
-        />
       </View>
     </SafeAreaView>
   );
@@ -64,10 +64,18 @@ const styles = StyleSheet.create({
   },
   wrap: {
     width: "100%",
+    
   },
   content: {
     width: "100%",
     paddingTop: headerHeight + 12,
+    flex:1
+  },
+  more: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 4,
+    backgroundColor: "#eee",
   },
 });
 

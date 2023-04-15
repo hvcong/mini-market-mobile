@@ -20,10 +20,10 @@ const VoucherModal = ({ visible, setVisible }) => {
     >
       <View style={styles.wrap}>
         <View style={styles.container}>
-          <Text style={styles.title}>Dùng phiếu mua hàng</Text>
+          <Text style={styles.title}>Dùng Voucher</Text>
           <View style={styles.content}>
             <View style={styles.inputContainer}>
-              <TextInput style={styles.input} placeholder="Phiếu mua hàng" />
+              <TextInput style={styles.input} placeholder="Nhập mã voucher" />
               <Text style={[styles.btn, styles.btnEnalbe]}>Sử dụng</Text>
             </View>
             <Text style={styles.label}>Voucher mua hàng của bạn</Text>

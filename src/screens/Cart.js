@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CartItem from "../components/cart/CartItem";
@@ -12,10 +12,19 @@ import Voucher from "../components/common/Voucher";
 import SpaceLine from "../components/common/SpaceLine";
 import AddToCartModal from "../components/modal/AddToCartModal";
 import VoucherModal from "../components/modal/VoucherModal";
+import { FlatList } from "react-native";
+import { OrderContext } from "../store/contexts/OrderContext";
 
 const Cart = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [isVisibleVoucherModal, setIsVisibleVoucherModal] = useState(false);
+  const { listOrders, setListOrders } = useContext(OrderContext);
+  const list = [...listOrders];
+
+
+  var sum = list.reduce((money, item) => Number(money) + Number(item.price)* Number(item.amout), 0);
+
+  const [total, setTotal] = useState(sum);
   return (
     <SafeAreaView style={styles.wrap}>
       <Header navigation={navigation} />
@@ -28,14 +37,14 @@ const Cart = ({ navigation }) => {
               navigation={navigation}
             />
             <View style={styles.body}>
-              <Text style={styles.title}>Hàng có sẵn</Text>
               <View style={styles.list}>
-                <CartItem />
-                <CartItem />
-                <CartItem />
-                <CartItem />
+                {
+                  list.map((item,index) => (
+                    <CartItem item={item} key={index} total={total} setTotal={setTotal}/>
+                  ))
+                }
               </View>
-              <View style={styles.btnList}>
+              {/* <View style={styles.btnList}>
                 <View style={styles.btnWithCartItem}>
                   <Icon
                     name="trash-2-outline"
@@ -56,13 +65,13 @@ const Cart = ({ navigation }) => {
                     Tiếp tục mua sắm
                   </Text>
                 </View>
-              </View>
+              </View> */}
               <SpaceLine />
               <Voucher setIsVisibleVoucherModal={setIsVisibleVoucherModal} />
 
               <View style={styles.totalPrice}>
-                <Text style={styles.totalPriceLabel}>Tạm tính:</Text>
-                <Text style={styles.totalPriceValue}>211.000đ</Text>
+                <Text style={styles.totalPriceLabel}>Tạm tính: </Text>
+                <Text style={styles.totalPriceValue}>{total} VND</Text>
               </View>
             </View>
           </View>
@@ -70,10 +79,10 @@ const Cart = ({ navigation }) => {
         <View style={styles.submitOrderContainer}>
           <SubmitOrder navigation={navigation} />
         </View>
-        <AddToCartModal
+        {/* <AddToCartModal
           visible={isVisibleModal}
           setVisible={setIsVisibleModal}
-        />
+        /> */}
         <VoucherModal
           visible={isVisibleVoucherModal}
           setVisible={setIsVisibleVoucherModal}
@@ -86,19 +95,22 @@ const Cart = ({ navigation }) => {
 const submitOrderHeight = 98;
 
 const styles = StyleSheet.create({
-  wrap: {},
+  wrap: {    
+    flex:1,
+  },
   wrap2: {
     backgroundColor: colors.white,
+    flex:1,
   },
   scroll: {
     marginBottom: submitOrderHeight,
   },
   container: {
     paddingTop: headerHeight,
-    position: "relative",
+    position: "relative",    
   },
   body: {
-    // paddingHorizontal: 12,
+    paddingHorizontal: 12,
   },
   title: {
     fontSize: fontSize.XL,
@@ -131,7 +143,6 @@ const styles = StyleSheet.create({
     color: colors.gray2,
     paddingLeft: 4,
   },
-
   totalPrice: {
     flexDirection: "row",
     padding: 12,
@@ -153,6 +164,7 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
     backgroundColor: colors.white,
+    backgroundColor:'skyblue',
     // height: submitOrderHeight,
   },
 });
