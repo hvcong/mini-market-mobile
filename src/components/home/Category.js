@@ -10,24 +10,24 @@ import {
 } from "react-native";
 
 const Category = () => {
-  const [listData, setListData] = useState();
-  const getData = async () => {
-    const dt = await cateApi.getMany(0, 10);
-    setListData(dt);
-  };
+  // const [listData, setListData] = useState();
+  // const getData = async () => {
+  //   const dt = await cateApi.getMany(0, 10);
+  //   setListData(dt);
+  // };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
-  let data = [];
+  // let data = [];
 
-  if (listData) {
-    data = listData.cates.rows;   
-  }
+  // if (listData) {
+  //   data = listData.cates.rows;
+  // }
   return (
     <View style={styles.container}>
-      <Text category="h4">Danh mục sản phẩm</Text>
+      {/* <Text category="h4">Danh mục sản phẩm</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -41,7 +41,7 @@ const Category = () => {
             </View>
           </Pressable>
         ))}
-      </ScrollView>
+      </ScrollView> */}
     </View>
   );
 };

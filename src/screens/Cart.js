@@ -14,17 +14,15 @@ import AddToCartModal from "../components/modal/AddToCartModal";
 import VoucherModal from "../components/modal/VoucherModal";
 import { FlatList } from "react-native";
 import { OrderContext } from "../store/contexts/OrderContext";
+import { convertToVND } from "../utils";
+import { Touchable } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 const Cart = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [isVisibleVoucherModal, setIsVisibleVoucherModal] = useState(false);
-  const { listOrders, setListOrders } = useContext(OrderContext);
-  const list = [...listOrders];
+  const { listOrders = [], amountMoney } = useContext(OrderContext);
 
-
-  var sum = list.reduce((money, item) => Number(money) + Number(item.price)* Number(item.amout), 0);
-
-  const [total, setTotal] = useState(sum);
   return (
     <SafeAreaView style={styles.wrap}>
       <Header navigation={navigation} />
@@ -38,24 +36,29 @@ const Cart = ({ navigation }) => {
             />
             <View style={styles.body}>
               <View style={styles.list}>
-                {
-                  list.map((item,index) => (
-                    <CartItem item={item} key={index} total={total} setTotal={setTotal}/>
-                  ))
-                }
+                {listOrders.map((item, index) => (
+                  <CartItem item={item} key={index} />
+                ))}
               </View>
-              {/* <View style={styles.btnList}>
-                <View style={styles.btnWithCartItem}>
-                  <Icon
-                    name="trash-2-outline"
-                    fill={colors.gray2}
-                    style={styles.trashIcon}
-                  />
-                  <Text style={styles.btnWithCartItemText}>
-                    Xóa hết giỏ hàng
-                  </Text>
-                </View>
-                <View style={styles.btnWithCartItem}>
+              <View style={styles.btnList}>
+                {/* {listOrders && listOrders.length > 0 && (
+                  <View style={styles.btnWithCartItem}>
+                    <Icon
+                      name="trash-2-outline"
+                      fill={colors.gray2}
+                      style={styles.trashIcon}
+                    />
+                    <Text style={styles.btnWithCartItemText}>
+                      Xóa hết giỏ hàng
+                    </Text>
+                  </View>
+                )} */}
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("HomeStack");
+                  }}
+                  style={styles.btnWithCartItem}
+                >
                   <Icon
                     name="diagonal-arrow-right-up-outline"
                     fill={colors.gray2}
@@ -64,21 +67,54 @@ const Cart = ({ navigation }) => {
                   <Text style={styles.btnWithCartItemText}>
                     Tiếp tục mua sắm
                   </Text>
-                </View>
-              </View> */}
+                </TouchableOpacity>
+              </View>
               <SpaceLine />
               <Voucher setIsVisibleVoucherModal={setIsVisibleVoucherModal} />
-
               <View style={styles.totalPrice}>
                 <Text style={styles.totalPriceLabel}>Tạm tính: </Text>
-                <Text style={styles.totalPriceValue}>{total} VND</Text>
+                <Text style={styles.totalPriceValue}>
+                  {convertToVND(amountMoney.subTotal)}
+                </Text>
+              </View>
+              <View style={styles.totalPrice}>
+                <Text style={styles.totalPriceLabel}>
+                  Giảm giá theo giá trị đơn hàng:{" "}
+                </Text>
+                <Text style={styles.totalPriceValue}>
+                  -{convertToVND(amountMoney.discountOnBill)}
+                </Text>
+              </View>
+              <View style={styles.totalPrice}>
+                <Text style={styles.totalPriceLabel}>Phiếu giảm giá: </Text>
+                <Text style={styles.totalPriceValue}>
+                  -{convertToVND(amountMoney.discountByVoucher)}
+                </Text>
+              </View>
+              <View style={styles.totalPrice}>
+                <Text
+                  style={[styles.totalPriceLabel, styles.totalPriceLabelLast]}
+                >
+                  Tổng cần thanh toán:{" "}
+                </Text>
+                <Text
+                  style={[styles.totalPriceValue, styles.totalPriceValueLast]}
+                >
+                  {convertToVND(amountMoney.total)}
+                </Text>
               </View>
             </View>
           </View>
         </ScrollView>
-        <View style={styles.submitOrderContainer}>
-          <SubmitOrder navigation={navigation} />
-        </View>
+        {listOrders && listOrders.length > 0 && (
+          <View style={styles.submitOrderContainer}>
+            <SubmitOrder
+              navigation={navigation}
+              sum={amountMoney.total}
+              quantity={listOrders.length}
+            />
+          </View>
+        )}
         {/* <AddToCartModal
           visible={isVisibleModal}
           setVisible={setIsVisibleModal}
@@ -95,19 +131,19 @@ const Cart = ({ navigation }) => {
 const submitOrderHeight = 98;
 
 const styles = StyleSheet.create({
-  wrap: {    
-    flex:1,
+  wrap: {
+    flex: 1,
   },
   wrap2: {
     backgroundColor: colors.white,
-    flex:1,
+    flex: 1,
   },
   scroll: {
     marginBottom: submitOrderHeight,
   },
   container: {
     paddingTop: headerHeight,
-    position: "relative",    
+    position: "relative",
   },
   body: {
     paddingHorizontal: 12,
@@ -145,18 +181,26 @@ const styles = StyleSheet.create({
   },
   totalPrice: {
     flexDirection: "row",
-    padding: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
     borderTopColor: colors.grayLighter,
     borderTopWidth: 1,
   },
   totalPriceLabel: {
     fontSize: fontSize.XL,
-    fontWeight: "bold",
     flex: 1,
   },
   totalPriceValue: {
     fontSize: fontSize.XL,
+  },
+  totalPriceLabelLast: {
     fontWeight: "bold",
+    fontSize: 18,
+  },
+  totalPriceValueLast: {
+    fontWeight: "bold",
+    fontSize: 18,
+    color: colors.green2,
   },
   submitOrderContainer: {
     position: "absolute",
@@ -164,7 +208,7 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
     backgroundColor: colors.white,
-    backgroundColor:'skyblue',
+    backgroundColor: "skyblue",
     // height: submitOrderHeight,
   },
 });

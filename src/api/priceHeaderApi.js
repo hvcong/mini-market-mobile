@@ -25,6 +25,11 @@ class PriceHeaderApi {
     let url = `priceHeader/active`;
     return axiosClient.get(url);
   }
+
+  getAllOnActive2() {
+    let url = `priceHeader/active2`;
+    return axiosClient.get(url);
+  }
 }
 
 const priceHeaderApi = new PriceHeaderApi();

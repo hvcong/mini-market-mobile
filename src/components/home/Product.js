@@ -9,62 +9,91 @@ import {
 import { View, StyleSheet } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { backgroundColors, colors, fontSize } from "../../utils/constants";
-import { OrderContext } from "../../store/contexts/OrderContext";
+import afucntion, { OrderContext } from "../../store/contexts/OrderContext";
+import { convertToVND } from "../../utils";
 
 const Product = ({ navigation, setIsVisibleModal, item }) => {
-  const { listOrders, setListOrders } = useContext(OrderContext);
-  var newListOrders = [...listOrders];
-  const buyItem = { ...item };
+  const { orderFunc } = useContext(OrderContext);
+
+  let newPrice = item.price;
+
+  let maxQuantity = Math.floor(
+    item.ProductUnitType.Product.quantity /
+      item.ProductUnitType.UnitType.convertionQuantity
+  );
+  let DRP = item.ProductUnitType.DiscountRateProduct;
+
+  if (DRP) {
+    newPrice = (item.price * (100 - DRP.discountRate)) / 100;
+  }
+
   return (
     <Pressable
       style={styles.item}
       onPress={() => navigation.navigate("Details", item)}
     >
       <View style={styles.imageContainer}>
-        <Image        
-          source={{uri: item.ProductUnitType.Product.images[0].uri}}          
+        <Image
+          source={{ uri: item.ProductUnitType.Product.images[0].uri }}
           style={styles.image}
         />
       </View>
       <View style={styles.content}>
         <View style={styles.information}>
-          <Text style={styles.name}>{item.ProductUnitType.Product.name}</Text>
-          <Text style={styles.newPrice}>{item.price}</Text>
+          <Text style={styles.name}>
+            {item.ProductUnitType.Product.name +
+              "(" +
+              item.ProductUnitType.UnitType.name +
+              ")"}
+          </Text>
+          <Text style={styles.newPrice}>{convertToVND(newPrice)}</Text>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>{item.price}</Text>
-            <Text style={styles.percent}>-50%</Text>
+            {DRP && (
+              <>
+                <Text style={styles.price}>{convertToVND(item.price)}</Text>
+                <Text style={styles.percent}>
+                  {"-" + DRP.discountRate + "%"}
+                </Text>
+              </>
+            )}
           </View>
         </View>
-        <TouchableOpacity
-          style={styles.btnContainer}
-          onPress={() => {
-            let found = false;            
-            for (let i = 0; i < newListOrders.length; i++) {
-              if (newListOrders[i].ProductUnitTypeId == buyItem.ProductUnitTypeId) {
-                found = true;                
-                break;
-              }
-            }
-            if (!found) {
-              buyItem.amout = 1;              
-              newListOrders.push(buyItem);                 
-              setListOrders(newListOrders);              
-            }             
-            ToastAndroid.showWithGravityAndOffset(
-              "Add to cart successfully!",
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50
-            );
-          }}
-        >
-          <Text style={styles.btnLabel}>MUA</Text>
-        </TouchableOpacity>
+
+        {orderFunc.isExistInCart(item.id) ? (
+          <TouchableOpacity
+            style={styles.btnContainer}
+            onPress={() => {
+              navigation.navigate("Cart");
+            }}
+            disabled={maxQuantity <= 0}
+          >
+            <Text style={styles.btnLabel}>Xem giỏ hàng</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.btnContainer}
+            onPress={() => {
+              orderFunc.addToCart(item);
+
+              ToastAndroid.showWithGravityAndOffset(
+                "Add to cart successfully!",
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50
+              );
+            }}
+            disabled={maxQuantity <= 0}
+          >
+            <Text style={styles.btnLabel}>
+              {maxQuantity <= 0 ? "Hết hàng" : "Mua"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
-      <View style={styles.heartContainer}>
+      {/* <View style={styles.heartContainer}>
         <Icon name="heart" fill={colors.white} style={styles.heartIcon} />
-      </View>
+      </View> */}
     </Pressable>
   );
 };
@@ -81,7 +110,6 @@ const styles = StyleSheet.create({
     position: "relative",
     borderWidth: 1,
     borderColor: colors.grayLighter,
-    
   },
   imageContainer: {
     width: "100%",
@@ -94,6 +122,8 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingHorizontal: 12,
     width: "100%",
+    flex: 1,
+    justifyContent: "space-between",
   },
   information: {
     width: "100%",

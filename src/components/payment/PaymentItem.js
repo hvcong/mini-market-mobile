@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { colors, fontSize } from "../../utils/constants";
 
-const PaymentItem = ({ isSelected }) => {
+const PaymentItem = ({ isSelected, title = "Zalo Pay" }) => {
   return (
     <View style={[styles.container, isSelected && { borderWidth: 1 }]}>
       <View
@@ -26,8 +26,8 @@ const PaymentItem = ({ isSelected }) => {
         />
       </View>
       <View style={styles.right}>
-        <Text style={styles.name}>Tiền mặt khi nhận hàng</Text>
-        <Text style={styles.subText}>ghi chú thêm</Text>
+        <Text style={styles.name}>{title}</Text>
+        <Text style={styles.subText}>Thoanh toán nhanh trong 1 phút</Text>
       </View>
     </View>
   );

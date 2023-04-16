@@ -9,8 +9,92 @@ import {
 } from "react-native";
 import { colors, fontSize } from "../../utils/constants";
 import { Icon } from "@ui-kitten/components";
+import { useContext } from "react";
+import { OrderContext } from "../../store/contexts/OrderContext";
+import { useState } from "react";
+import { ToastAndroid } from "react-native";
+import promotionApi from "../../api/promotionApi";
+import { Toast, compareDMY, convertToVND, sqlToDDmmYYY } from "../../utils";
 
 const VoucherModal = ({ visible, setVisible }) => {
+  const [voucherInput, setVoucherInput] = useState("");
+  const { voucherUsed, orderFunc, customerType, amountMoney } =
+    useContext(OrderContext);
+
+  console.log(amountMoney.discountByVoucher);
+
+  let discountByVoucher = convertToVND(amountMoney.discountByVoucher);
+  console.log(discountByVoucher);
+
+  async function onSubmit() {
+    if (!voucherInput) {
+      ToastAndroid.showWithGravityAndOffset(
+        "Vui lòng nhập mã code!",
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
+    }
+
+    let res = await promotionApi.getOneVByCode(voucherInput);
+    if (res.isSuccess) {
+      let voucher = res.voucher;
+
+      let headerState = voucher.PromotionHeader.state;
+      let TypeCustomers = voucher.PromotionHeader.TypeCustomers;
+      let start = new Date(voucher.startDate);
+      let end = new Date(voucher.endDate);
+      let now = new Date();
+      let state = voucher.state;
+      let PromotionResult = voucher.PromotionResult;
+      let isCheck = false;
+
+      for (const type of TypeCustomers) {
+        if (type.id == customerType) {
+          isCheck = true;
+          break;
+        }
+      }
+
+      if (!isCheck) {
+        Toast.error("Mã giảm giá không hợp lệ!");
+      }
+
+      if (!headerState || !state) {
+        isCheck = false;
+        Toast.error("Khuyến mãi đã ngưng!");
+      } else {
+        if (compareDMY(start, now) > 0) {
+          isCheck = false;
+          Toast.error("Phiếu giảm giá chưa tới ngày sử dụng!");
+        }
+
+        if (compareDMY(end, now) < 0) {
+          Toast.error("Phiếu giảm giá đã hết hạn!");
+          isCheck = false;
+        }
+      }
+
+      if (PromotionResult) {
+        isCheck = false;
+        Toast.error("Phiếu giảm giá chỉ được sử dụng một lần");
+      }
+
+      if (isCheck) {
+        Toast.infor("Áp dụng thành công");
+        orderFunc.setVoucherUsed(voucher);
+      }
+    } else {
+      Toast.error("Phiếu giảm giá không hợp lệ!");
+    }
+  }
+
+  function onCancel() {
+    orderFunc.setVoucherUsed(null);
+    setVoucherInput("");
+  }
+
   return (
     <Modal
       style={styles.modal}
@@ -20,24 +104,49 @@ const VoucherModal = ({ visible, setVisible }) => {
     >
       <View style={styles.wrap}>
         <View style={styles.container}>
-          <Text style={styles.title}>Dùng Voucher</Text>
+          <Text style={styles.title}>Áp dụng</Text>
           <View style={styles.content}>
             <View style={styles.inputContainer}>
-              <TextInput style={styles.input} placeholder="Nhập mã voucher" />
-              <Text style={[styles.btn, styles.btnEnalbe]}>Sử dụng</Text>
-            </View>
-            <Text style={styles.label}>Voucher mua hàng của bạn</Text>
-            <View style={styles.voucherInfor}>
-              <Text style={styles.voucherValue}>- 10%</Text>
-              <View style={styles.voucherRight}>
-                <Text style={styles.voucherDescription}>
-                  Giảm 10% tối đa cho đơn hàng lần đầu tại ứng dụng
+              <TextInput
+                style={styles.input}
+                placeholder="Nhập mã giảm giá"
+                value={voucherInput}
+                onChangeText={setVoucherInput}
+                editable={!voucherUsed}
+              />
+              {voucherUsed ? (
+                <Text
+                  style={[styles.btn, styles.btnEnalbe, styles.btnCancel]}
+                  onPress={onCancel}
+                >
+                  Hủy
                 </Text>
-                <Text style={styles.expiredTime}>
-                  Hết hạn: 18/2/2032 (còn 4 ngày)
+              ) : (
+                <Text style={[styles.btn, styles.btnEnalbe]} onPress={onSubmit}>
+                  Sử dụng
                 </Text>
-              </View>
+              )}
             </View>
+            {voucherUsed && (
+              <>
+                <Text style={styles.label}>
+                  Phiếu giảm giá áp dụng thành công
+                </Text>
+
+                <View style={styles.voucherInfor}>
+                  <Text style={styles.voucherValue}>-{discountByVoucher}</Text>
+                  <View style={styles.voucherRight}>
+                    <Text style={styles.voucherDescription}>
+                      {voucherUsed.title}
+                    </Text>
+
+                    <Text style={styles.expiredTime}>
+                      Hết hạn: {sqlToDDmmYYY(voucherUsed.endDate)}
+                    </Text>
+                  </View>
+                </View>
+              </>
+            )}
           </View>
           <Pressable
             style={styles.closeIconContainer}
@@ -111,6 +220,12 @@ const styles = StyleSheet.create({
     color: colors.white,
     backgroundColor: colors.green2,
   },
+  btnCancel: {
+    backgroundColor: "red",
+    color: "white",
+    borderWidth: 0,
+  },
+
   label: {
     fontSize: fontSize.XL,
     paddingVertical: 12,
@@ -124,7 +239,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   voucherValue: {
-    width: 64,
+    minWidth: 64,
     height: 64,
     backgroundColor: colors.grayLighter,
     color: colors.green2,
@@ -133,6 +248,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: fontSize.XXL,
     lineHeight: 64,
+    paddingHorizontal: 4,
   },
   voucherRight: {
     flex: 1,

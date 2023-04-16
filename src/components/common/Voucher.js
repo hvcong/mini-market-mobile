@@ -2,8 +2,12 @@ import React from "react";
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { colors, fontSize } from "../../utils/constants";
+import { useContext } from "react";
+import { OrderContext } from "../../store/contexts/OrderContext";
 
 const Voucher = ({ setIsVisibleVoucherModal }) => {
+  const { voucherUsed, orderFunc } = useContext(OrderContext);
+
   return (
     <Pressable
       style={styles.voucherContainer}

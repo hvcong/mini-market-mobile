@@ -1,88 +1,88 @@
 import React from "react";
 import { View, StyleSheet, Text, Image, Pressable } from "react-native";
-import { colors, fontSize,backgroundColors } from "../../utils/constants";
+import { colors, fontSize, backgroundColors } from "../../utils/constants";
 import { Icon } from "@ui-kitten/components";
 import { OrderContext } from "../../store/contexts/OrderContext";
 import { useContext, useState, useEffect } from "react";
-const CartItem = ({ item, total, setTotal }) => {
-  const { listOrders, setListOrders } = useContext(OrderContext);
-  const list = [...listOrders];
+import { convertToVND } from "../../utils";
 
-  const [cost, setCost] = useState(item.price);
-  const [amout, setAmout] = useState(item.amout);
+const CartItem = ({ item }) => {
+  const { orderFunc } = useContext(OrderContext);
 
-  useEffect(() => {
-    let sum = list.reduce(
-      (money, item) => Number(money) + Number(item.price) * Number(item.amout),
-      0
-    );
-    setTotal(sum)
-  }, [amout],[list]);
+  let total = item.price * item.amount;
+  let newPrice = item.price;
+  let DRP = item.ProductUnitType.DiscountRateProduct;
+  if (DRP) {
+    newPrice = (item.price * (100 - DRP.discountRate)) / 100;
+    total = newPrice * item.amount;
+  }
 
-  const onpressIncrease = () => {
-    setAmout(amout + 1);
-    setCost(item.price * (amout + 1));
-    item.amout = amout + 1;
-    item.cost = item.price * (amout + 1);
-  };
-  const onpressDecrease = () => {
-    if (amout == 1) {
-      const i = list.indexOf(item);
-      if (i > -1) {
-        list.splice(i, 1);
-        setListOrders(list);
-      }
-    } else {
-      setAmout(amout - 1);
-      setCost(item.price * (amout - 1));
-      item.amout = amout - 1;
-      item.cost = item.price * (amout - 1);
-    }
-    if (list.length == 0) {
-      setTotal(0);
-    }
-  };
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={{ uri: item.ProductUnitType.Product.images[0].uri }}
-        />
-      </View>
-      <View style={styles.body}>
-        <Text style={styles.nameProduct}>
-          {item.ProductUnitType.Product.name}
-        </Text>
-        <View style={styles.preserveContainer}>
-          <Icon name="sun-outline" fill={colors.gray} style={styles.coldIcon} />
-          <Text style={styles.preserveText}></Text>
+    <View style={styles.wrap}>
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.image}
+            source={{ uri: item.ProductUnitType.Product.images[0].uri }}
+          />
         </View>
-        <View>
-          <Text> {item.ProductUnitType.UnitType.name}</Text>
+        <View style={styles.body}>
+          <Text style={styles.nameProduct}>
+            {item.ProductUnitType.Product.name}
+          </Text>
+          <View style={styles.preserveContainer}>
+            {item.isPP && (
+              <Text style={styles.preserveText}>{item.PP.title}</Text>
+            )}
+          </View>
+          <View>
+            <Text> {item.ProductUnitType.UnitType.name}</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.right}>
-        <Text style={styles.price}> {cost} VND</Text>
-        <View style={styles.quantityContainer}>
-          <Pressable style={styles.quantityBtn} onPress={onpressDecrease}>
-            <Icon
-              name="minus-outline"
-              fill={colors.gray2}
-              style={styles.quantityIcon}
-            />
-          </Pressable>
-          <Text style={styles.quantityValue}>{Number(item.amout)}</Text>
-          <Pressable style={styles.quantityBtn} onPress={onpressIncrease}>
-            <Icon
-              name="plus-outline"
-              fill={colors.gray2}
-              style={styles.quantityIcon}
-            />
-          </Pressable>
-        </View>
+        <View style={styles.right}>
+          <Text style={styles.price}> {convertToVND(total)}</Text>
+          <View style={styles.quantityContainer}>
+            {!item.isPP && (
+              <Pressable
+                style={styles.quantityBtn}
+                onPress={() => {
+                  orderFunc.decreaseQuantity(item.id);
+                }}
+              >
+                <Icon
+                  name="minus-outline"
+                  fill={colors.gray2}
+                  style={styles.quantityIcon}
+                />
+              </Pressable>
+            )}
+            <Text style={styles.quantityValue}>{Number(item.amount)}</Text>
+            {!item.isPP && (
+              <Pressable
+                style={styles.quantityBtn}
+                onPress={() => {
+                  console.log("oke");
 
-        <Text style={styles.priceSub}> đơn giá: {item.price} đ</Text>
+                  orderFunc.increaseQuantity(item.id);
+                }}
+              >
+                <Icon
+                  name="plus-outline"
+                  fill={colors.gray2}
+                  style={styles.quantityIcon}
+                />
+              </Pressable>
+            )}
+          </View>
+
+          {DRP && (
+            <View style={styles.drpContainer}>
+              <Text style={styles.priceOld}>{convertToVND(item.price)}</Text>
+              <Text style={styles.percentDiscount}>-{DRP.discountRate}%</Text>
+            </View>
+          )}
+          <Text style={styles.priceSub}>{convertToVND(newPrice)}</Text>
+        </View>
       </View>
     </View>
   );
@@ -98,16 +98,16 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: 100,
-    height: 100,    
+    height: 100,
     borderRadius: 5,
     backgroundColor: backgroundColors.greenLighter,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     width: "90%",
     height: "90%",
-    borderRadius: 10
+    borderRadius: 10,
   },
   body: {
     flex: 1,
@@ -166,6 +166,9 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     paddingHorizontal: 4,
   },
+  drpContainer: { flexDirection: "row" },
+  priceOld: {},
+  percentDiscount: {},
 });
 
 export default CartItem;

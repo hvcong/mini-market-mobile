@@ -87,6 +87,11 @@ class PromotionApi {
     return axiosClient.delete(url);
   }
 
+  getAllMPOnActiveByCutomerType(customerType) {
+    let url = `promotion/forType?type=${customerType}&_limit=100`;
+    return axiosClient.get(url);
+  }
+
   // line V
 
   addOneV(formData) {
@@ -110,7 +115,7 @@ class PromotionApi {
   }
 
   getOneVByCode(code) {
-    let url = `voucher/get?code=${code}`;
+    let url = `voucher/getByCode?bycode=${code}`;
     return axiosClient.get(url);
   }
   // updateOneV(id, formData) {
@@ -128,15 +133,15 @@ class PromotionApi {
   addResult(formData) {
     let url = "result/add";
     return axiosClient.post(url, formData);
-  }  
-  
-  getProductPromtion(limit,page){
-    let url = `promotion/productPr?_limit=${limit}&_page=${page}`
-    return axiosClient.get(url)
   }
-  getRatePromotion(limit,page){
-    let url = `promotion/ratePr?_limit=${limit}&_page=${page}`
-    return axiosClient.get(url)
+
+  getProductPromtion(limit, page) {
+    let url = `promotion/productPr?_limit=${limit}&_page=${page}`;
+    return axiosClient.get(url);
+  }
+  getRatePromotion(limit, page) {
+    let url = `promotion/ratePr?_limit=${limit}&_page=${page}`;
+    return axiosClient.get(url);
   }
 }
 

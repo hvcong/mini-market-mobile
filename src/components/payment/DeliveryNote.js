@@ -6,19 +6,19 @@ const DeliveryNote = () => {
   const [isChecked, setIsChecked] = useState(false);
   return (
     <View style={styles.container}>
-      <View style={styles.checkboxContainer}>
+      {/* <View style={styles.checkboxContainer}>
         <CheckBox
           checked={isChecked}
           onChange={() => setIsChecked(!isChecked)}
           style={styles.checkbox}
         ></CheckBox>
         <Text style={styles.checkboxLabel}>Xuất hóa đơn công ty</Text>
-      </View>
+      </View> */}
       <View style={styles.noteContainer}>
         <Input
           multiline={true}
           textStyle={{ minHeight: 64 }}
-          placeholder=" Yêu cầu khác nếu có"
+          placeholder="Ghi chú cho đơn hàng..."
         />
       </View>
     </View>

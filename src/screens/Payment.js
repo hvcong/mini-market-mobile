@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ScrollView, Text, TextInput } from "react-native";
 import Header from "../components/header/Header";
 import RedirectRouter from "../components/RedirectRouter";
 import { colors, fontSize, headerHeight } from "../utils/constants";
@@ -20,10 +20,79 @@ import PaymentBill from "../components/payment/PaymentBill";
 import DeliveryNote from "../components/payment/DeliveryNote";
 import { SafeAreaView } from "react-native-safe-area-context";
 import VoucherModal from "../components/modal/VoucherModal";
+import addressApi from "./../api/addressApi";
+import { useEffect } from "react";
+import { useGlobalContext } from "../store/contexts/GlobalContext";
+import { Toast } from "../utils";
+import SelectDropdown from "react-native-select-dropdown";
 
 const Payment = ({ navigation }) => {
   const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
   const [isVisibleVoucherModal, setIsVisibleVoucherModal] = useState(false);
+
+  const { account, isLogin } = useGlobalContext();
+
+  const [formState, setFormState] = useState({
+    id: "KH0452246",
+    firstName: "Lê ",
+    lastName: "Phong",
+    phonenumber: "0954622233",
+    email: "lephong@gmail.com",
+    HomeAddressId: 1,
+    TypeCustomerId: "TN",
+  });
+
+  useEffect(() => {
+    setFormState({
+      ...account,
+    });
+
+    return () => {};
+  }, [account]);
+
+  const [userAdress, setUserAdress] = useState({
+    cityId: "",
+    districtId: "",
+    wardId: "",
+    homeId: "",
+    homeName: "",
+  });
+
+  const [allAddress, setAllAddress] = useState({
+    cities: [],
+    districts: [],
+    wards: [],
+  });
+
+  useEffect(() => {
+    loadAllAddress();
+    return () => {};
+  }, []);
+
+  async function loadAllAddress() {
+    let res = await addressApi.getAllCity();
+    console.log(res.cities);
+    if (res.isSuccess) {
+      setAllAddress({
+        cities: res.cities,
+      });
+    }
+
+    res = await addressApi.getAllDistrict();
+    if (res.isSuccess) {
+      setAllAddress({
+        districts: res.districts,
+      });
+    }
+
+    res = await addressApi.getAllWard();
+    if (res.isSuccess) {
+      setAllAddress({
+        wards: res.wards,
+      });
+    }
+  }
+
   return (
     <SafeAreaView style={styles.wrap}>
       <Header navigation={navigation} />
@@ -35,18 +104,27 @@ const Payment = ({ navigation }) => {
 
             <View style={styles.form}>
               <Input
+                disabled
                 style={styles.input}
                 placeholder="Số điện thoại"
+                value={formState.phonenumber}
                 //   caption={"Nhập tối thiểu 5 kí tự"}
               />
-              <View style={styles.gender}>
+              {/* <View style={styles.gender}>
                 <Radio label={"Anh"} style={styles.radioItem} />
                 <Radio label={"Chị"} style={styles.radioItem} />
-              </View>
-              <Input style={styles.input} placeholder="Họ và tên đệm" />
+              </View> */}
+              <Input
+                disabled
+                style={styles.input}
+                placeholder="Họ và tên đệm"
+                value={account.firstName}
+              />
               <Input
                 style={styles.input}
                 placeholder="Tên"
+                disabled
+                value={account.lastName}
                 //   caption={"Nhập tối thiểu 5 kí tự"}
               />
               <View style={styles.inputGroup}>
@@ -55,18 +133,24 @@ const Payment = ({ navigation }) => {
                   onSelect={(index) => setSelectedIndex(index)}
                   style={styles.select}
                 >
-                  <SelectItem title="Option 1" />
-                  <SelectItem title="Option 2" />
-                  <SelectItem title="Option 3" />
+                  {allAddress.cities &&
+                    allAddress.cities.map((city, index) => {
+                      return <SelectItem title="aa" />;
+                    })}
                 </Select>
                 <Select
                   selectedIndex={selectedIndex}
                   onSelect={(index) => setSelectedIndex(index)}
                   style={[styles.select, { paddingLeft: 24 }]}
                 >
-                  <SelectItem title="Option 1" />
-                  <SelectItem title="Option 2" />
-                  <SelectItem title="Option 3" />
+                  {allAddress.districts &&
+                    allAddress.districts
+                      .filter((item) => {
+                        return item.cityId == userAdress.cityId;
+                      })
+                      .map((item) => {
+                        return <SelectItem title={item.name} key={item.id} />;
+                      })}
                 </Select>
               </View>
               <Select
@@ -74,9 +158,10 @@ const Payment = ({ navigation }) => {
                 onSelect={(index) => setSelectedIndex(index)}
                 style={styles.select}
               >
-                <SelectItem title="Option 1" />
+                {}
+                {/* <SelectItem title="Option 1" />
                 <SelectItem title="Option 2" />
-                <SelectItem title="Option 3" />
+                <SelectItem title="Option 3" /> */}
               </Select>
               <Input
                 style={styles.input}
@@ -85,15 +170,15 @@ const Payment = ({ navigation }) => {
               />
             </View>
           </View>
-          <SpaceLine />
-          <DeliveryTime />
+          {/* <SpaceLine /> */}
+          {/* <DeliveryTime /> */}
           <SpaceLine />
           <PaymentWays />
-          <SpaceLine />
-          <Voucher
+          {/* <SpaceLine /> */}
+          {/* <Voucher
             isVisibleVoucherModal={isVisibleVoucherModal}
             setIsVisibleVoucherModal={setIsVisibleVoucherModal}
-          />
+          /> */}
           <SpaceLine />
           <PaymentBill />
           <SpaceLine />

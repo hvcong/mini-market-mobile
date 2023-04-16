@@ -18,6 +18,8 @@ import Drawer from "./src/navigation/Drawer";
 import GlobalContextProvider from "./src/store/contexts/GlobalContext";
 // import LoadingModal from "./src/components/modal/LoadingModal";
 import { OrderProvider } from "./src/store/contexts/OrderContext";
+import PromotionContextProvider from "./src/store/contexts/PromotionContext";
+import PriceContextProvider from "./src/store/contexts/PriceContext";
 
 export default function App() {
   return (
@@ -25,11 +27,15 @@ export default function App() {
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
         <GlobalContextProvider>
-          <OrderProvider>
-          <NavigationContainer>
-            <Drawer />
-          </NavigationContainer>
-          </OrderProvider>          
+          <PromotionContextProvider>
+            <PriceContextProvider>
+              <OrderProvider>
+                <NavigationContainer>
+                  <Drawer />
+                </NavigationContainer>
+              </OrderProvider>
+            </PriceContextProvider>
+          </PromotionContextProvider>
         </GlobalContextProvider>
       </ApplicationProvider>
     </>

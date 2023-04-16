@@ -47,7 +47,7 @@ const Tab = () => {
         options={{
           tabBarIcon: ({ color }) => (
             <Icon
-              name="person-outline"
+              name="gift-outline"
               fill={color}
               style={{
                 width: 32,

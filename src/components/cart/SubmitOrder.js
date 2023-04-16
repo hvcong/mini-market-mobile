@@ -3,23 +3,34 @@ import { View, StyleSheet, Text, Pressable } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { colors, fontSize } from "../../utils/constants";
 import { Shadow } from "react-native-shadow-2";
+import { Toast, convertToVND } from "../../utils";
+import { useGlobalContext } from "../../store/contexts/GlobalContext";
 
-const SubmitOrder = ({ navigation }) => {
+const SubmitOrder = ({ navigation, sum, quantity }) => {
+  const { account, isLogin } = useGlobalContext();
+
   return (
     <Shadow distance={12} style={styles.shadow} startColor="#00000021">
       <View style={styles.container}>
         <View style={styles.left}>
-          <Text>point</Text>
+          <Text></Text>
         </View>
         <View style={styles.right}>
           <Pressable
             onPress={() => {
-              navigation.navigate("Payment");
+              if (!isLogin || !account) {
+                Toast.error("Vui lòng đăng nhập trước!");
+                navigation.navigate("Account", {
+                  beforeScreen: "cart",
+                });
+              } else {
+                navigation.navigate("Payment");
+              }
             }}
             style={styles.btnContainer}
           >
             <View style={styles.numOfProductContainer}>
-              <Text style={styles.numOfProductValue}>2</Text>
+              <Text style={styles.numOfProductValue}>{quantity}</Text>
             </View>
             <Icon
               name="shopping-cart-outline"
@@ -28,7 +39,7 @@ const SubmitOrder = ({ navigation }) => {
             />
             <View style={styles.priceContainer}>
               <Text style={styles.priceLabel}>Đặt hàng</Text>
-              <Text style={styles.priceValue}>211.000đ</Text>
+              <Text style={styles.priceValue}>{convertToVND(sum)}</Text>
             </View>
           </Pressable>
         </View>

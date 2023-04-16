@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, ScrollView,TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button } from "@ui-kitten/components";
 import Banner from "../../components/home/Banner";
@@ -15,25 +21,12 @@ import {
   headerHeight,
 } from "../../utils/constants";
 import AddToCartModal from "../../components/modal/AddToCartModal";
+import { usePriceContext } from "../../store/contexts/PriceContext";
 
 const Home = ({ navigation }) => {
-  const [isVisibleModal, setIsVisibleModal] = useState(false);
-  const [listData, setListData] = useState();
+  const { priceFunc } = usePriceContext();
+  let data = priceFunc.getLimitPrices();
 
-  const getData = async () => {
-    const dt = await priceHeaderApi.getAllOnActive();
-    setListData(dt);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  let data = [];
-  if (listData) {
-    data = listData.headers[0].Prices;    
-  }
-  
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
       <Header navigation={navigation} />
@@ -44,11 +37,11 @@ const Home = ({ navigation }) => {
             <Category />
             <Group
               title="các sản phẩm"
-              type="nomal"              
-              backgroundColor= '#eee'
+              type="nomal"
+              backgroundColor="#eee"
               navigation={navigation}
-              data = {data}
-            />          
+              data={data || []}
+            />
             <Footer />
           </View>
         </ScrollView>
@@ -64,12 +57,11 @@ const styles = StyleSheet.create({
   },
   wrap: {
     width: "100%",
-    
   },
   content: {
     width: "100%",
     paddingTop: headerHeight + 12,
-    flex:1
+    flex: 1,
   },
   more: {
     alignItems: "center",

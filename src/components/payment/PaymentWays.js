@@ -9,8 +9,8 @@ const PaymentWays = () => {
       <Text style={styles.title}>Chọn hình thức thanh toán</Text>
       <View style={styles.list}>
         <PaymentItem isSelected={true} />
-        <PaymentItem />
-        <PaymentItem />
+        {/* <PaymentItem />
+        <PaymentItem /> */}
       </View>
     </View>
   );

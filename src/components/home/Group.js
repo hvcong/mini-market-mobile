@@ -22,9 +22,9 @@ const Group = ({ title, type, backgroundColor, navigation, data }) => {
           styles.list,
         ]}
       >
-        {data.map((item, index) => (
-          <Product navigation={navigation} item={item} key={index} />
-        ))}
+        {data.map((item, index) => {
+          return <Product navigation={navigation} item={item} key={index} />;
+        })}
       </View>
     </View>
   );

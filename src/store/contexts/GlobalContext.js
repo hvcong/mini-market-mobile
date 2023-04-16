@@ -6,8 +6,16 @@ const GlobalContext = createContext();
 
 function GlobalContextProvider({ children }) {
   const [state, setState] = useState({
-    isLogin: false,
-    account: null,
+    isLogin: true,
+    account: {
+      id: "KH0452246",
+      firstName: "Lê ",
+      lastName: "Phong",
+      phonenumber: "0954622233",
+      email: "lephong@gmail.com",
+      HomeAddressId: 1,
+      TypeCustomerId: "TN",
+    },
     token: null,
   });
 

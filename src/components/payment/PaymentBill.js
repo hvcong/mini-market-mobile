@@ -1,22 +1,34 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { colors, fontSize } from "../../utils/constants";
+import { convertToVND } from "../../utils";
+import { OrderContext } from "../../store/contexts/OrderContext";
+import { useContext } from "react";
 
 const PaymentBill = () => {
+  const { amountMoney } = useContext(OrderContext);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Thông tin hóa đơn</Text>
       <View style={styles.row}>
-        <Text style={styles.label}>Tiền hàng:</Text>
-        <Text style={styles.value}>160.000đ</Text>
-      </View>
-      <View style={[styles.row, styles.voucherApply]}>
-        <Text style={[styles.label, styles.voucherLabel]}>Voucher: -10%</Text>
-        <Text style={[styles.value, styles.voucherValue]}>-50.000đ</Text>
+        <Text style={styles.label}>Tạm tính:</Text>
+        <Text style={styles.value}>{convertToVND(amountMoney.subTotal)}</Text>
       </View>
       <View style={styles.row}>
+        <Text style={styles.label}>Tổng giảm giá:</Text>
+        <Text style={styles.value}>
+          -
+          {convertToVND(
+            amountMoney.discountOnBill + amountMoney.discountByVoucher
+          )}
+        </Text>
+      </View>
+
+      <View style={styles.row}>
         <Text style={[styles.label, styles.totalLabel]}>Tổng đơn hàng:</Text>
-        <Text style={[styles.value, styles.totalValue]}>164.000đ</Text>
+        <Text style={[styles.value, styles.totalValue]}>
+          {convertToVND(amountMoney.total)}
+        </Text>
       </View>
     </View>
   );

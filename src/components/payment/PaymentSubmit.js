@@ -8,7 +8,7 @@ const PaymentSubmit = ({ style }) => {
     <Shadow distance={24} style={styles.shadow} startColor="#00000021">
       <View style={styles.wrap}>
         <View style={styles.container}>
-          <Text style={styles.text}>Hoàn tất mua 211.000đ</Text>
+          <Text style={styles.text}>Tiến hành thanh toán 211.000đ</Text>
         </View>
       </View>
     </Shadow>

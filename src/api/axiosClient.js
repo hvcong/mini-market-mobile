@@ -2,6 +2,8 @@ import axios from "axios";
 
 // let baseURL = "http://localhost:3000/";
 let baseURL = "http://10.0.2.2:3000/";
+// let baseURL = "http://192.168.1.87/3000";
+// let baseURL = "http://127.0.0.1:3000/";
 
 const axiosClient = axios.create({
   baseURL: baseURL,
@@ -25,8 +27,8 @@ axiosClient.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    console.log("Response Error:", error.response.data);
-    return error.response.data;
+    console.log("Response Error:", error.response);
+    return error.response;
   }
 );
 

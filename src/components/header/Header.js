@@ -25,7 +25,7 @@ const Header = ({ navigation }) => {
           <View style={styles.helloUserContainer}>
             <Text style={styles.helloUserLabel}>Xin chào bạn </Text>
             <Text style={styles.helloUserName}>
-              {account && account.User.lastName}
+              {/* {account && account.lastName} */}
             </Text>
           </View>
           {/* <Pressable

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -18,28 +18,27 @@ const Profile = ({ navigation }) => {
   const [productPromotions, setProductPromotions] = useState();
   const [ratePromotions, setRatePromotion] = useState();
 
-  // const getProductPromotions = async () => {
-  //   const pdt = await promotionApi.getProductPromtion(10,0);
-  //   setProductPromotions(pdt);
-  // };
-  // const getRatePromotions = async () =>{
-  //   const rdt = await promotionApi.getRatePromotion(10,0);
-  //   setRatePromotion(rdt)
-  // }
-  // useEffect(() => {
-  //   getProductPromotions();
-  //   getRatePromotions();
-  // }, []);
-  // console.log('rate',ratePromotions)
-  // console.log('p',productPromotions)
-  // let productsData= [];
-  // let ratesData = []
-  // if (productPromotions) {
-  //   productsData = productPromotions.promotions[0].ProductPromotions;    
-  // }
-  // if (ratePromotions){
-  //   ratesData = ratePromotions.promotions[0].DiscountRateProducts
-  // }
+  const getProductPromotions = async () => {
+    const pdt = await promotionApi.getProductPromtion(10, 0);
+    setProductPromotions(pdt);
+  };
+  const getRatePromotions = async () => {
+    const rdt = await promotionApi.getRatePromotion(10, 0);
+    setRatePromotion(rdt);
+  };
+  useEffect(() => {
+    getProductPromotions();
+    getRatePromotions();
+  }, []);
+
+  let productsData = [];
+  let ratesData = [];
+  if (productPromotions) {
+    productsData = productPromotions.promotions[0].ProductPromotions;
+  }
+  if (ratePromotions) {
+    ratesData = ratePromotions.promotions[0].DiscountRateProducts;
+  }
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
