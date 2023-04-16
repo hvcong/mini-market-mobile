@@ -56,7 +56,7 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
               ToastAndroid.BOTTOM,
               25,
               50
-            );
+            );            
           }}
         >
           <Text style={styles.btnLabel}>MUA</Text>

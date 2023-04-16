@@ -34,7 +34,7 @@ const Account = ({ navigation }) => {
                 ) : (
                   <View style={styles.enterPhone}>
                     <Text style={styles.enterPhoneDes}>
-                      Để xem "Tài khoản" vui lòng nhập số điện thoại mua hàng
+                      Để xem "Tài khoản" vui lòng xác thực số điện thoại
                     </Text>
                     <View style={styles.inputContainer}>
                       <TextInput
@@ -50,7 +50,7 @@ const Account = ({ navigation }) => {
                           setIsShowVerifyModal(true);
                         }}
                       >
-                        Đăng nhập
+                        gửi OTP
                       </Text>
                     </View>
                   </View>
@@ -120,7 +120,7 @@ const Account = ({ navigation }) => {
               <Pressable
                 style={styles.item}
                 onPress={() => {
-                  navigation.navigate("History");
+                  navigation.navigate("History",phone);
                 }}
               >
                 <Icon
@@ -136,7 +136,7 @@ const Account = ({ navigation }) => {
                 />
               </Pressable>
             </View>
-            <View style={styles.logOut}>
+            {/* <View style={styles.logOut}>
               <View style={styles.btnLogOutContainer}>
                 <Icon
                   name="log-out-outline"
@@ -145,7 +145,7 @@ const Account = ({ navigation }) => {
                 />
                 <Text style={styles.logOutLabel}>Đăng xuất</Text>
               </View>
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </SafeAreaView>

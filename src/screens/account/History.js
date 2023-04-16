@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text } from "react-native";
+import { Text, TextInput, Touchable, TouchableOpacity } from "react-native";
 import { View, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,41 +13,30 @@ import {
   fontSize,
   headerHeight,
 } from "../../utils/constants";
+import Footer from "../../components/home/Footer";
 
-const History = ({ navigation }) => {
+const History = ({ navigation,route }) => {
   const [tabIndex, setTabIndex] = useState(1);
+  const [phone,setPhone] = useState(route.params)
+
+  const getData = (phone)=>{
+    console.log('get')
+  }
+
   return (
     <View style={styles.container}>
       <Header />
-      <SafeAreaView>
-        <ScrollView>
+      <SafeAreaView>        
           <View style={styles.wrap}>
             <RedirectRouter
-              title="Đơn hàng từng mua"
+              title="lịch sử mua hàng"
               navigation={navigation}
               isTitleCenter={true}
             />
-            <View style={styles.content}>
-              <View style={styles.tabContainer}>
-                <Text
-                  onPress={() => setTabIndex(1)}
-                  style={[styles.tabItem, tabIndex == 1 && styles.tabActive]}
-                >
-                  Sản phẩm từng mua
-                </Text>
-                <Text
-                  onPress={() => setTabIndex(2)}
-                  style={[styles.tabItem, tabIndex == 2 && styles.tabActive]}
-                >
-                  Lịch sử đơn hàng
-                </Text>
-              </View>
-              <View style={styles.body}>
-                {tabIndex == 1 ? <ProductBought /> : <BillBought />}
-              </View>
+            <View style={styles.content}>              
+              <BillBought phone={phone}/>
             </View>
-          </View>
-        </ScrollView>
+          </View>        
       </SafeAreaView>
     </View>
   );
@@ -62,7 +51,9 @@ const styles = StyleSheet.create({
   wrap: {
     marginTop: headerHeight,
   },
-  content: {},
+  content: {
+    paddingHorizontal: 12,
+  },
   tabContainer: {
     flexDirection: "row",
     backgroundColor: colors.white,
@@ -78,7 +69,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     backgroundColor: colors.grayLighter,
   },
-  body: {},
 });
 
 export default History;
