@@ -19,8 +19,8 @@ const VerifyOTPModal = ({ visible, setVisible, phone }) => {
 
   useEffect(() => {
     if (visible) {
-      // sendVerification();
-      setVerificationId("a"); // test
+      sendVerification();
+      // setVerificationId("a"); // test
       setTime(60);
     }
   }, [visible]);
