@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import store from "..";
 import authApi from "../../api/authApi";
+import userApi from "../../api/userApi";
 
 const GlobalContext = createContext();
 
@@ -8,14 +9,37 @@ function GlobalContextProvider({ children }) {
   const [state, setState] = useState({
     isLogin: true,
     account: {
-      id: "KH0452246",
-      firstName: "Lê ",
-      lastName: "Phong",
-      phonenumber: "0954622233",
-      email: "lephong@gmail.com",
-      HomeAddressId: 1,
-      TypeCustomerId: "TN",
+      id: "KH7638711",
+      firstName: null,
+      lastName: null,
+      phonenumber: "0868283915",
+      email: null,
+      HomeAddressId: null,
+      TypeCustomerId: "BT",
+      Bills: [
+        {
+          id: "Bill1681571119913",
+          orderDate: "2023-04-15T15:05:19.000Z",
+          cost: 863000,
+          type: "success",
+          CustomerId: "KH7638711",
+          EmployeeId: "NV2976561",
+        },
+        {
+          id: "Bill1681571216036",
+          orderDate: "2023-04-15T15:06:56.000Z",
+          cost: 209150,
+          type: "success",
+          CustomerId: "KH7638711",
+          EmployeeId: "NV2976561",
+        },
+      ],
+      TypeCustomer: {
+        id: "BT",
+        name: "Khách hàng thường",
+      },
     },
+
     token: null,
   });
 
@@ -27,43 +51,67 @@ function GlobalContextProvider({ children }) {
   // function
   const globalFunc = {
     // login by phone
-    login: async (phone, password) => {
-      try {
-        const res = await authApi.login(phone, password);
+    login: async (phone) => {
+      setLoadingModalState({
+        visible: true,
+        label: "Đang đăng nhập...",
+      });
 
-        if (!res.isSuccess) {
-          console.log("login faild:", res.message);
-          return res;
-        }
+      let res = await userApi.getOrCreateByPhone(phone);
+      if (res.isSuccess) {
+        setState({
+          isLogin: true,
+          account: res.customer,
+        });
+      } else {
+        console.log("cos loi xay ra");
+      }
+      setLoadingModalState({
+        visible: false,
+      });
+    },
 
-        // logIn oke
-        console.log("login oke");
+    logOut: () => {
+      setState({
+        isLogin: false,
+        account: null,
+        token: null,
+      });
+    },
+    refresh: async () => {
+      setLoadingModalState({
+        visible: true,
+        label: "Đang cập nhật...",
+      });
 
-        store.setToken(res.account.accestoken);
-
+      let res = await userApi.getOrCreateByPhone(state.account.phonenumber);
+      if (res.isSuccess) {
         setState({
           ...state,
-          account: res.account,
-          token: res.account.accestoken,
+          account: res.customer,
         });
-        return res;
-      } catch (error) {
-        console.log("login err:", error);
-        return {
-          isSuccess: false,
-        };
+      } else {
+        console.log("cos loi xay ra");
       }
+      setLoadingModalState({
+        visible: false,
+      });
     },
-    // register by phone
+
+    setLoadingModalState(visible, title) {
+      setLoadingModalState({
+        visible: visible,
+        title: title || loadingModalState.title,
+      });
+    },
   };
 
   const GlobalContextData = {
     isLogin: state.isLogin,
     account: state.account,
     token: state.token,
-    globalFunc,
     loadingModalState,
-    setLoadingModalState,
+    globalFunc,
   };
 
   return (

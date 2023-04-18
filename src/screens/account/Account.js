@@ -11,11 +11,13 @@ import {
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import VerifyOTPModal from "../../components/modal/VerifyOTPModal";
+import { useGlobalContext } from "../../store/contexts/GlobalContext";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Account = ({ navigation }) => {
   const [phone, setPhone] = useState("0868283915");
-  const isLogin = false;
   const [isShowVerifyModal, setIsShowVerifyModal] = useState(false);
+  const { account, isLogin, globalFunc } = useGlobalContext();
 
   return (
     <View style={styles.container}>
@@ -25,11 +27,11 @@ const Account = ({ navigation }) => {
           <View style={styles.content}>
             <View style={styles.infor}>
               <Text style={styles.title}>Thông tin cá nhân</Text>
-              <View style={styles.group}>
-                {isLogin ? (
+              {/* <View style={styles.group}>
+                {isLogin && account ? (
                   <View style={styles.row}>
-                    <Text style={styles.nameUser}>Bạn Hoàng Văn Công</Text>
-                    <Text style={styles.phone}>{phone}</Text>
+                    <Text style={styles.nameUser}>Bạn {account.name}</Text>
+                    <Text style={styles.phone}>{account.phonenumber}</Text>
                   </View>
                 ) : (
                   <View style={styles.enterPhone}>
@@ -55,9 +57,9 @@ const Account = ({ navigation }) => {
                     </View>
                   </View>
                 )}
-              </View>
+              </View> */}
 
-              <Pressable
+              {/* <Pressable
                 style={styles.item}
                 onPress={() => {
                   navigation.navigate("Level");
@@ -79,64 +81,55 @@ const Account = ({ navigation }) => {
                   fill={colors.black}
                   style={styles.rightIcon}
                 />
-              </Pressable>
+              </Pressable> */}
+              {isLogin && account && (
+                <>
+                  <Pressable
+                    style={styles.item}
+                    onPress={() => {
+                      navigation.navigate("InforUpdate");
+                    }}
+                  >
+                    <Icon
+                      name="person-outline"
+                      fill={colors.black}
+                      style={styles.icon}
+                    />
+                    <Text style={styles.itemLabel}>Sửa thông tin cá nhân</Text>
+                    <Icon
+                      name="chevron-right-outline"
+                      fill={colors.black}
+                      style={styles.rightIcon}
+                    />
+                  </Pressable>
 
-              <Pressable
-                style={styles.item}
-                onPress={() => {
-                  navigation.navigate("InforUpdate");
-                }}
-              >
-                <Icon
-                  name="person-outline"
-                  fill={colors.black}
-                  style={styles.icon}
-                />
-                <Text style={styles.itemLabel}>Sửa thông tin cá nhân</Text>
-                <Icon
-                  name="chevron-right-outline"
-                  fill={colors.black}
-                  style={styles.rightIcon}
-                />
-              </Pressable>
-              <Pressable
-                style={styles.item}
-                onPress={() => {
-                  navigation.navigate("DeliveryAddress");
-                }}
-              >
-                <Icon
-                  name="pin-outline"
-                  fill={colors.black}
-                  style={styles.icon}
-                />
-                <Text style={styles.itemLabel}>Địa chỉ nhận hàng</Text>
-                <Icon
-                  name="chevron-right-outline"
-                  fill={colors.black}
-                  style={styles.rightIcon}
-                />
-              </Pressable>
-              <Pressable
-                style={styles.item}
-                onPress={() => {
-                  navigation.navigate("History",phone);
-                }}
-              >
-                <Icon
-                  name="shopping-bag-outline"
-                  fill={colors.black}
-                  style={styles.icon}
-                />
-                <Text style={styles.itemLabel}>Lịch sử mua hàng</Text>
-                <Icon
-                  name="chevron-right-outline"
-                  fill={colors.black}
-                  style={styles.rightIcon}
-                />
-              </Pressable>
+                  <Pressable
+                    style={styles.item}
+                    onPress={() => {
+                      navigation.navigate("History");
+                    }}
+                  >
+                    <Icon
+                      name="shopping-bag-outline"
+                      fill={colors.black}
+                      style={styles.icon}
+                    />
+                    <Text style={styles.itemLabel}>Lịch sử mua hàng</Text>
+                    <Icon
+                      name="chevron-right-outline"
+                      fill={colors.black}
+                      style={styles.rightIcon}
+                    />
+                  </Pressable>
+                </>
+              )}
             </View>
-            {/* <View style={styles.logOut}>
+            <TouchableOpacity
+              onPress={() => {
+                globalFunc.logOut();
+              }}
+              style={styles.logOut}
+            >
               <View style={styles.btnLogOutContainer}>
                 <Icon
                   name="log-out-outline"
@@ -145,7 +138,7 @@ const Account = ({ navigation }) => {
                 />
                 <Text style={styles.logOutLabel}>Đăng xuất</Text>
               </View>
-            </View> */}
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>

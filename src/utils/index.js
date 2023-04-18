@@ -1,4 +1,8 @@
 import { ToastAndroid } from "react-native";
+import billApi from "../api/billApi";
+import productApi from "./../api/productApi";
+import promotionApi from "../api/promotionApi";
+import storeApi from "./../api/storeApi";
 
 export const validateEmail = (email) => {
   return String(email)
@@ -15,6 +19,23 @@ export const validateSdt = (sdt) => {
 export const validatePassword = (pwd) => {
   return String(pwd).trim().length > 6;
 };
+
+export function sqlToHHmmDDmmYYYY(date) {
+  var myDate = new Date(date);
+  let d = myDate.getDate();
+  let m = myDate.getMonth() + 1;
+  let y = myDate.getFullYear();
+  let hh = myDate.getHours();
+  let minutes = myDate.getMinutes();
+  if (d < 10) {
+    d = "0" + d;
+  }
+  if (m < 10) {
+    m = "0" + m;
+  }
+
+  return hh + ":" + minutes + " , " + d + "/" + m + "/" + y;
+}
 
 export function convertToVND(value) {
   function format1(n, currency) {
@@ -105,4 +126,130 @@ export function sqlToDDmmYYY(date) {
   }
 
   return d + "/" + m + "/" + y;
+}
+
+export async function handleStoreTranAfterCreateBill(
+  billId,
+  listOrders,
+  MPused,
+  voucherUsed,
+  discountMoneyByMoneyPromotion,
+  discountMoneyByVoucher
+) {
+  let res = await billApi.getOneBillById(billId);
+  let bill = res.bill || {};
+  let billDetails = bill.BillDetails || [];
+  let employeeId = bill.EmployeeId;
+
+  // tính lại số lượng để cộng lại cho đồng bộ
+  let _quantitys = {};
+
+  let storeTrans = [];
+
+  billDetails.map((billDetail) => {
+    storeTrans.push({
+      quantity: -billDetail.quantity,
+      ProductUnitTypeId: billDetail.Price.ProductUnitTypeId,
+      type: "Bán hàng",
+      productId: billDetail.Price.ProductUnitType.ProductId,
+      convertionQuantity:
+        billDetail.Price.ProductUnitType.UnitType.convertionQuantity,
+    });
+  });
+
+  // tạo promotion result, và xử lí kho sau khi áp dụng khuyến mãi
+  for (const row of listOrders) {
+    /// PP result
+    if (row.isPP) {
+      let quantityApplied = row.amount;
+
+      if (quantityApplied > 0) {
+        let res = await promotionApi.addResult({
+          isSuccess: true,
+          note: "Được khuyến mãi khi mua hàng",
+          BillId: billId,
+          ProductPromotionId: row.PP.id,
+          quantityApplied,
+        });
+
+        if (res.isSuccess) {
+          storeTrans.push({
+            quantity: -quantityApplied,
+            ProductUnitTypeId: row.PP.ProductUnitType.id,
+            type: "Khuyến mãi bán hàng",
+            productId: row.PP.ProductId,
+            convertionQuantity:
+              row.PP.ProductUnitType.UnitType.convertionQuantity,
+          });
+        }
+      }
+    }
+
+    if (row.ProductUnitType.DiscountRateProduct) {
+      await promotionApi.addResult({
+        isSuccess: true,
+        note: "Được khuyến mãi khi mua hàng",
+        BillId: billId,
+        DiscountRateProductId: row.ProductUnitType.DiscountRateProduct.id,
+      });
+    }
+  }
+
+  if (MPused) {
+    let res = await promotionApi.addResult({
+      isSuccess: true,
+      note: "Được khuyến mãi khi mua hàng",
+      BillId: billId,
+      MoneyPromotionId: MPused.id,
+      discountMoneyByMoneyPromotion,
+    });
+
+    if (res.isSuccess) {
+      // trừ vào ngân sách còn lại của km
+      await promotionApi.updateOneMP(MPused.id, {
+        availableBudget: MPused.availableBudget - discountMoneyByMoneyPromotion,
+      });
+    }
+  }
+
+  if (voucherUsed) {
+    await promotionApi.addResult({
+      isSuccess: true,
+      note: "Được khuyến mãi khi mua hàng",
+      BillId: billId,
+      VoucherId: voucherUsed.id,
+      discountMoneyByVoucher,
+    });
+  }
+
+  // create store
+  res = await storeApi.addMany({
+    data: storeTrans.map((item) => {
+      return {
+        quantity: item.quantity,
+        ProductUnitTypeId: item.ProductUnitTypeId,
+        type: item.type,
+      };
+    }),
+  });
+  console.log(res);
+
+  // cộng lại số lượng đã trừ trước khi tạo bill
+
+  // for (const item of storeTrans) {
+  //   let productId = item.productId;
+  //   let convertionQuantity = item.convertionQuantity;
+  //   let quantity = item.quantity * -1;
+  //   let quantityChange = quantity * convertionQuantity;
+  //   if (!_quantitys[productId]) {
+  //     _quantitys[productId] = 0;
+  //   }
+  //   _quantitys[productId] += quantityChange;
+  // }
+
+  // let productIds = Object.keys(_quantitys);
+
+  // for (const productId of productIds) {
+  //   await productApi.updateQuantity(productId, _quantitys[productId]);
+  // }
 }

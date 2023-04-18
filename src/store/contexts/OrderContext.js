@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import promotionApi from "../../api/promotionApi";
 import { useGlobalContext } from "./GlobalContext";
+import { useContext } from "react";
+import { Toast, handleStoreTranAfterCreateBill } from "../../utils";
+import billApi from "./../../api/billApi";
 
 const OrderContext = React.createContext();
 
 function OrderProvider({ children }) {
   const [listOrders, setListOrders] = useState([]);
   const [refreshPromotion, setRefreshPromotion] = useState(false);
+  const { globalFunc } = useGlobalContext();
   const [amountMoney, setAmountMoney] = useState({
     subTotal: 0,
     discountOnBill: 0,
@@ -30,17 +34,20 @@ function OrderProvider({ children }) {
   }, [refreshPromotion]);
 
   useEffect(() => {
+    if (account) {
+      calcPP();
+      loadMPList();
+    }
+    return () => {};
+  }, [account]);
+
+  useEffect(() => {
     if (listOrders) {
       calcMoney();
     }
 
     return () => {};
   }, [listOrders, voucherUsed, MPlist, voucherUsed]);
-
-  useEffect(() => {
-    loadMPList();
-    return () => {};
-  }, [customerType]);
 
   function calcPP() {
     let _listItemPP = [];
@@ -70,6 +77,7 @@ function OrderProvider({ children }) {
           isPP: true,
           PP: ppItem,
         };
+        console.log(ppItem.ProductUnitType);
 
         _listItemPP.push(_newCartItem);
       });
@@ -181,17 +189,54 @@ function OrderProvider({ children }) {
   async function loadMPList() {
     let res = await promotionApi.getAllMPOnActiveByCutomerType(customerType);
     if (res.isSuccess) {
-      let _MPlist = [];
-      res.promotions.map((header) => {
-        header.MoneyPromotions.map((mp) => {
-          _MPlist.push(mp);
-        });
-      });
-
-      setMPlist(_MPlist || []);
+      setMPlist(res.moneyPromotions || []);
     } else {
       setMPlist([]);
     }
+  }
+
+  async function paymentOke() {
+    console.log("tạo bill, xử lí abc tại đây...");
+
+    let formData = {
+      cost: amountMoney.total,
+      customerPhonenumber: account.phonenumber,
+      priceIds: listOrders
+        .filter((item) => !item.isPP)
+        .map((item) => {
+          return {
+            id: item.id,
+            quantity: item.amount,
+          };
+        }),
+      type: "pending",
+    };
+
+    let res = await billApi.addOne(formData);
+    if (res.isSuccess) {
+      await handleStoreTranAfterCreateBill(
+        res.bill.id,
+        listOrders,
+        MPused,
+        voucherUsed,
+        amountMoney.discountOnBill,
+        amountMoney.discountByVoucher
+      );
+      clearCart();
+      // cập nhật lại account để load lại bills
+      await globalFunc.refresh();
+      Toast.infor("Đặt hàng thành công");
+      return true;
+    } else {
+      Toast.error("Đặt hàng thất bại");
+      return false;
+    }
+  }
+
+  function clearCart() {
+    setListOrders([]);
+    setVoucherUsed(null);
+    setMPused(null);
   }
 
   const addToCart = (item, quantity = 1) => {
@@ -247,6 +292,8 @@ function OrderProvider({ children }) {
     addToCart,
     decreaseQuantity,
     setVoucherUsed,
+    paymentOke,
+    clearCart,
   };
 
   const orderContextData = {
@@ -265,3 +312,6 @@ function OrderProvider({ children }) {
 }
 
 export { OrderContext, OrderProvider };
+export default function useOrderContext() {
+  return useContext(OrderContext);
+}

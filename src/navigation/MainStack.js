@@ -15,27 +15,33 @@ import History from "./../screens/account/History";
 import DeliveryAddress from "../screens/account/DeliveryAddress";
 import Details from "../screens/Details";
 import Product from "../components/home/Product";
+import { useGlobalContext } from "../store/contexts/GlobalContext";
 
 const Stack = createNativeStackNavigator();
 const MainStack = () => {
+  const { isLogin } = useGlobalContext();
+  console.log(isLogin);
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="Tab"
+      initialRouteName={isLogin ? "Tab" : "Login"}
     >
-      <Stack.Screen name="Tab" component={Tab} />
-      <Stack.Screen name="Intro" component={Intro} />
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="Payment" component={Payment} />
-      <Stack.Screen name="Search" component={Search} />
-      <Stack.Screen name="Account" component={Account} />
-      <Stack.Screen name="InforUpdate" component={InforUpdate} />
-      <Stack.Screen name="Level" component={Level} />
-      <Stack.Screen name="History" component={History} />
-      <Stack.Screen name="DeliveryAddress" component={DeliveryAddress} />
-      <Stack.Screen name="Details" component={Details}/>
-      <Stack.Screen name="Product" component={Product}/>
+      {!isLogin && <Stack.Screen name="Login" component={Login} />}
+      {isLogin && (
+        <>
+          <Stack.Screen name="Tab" component={Tab} />
+          <Stack.Screen name="Intro" component={Intro} />
+          <Stack.Screen name="Payment" component={Payment} />
+          <Stack.Screen name="Search" component={Search} />
+          <Stack.Screen name="Account" component={Account} />
+          <Stack.Screen name="InforUpdate" component={InforUpdate} />
+          <Stack.Screen name="Level" component={Level} />
+          <Stack.Screen name="History" component={History} />
+          <Stack.Screen name="DeliveryAddress" component={DeliveryAddress} />
+          <Stack.Screen name="Details" component={Details} />
+          <Stack.Screen name="Product" component={Product} />
+        </>
+      )}
     </Stack.Navigator>
   );
 };

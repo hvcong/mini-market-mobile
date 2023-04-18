@@ -25,72 +25,25 @@ import { useEffect } from "react";
 import { useGlobalContext } from "../store/contexts/GlobalContext";
 import { Toast } from "../utils";
 import SelectDropdown from "react-native-select-dropdown";
+import useOrderContext from "../store/contexts/OrderContext";
 
 const Payment = ({ navigation }) => {
-  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
   const [isVisibleVoucherModal, setIsVisibleVoucherModal] = useState(false);
 
   const { account, isLogin } = useGlobalContext();
+  console.log(account);
 
-  const [formState, setFormState] = useState({
-    id: "KH0452246",
-    firstName: "Lê ",
-    lastName: "Phong",
-    phonenumber: "0954622233",
-    email: "lephong@gmail.com",
-    HomeAddressId: 1,
-    TypeCustomerId: "TN",
-  });
+  let address = "";
 
-  useEffect(() => {
-    setFormState({
-      ...account,
-    });
-
-    return () => {};
-  }, [account]);
-
-  const [userAdress, setUserAdress] = useState({
-    cityId: "",
-    districtId: "",
-    wardId: "",
-    homeId: "",
-    homeName: "",
-  });
-
-  const [allAddress, setAllAddress] = useState({
-    cities: [],
-    districts: [],
-    wards: [],
-  });
-
-  useEffect(() => {
-    loadAllAddress();
-    return () => {};
-  }, []);
-
-  async function loadAllAddress() {
-    let res = await addressApi.getAllCity();
-    console.log(res.cities);
-    if (res.isSuccess) {
-      setAllAddress({
-        cities: res.cities,
-      });
-    }
-
-    res = await addressApi.getAllDistrict();
-    if (res.isSuccess) {
-      setAllAddress({
-        districts: res.districts,
-      });
-    }
-
-    res = await addressApi.getAllWard();
-    if (res.isSuccess) {
-      setAllAddress({
-        wards: res.wards,
-      });
-    }
+  if (account.HomeAddress) {
+    address =
+      account.HomeAddress.homeAddress +
+      ", " +
+      account.HomeAddress.Ward.name +
+      ", " +
+      account.HomeAddress.Ward.District.name +
+      ", " +
+      account.HomeAddress.Ward.District.City.name;
   }
 
   return (
@@ -100,20 +53,16 @@ const Payment = ({ navigation }) => {
         <View style={styles.container}>
           <RedirectRouter title={"Xem lại giỏ hàng"} navigation={navigation} />
           <View style={styles.body}>
-            <Text style={styles.title}>Địa chỉ nhận hàng</Text>
+            <Text style={styles.title}>Thông tin người đặt</Text>
 
             <View style={styles.form}>
               <Input
                 disabled
                 style={styles.input}
                 placeholder="Số điện thoại"
-                value={formState.phonenumber}
-                //   caption={"Nhập tối thiểu 5 kí tự"}
+                value={account.phonenumber}
               />
-              {/* <View style={styles.gender}>
-                <Radio label={"Anh"} style={styles.radioItem} />
-                <Radio label={"Chị"} style={styles.radioItem} />
-              </View> */}
+
               <Input
                 disabled
                 style={styles.input}
@@ -125,60 +74,20 @@ const Payment = ({ navigation }) => {
                 placeholder="Tên"
                 disabled
                 value={account.lastName}
-                //   caption={"Nhập tối thiểu 5 kí tự"}
               />
-              <View style={styles.inputGroup}>
-                <Select
-                  selectedIndex={selectedIndex}
-                  onSelect={(index) => setSelectedIndex(index)}
-                  style={styles.select}
-                >
-                  {allAddress.cities &&
-                    allAddress.cities.map((city, index) => {
-                      return <SelectItem title="aa" />;
-                    })}
-                </Select>
-                <Select
-                  selectedIndex={selectedIndex}
-                  onSelect={(index) => setSelectedIndex(index)}
-                  style={[styles.select, { paddingLeft: 24 }]}
-                >
-                  {allAddress.districts &&
-                    allAddress.districts
-                      .filter((item) => {
-                        return item.cityId == userAdress.cityId;
-                      })
-                      .map((item) => {
-                        return <SelectItem title={item.name} key={item.id} />;
-                      })}
-                </Select>
-              </View>
-              <Select
-                selectedIndex={selectedIndex}
-                onSelect={(index) => setSelectedIndex(index)}
-                style={styles.select}
-              >
-                {}
-                {/* <SelectItem title="Option 1" />
-                <SelectItem title="Option 2" />
-                <SelectItem title="Option 3" /> */}
-              </Select>
+
               <Input
                 style={styles.input}
                 placeholder="Số nhà, tên đường"
-                //   caption={"Nhập tối thiểu 5 kí tự"}
+                value={address}
+                disabled
               />
             </View>
           </View>
-          {/* <SpaceLine /> */}
-          {/* <DeliveryTime /> */}
+
           <SpaceLine />
           <PaymentWays />
-          {/* <SpaceLine /> */}
-          {/* <Voucher
-            isVisibleVoucherModal={isVisibleVoucherModal}
-            setIsVisibleVoucherModal={setIsVisibleVoucherModal}
-          /> */}
+
           <SpaceLine />
           <PaymentBill />
           <SpaceLine />
@@ -186,7 +95,7 @@ const Payment = ({ navigation }) => {
         </View>
       </ScrollView>
       <View style={styles.submit}>
-        <PaymentSubmit />
+        <PaymentSubmit navigation={navigation} />
       </View>
       <VoucherModal
         visible={isVisibleVoucherModal}

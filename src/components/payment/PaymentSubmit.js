@@ -2,15 +2,38 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Shadow } from "react-native-shadow-2";
 import { colors, fontSize } from "../../utils/constants";
+import { TouchableOpacity } from "react-native";
+import { Toast, convertToVND } from "../../utils";
+import { useGlobalContext } from "../../store/contexts/GlobalContext";
+import useOrderContext from "../../store/contexts/OrderContext";
 
-const PaymentSubmit = ({ style }) => {
+const PaymentSubmit = ({ style, navigation }) => {
+  const { account } = useGlobalContext();
+  const { amountMoney, orderFunc } = useOrderContext();
+
+  async function onSubmit() {
+    let resultPayment = false;
+    Toast.infor("Tiến hành thanh toán bằng zalo pay ở đây");
+
+    resultPayment = true;
+    if (resultPayment) {
+      // payment oke
+      let result = await orderFunc.paymentOke();
+      if (result) {
+        navigation.navigate("History");
+      }
+    }
+  }
+
   return (
     <Shadow distance={24} style={styles.shadow} startColor="#00000021">
-      <View style={styles.wrap}>
+      <TouchableOpacity style={styles.wrap} onPress={onSubmit}>
         <View style={styles.container}>
-          <Text style={styles.text}>Tiến hành thanh toán 211.000đ</Text>
+          <Text style={styles.text}>
+            Tiến hành thanh toán {convertToVND(amountMoney.total)}
+          </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     </Shadow>
   );
 };

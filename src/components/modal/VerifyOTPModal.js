@@ -9,13 +9,16 @@ import { colors, fontSize } from "../../utils/constants";
 
 import firebase from "../../../firebaseConfig";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+import { useGlobalContext } from "../../store/contexts/GlobalContext";
+import userApi from "../../api/userApi";
 
-const VerifyOTPModal = ({ visible, setVisible, phone }) => {
+const VerifyOTPModal = ({ visible, setVisible, phone, setResult }) => {
   const [code, setCode] = useState("");
   const [verificationId, setVerificationId] = useState(null);
   const recaptchaVerifier = useRef(null);
   const [time, setTime] = useState(60);
   const [messageErr, setMessageErr] = useState("");
+  const { globalFunc } = useGlobalContext();
 
   useEffect(() => {
     if (visible) {
@@ -32,15 +35,15 @@ const VerifyOTPModal = ({ visible, setVisible, phone }) => {
     return () => {};
   }, [code]);
 
-  useEffect(() => {
-    if (verificationId && visible && time > 0) {
-      setTimeout(() => {
-        console.log("call");
-        console.log("time:", time);
-        setTime(time - 1);
-      }, 1000);
-    }
-  }, [verificationId, time]);
+  // useEffect(() => {
+  //   if (verificationId && visible && time > 0) {
+  //     setTimeout(() => {
+  //       console.log("call");
+  //       console.log("time:", time);
+  //       setTime(time - 1);
+  //     }, 1000);
+  //   }
+  // }, [verificationId, time]);
 
   const sendVerification = async () => {
     let phoneInput = "+84" + phone.slice(1, phone.length).trim();
@@ -75,7 +78,10 @@ const VerifyOTPModal = ({ visible, setVisible, phone }) => {
 
     try {
       const result = await firebase.auth().signInWithCredential(credential);
-      console.log("oke");
+
+      setResult({
+        isSuccess: true,
+      });
       closeModal();
     } catch (err) {
       console.log("error");

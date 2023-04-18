@@ -21,7 +21,7 @@ import { TouchableOpacity } from "react-native";
 const Cart = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [isVisibleVoucherModal, setIsVisibleVoucherModal] = useState(false);
-  const { listOrders = [], amountMoney } = useContext(OrderContext);
+  const { listOrders = [], amountMoney, orderFunc } = useContext(OrderContext);
 
   return (
     <SafeAreaView style={styles.wrap}>
@@ -41,8 +41,11 @@ const Cart = ({ navigation }) => {
                 ))}
               </View>
               <View style={styles.btnList}>
-                {/* {listOrders && listOrders.length > 0 && (
-                  <View style={styles.btnWithCartItem}>
+                {listOrders && listOrders.length > 0 && (
+                  <TouchableOpacity
+                    onPress={orderFunc.clearCart}
+                    style={styles.btnWithCartItem}
+                  >
                     <Icon
                       name="trash-2-outline"
                       fill={colors.gray2}
@@ -51,8 +54,8 @@ const Cart = ({ navigation }) => {
                     <Text style={styles.btnWithCartItemText}>
                       Xóa hết giỏ hàng
                     </Text>
-                  </View>
-                )} */}
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("HomeStack");

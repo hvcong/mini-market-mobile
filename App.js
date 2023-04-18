@@ -16,7 +16,7 @@ import Tab from "./src/navigation/Tab";
 import MainStack from "./src/navigation/MainStack";
 import Drawer from "./src/navigation/Drawer";
 import GlobalContextProvider from "./src/store/contexts/GlobalContext";
-// import LoadingModal from "./src/components/modal/LoadingModal";
+import LoadingModal from "./src/components/modal/LoadingModal";
 import { OrderProvider } from "./src/store/contexts/OrderContext";
 import PromotionContextProvider from "./src/store/contexts/PromotionContext";
 import PriceContextProvider from "./src/store/contexts/PriceContext";
@@ -33,6 +33,7 @@ export default function App() {
                 <NavigationContainer>
                   <Drawer />
                 </NavigationContainer>
+                <LoadingModal />
               </OrderProvider>
             </PriceContextProvider>
           </PromotionContextProvider>

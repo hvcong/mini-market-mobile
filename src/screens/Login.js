@@ -6,71 +6,38 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Layout, Text, Input, Icon, Button } from "@ui-kitten/components";
-import { validateEmail, validatePassword, validateSdt } from "../utils";
+import { Toast, validateEmail, validatePassword, validateSdt } from "../utils";
 import { useGlobalContext } from "../store/contexts/GlobalContext";
 import { colors, fontSize } from "../utils/constants";
+import VerifyOTPModal from "../components/modal/VerifyOTPModal";
+import userApi from "../api/userApi";
+import { useEffect } from "react";
 
 const Login = ({ navigation }) => {
   const [sdtOrEmail, setSdtOrEmail] = useState("0868283915");
-  const [password, setPassword] = useState("1111111");
   const [sdtEmailCaption, setSdtEmailCaption] = useState("");
-  const [pwdCaption, setPwdCaption] = useState("");
   const [errMessage, setErrMessage] = useState("");
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { globalFunc, isLogin, setLoadingModalState } = useGlobalContext();
-
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
-
-  const renderEyeIcon = (props) => (
-    <TouchableWithoutFeedback
-      onPress={() => setSecureTextEntry(!secureTextEntry)}
-    >
-      <Icon
-        {...props}
-        name={secureTextEntry ? "eye-off" : "eye"}
-        style={{ width: 24, height: 24 }}
-        fill={colors.gray2}
-      />
-    </TouchableWithoutFeedback>
-  );
+  const [verifyModal, setVerifyModal] = useState(false);
+  const [result, setResult] = useState({
+    isSuccess: false,
+    message: "",
+  });
+  const { globalFunc } = useGlobalContext();
 
   async function onLogin() {
-    let isPhone = false;
-    let isEmail = false;
-    if (validateEmail(sdtOrEmail)) {
-      isEmail = true;
-    }
-
-    if (validateSdt(sdtOrEmail)) {
-      isPhone = true;
-    }
-
-    if (!validatePassword(password)) {
-      setPwdCaption("Mật khẩu phải nhiều hơn 6 kí tự");
-      return false;
-    }
-
-    if (isPhone) {
-      setLoadingModalState({
-        visible: true,
-        label: "Đang đăng nhập...",
-      });
-      const result = await globalFunc.login(sdtOrEmail, password);
-      setLoadingModalState({
-        visible: false,
-      });
-      // login faild
-      if (!result.isSuccess) {
-        setErrMessage(result.message);
-        return;
-      }
-
-      // login oke
-      navigation.navigate("Tab");
-    }
+    // validate phone here
+    setVerifyModal(true);
   }
+
+  useEffect(() => {
+    if (result.isSuccess) {
+      globalFunc.login(sdtOrEmail);
+      setResult({
+        isSuccess: false,
+      });
+    }
+    return () => {};
+  }, [result]);
 
   return (
     <Layout style={styles.container}>
@@ -81,26 +48,14 @@ const Login = ({ navigation }) => {
           <Input
             style={styles.input}
             value={sdtOrEmail}
-            label="Email / Số điện thoại"
+            label="Số điện thoại"
             placeholder="Emai/ Sđt"
             caption={sdtEmailCaption}
             onChangeText={(sdtOrEmail) => setSdtOrEmail(sdtOrEmail)}
           />
-          <Input
-            style={styles.input}
-            value={password}
-            label="Mật khẩu"
-            placeholder="mật khẩu"
-            caption={pwdCaption}
-            secureTextEntry={secureTextEntry}
-            onChangeText={(password) => setPassword(password)}
-            accessoryRight={renderEyeIcon}
-          />
-          <Text category="p1" style={styles.forgotPass}>
-            Quên mật khẩu ?
-          </Text>
+
           <Button size="medium" style={styles.button} onPress={onLogin}>
-            Đăng nhập
+            Gửi OTP
           </Button>
 
           <Text category="s1" style={{ textAlign: "center" }}>
@@ -116,6 +71,12 @@ const Login = ({ navigation }) => {
           </View>
         </View>
       </View>
+      <VerifyOTPModal
+        visible={verifyModal}
+        setVisible={setVerifyModal}
+        phone={sdtOrEmail}
+        setResult={setResult}
+      />
     </Layout>
   );
 };

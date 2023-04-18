@@ -13,8 +13,106 @@ import {
   fontSize,
   headerHeight,
 } from "../../utils/constants";
+import { useGlobalContext } from "../../store/contexts/GlobalContext";
+import { useState } from "react";
+import { useEffect } from "react";
+import { Input } from "@ui-kitten/components";
+import SelectDropdown from "react-native-select-dropdown";
+import addressApi from "../../api/addressApi";
+
+import { addressData } from "../../utils/constants";
+import { Toast } from "../../utils";
+import userApi from "../../api/userApi";
 
 const InforUpdate = ({ navigation }) => {
+  const { account, globalFunc } = useGlobalContext();
+
+  const [formState, setFormState] = useState({
+    id: "",
+    firstName: "",
+    lastName: "",
+    phonenumber: "",
+    email: "",
+    HomeAddressId: "",
+    homeName: "",
+    cityId: "",
+    districtId: "",
+    wardId: "",
+    cityIndSelected: "",
+    districtIndexSelected: "",
+    wardIndexSelected: "",
+  });
+
+  useEffect(() => {
+    if (account) {
+      let address = {};
+      if (account.HomeAddress) {
+        address.wardId = account.HomeAddress.WardId;
+        address.districtId = account.HomeAddress.Ward.DistrictId;
+        address.cityId = account.HomeAddress.Ward.District.CityId;
+        address.homeName = account.HomeAddress.homeAddress;
+      }
+
+      setFormState({
+        ...formState,
+        ...account,
+        ...address,
+      });
+    }
+    return () => {};
+  }, [account]);
+
+  let districts = [];
+  let wards = [];
+
+  if (formState.cityId) {
+    districts = addressData.districts.filter((district) => {
+      return district.CityId == formState.cityId;
+    });
+  }
+
+  if (formState.districtId) {
+    wards = addressData.wards.filter((ward) => {
+      return ward.DistrictId == formState.districtId;
+    });
+  }
+
+  async function onSubmit() {
+    let homeAddresId = null;
+    if (await checkData()) {
+      let res = await userApi.updateOneCustomer({
+        firstName: formState.firstName,
+        lastName: formState.lastName,
+        phonenumber: formState.phonenumber,
+        HomeAddressId: homeAddresId,
+      });
+      if (res.isSuccess) {
+        await globalFunc.refresh();
+        Toast.infor("Cập nhật thành công");
+      } else {
+        Toast.error("Thông tin không hợp lệ, vui lòng thử lại");
+      }
+    }
+
+    async function checkData() {
+      let isCheck = true;
+
+      if (formState.wardId && formState.homeName) {
+        let res = await addressApi.addHomeAddress({
+          homeAddress: formState.homeName,
+          wardId: formState.wardId,
+        });
+        if (res.isSuccess) {
+          homeAddresId = res.home.id;
+        }
+      }
+
+      if (!isCheck) {
+        Toast.error("Vui lòng điền đầy đủ thông tin!");
+      }
+      return isCheck;
+    }
+  }
   return (
     <View style={styles.container}>
       <Header />
@@ -26,27 +124,153 @@ const InforUpdate = ({ navigation }) => {
               navigation={navigation}
               isTitleCenter={true}
             />
-            <View style={styles.body}>
-              <View style={styles.row}>
+            {/* <View style={styles.row}>
                 <Radio label="Anh" setSelected={false} style={styles.radio} />
                 <Radio label="Chị" setSelected={false} style={styles.radio} />
+              </View> */}
+            <View style={styles.body}>
+              <View style={styles.form}>
+                <Input
+                  style={styles.input}
+                  placeholder="Số điện thoại"
+                  value={formState.phonenumber}
+                  onChangeText={(value) => {
+                    setFormState({
+                      ...formState,
+                      phonenumber: value,
+                    });
+                  }}
+                  disabled
+                />
+
+                <Input
+                  style={styles.input}
+                  placeholder="Họ và tên đệm"
+                  value={formState.firstName}
+                  onChangeText={(value) => {
+                    setFormState({
+                      ...formState,
+                      firstName: value,
+                    });
+                  }}
+                />
+                <Input
+                  style={styles.input}
+                  placeholder="Tên"
+                  value={formState.lastName}
+                  onChangeText={(value) => {
+                    setFormState({
+                      ...formState,
+                      lastName: value,
+                    });
+                  }}
+                />
+                <View style={styles.inputGroup}>
+                  <SelectDropdown
+                    defaultButtonText="Tỉnh/thành phố"
+                    data={addressData.cities.map((city) => {
+                      return city.name;
+                    })}
+                    onSelect={(selectedItem, index) => {
+                      let cityId = addressData.cities[index].id;
+                      setFormState({
+                        ...formState,
+                        cityId,
+                        cityIndSelected: index,
+                        districtId: addressData.districts.filter(
+                          (district) => district.CityId == cityId
+                        )[0].id,
+                        districtIndexSelected: 0,
+                        wardId: "",
+                        wardIndexSelected: "",
+                      });
+                    }}
+                    defaultValueByIndex={
+                      formState.cityId &&
+                      addressData.cities.indexOf(
+                        addressData.cities.filter(
+                          (city) => city.id == formState.cityId
+                        )[0]
+                      )
+                    }
+                    buttonStyle={styles.select}
+                    rowStyle={styles.select}
+                    buttonTextStyle={styles.selectText}
+                    rowTextStyle={styles.selectText}
+                  />
+
+                  <SelectDropdown
+                    defaultButtonText="Quận/huyện"
+                    data={districts.map((item) => item.name)}
+                    onSelect={(selectedItem, index) => {
+                      let districtId = districts[index].id;
+                      setFormState({
+                        ...formState,
+                        districtId,
+                        districtIndexSelected: index,
+                        wardId: addressData.wards.filter(
+                          (ward) => ward.DistrictId == districtId
+                        )[0].id,
+                        wardIndexSelected: 0,
+                      });
+                    }}
+                    defaultValueByIndex={
+                      (formState.districtId &&
+                        districts.indexOf(
+                          districts.filter(
+                            (item) => item.id == formState.districtId
+                          )[0]
+                        )) ||
+                      0
+                    }
+                    buttonStyle={styles.select}
+                    rowStyle={styles.select}
+                    buttonTextStyle={styles.selectText}
+                    rowTextStyle={styles.selectText}
+                  />
+                </View>
+                <View style={styles.inputGroup}>
+                  <SelectDropdown
+                    defaultButtonText="Phường/xã"
+                    data={wards.map((item) => item.name)}
+                    onSelect={(selectedItem, index) => {
+                      let wardId = wards[index].id;
+                      setFormState({
+                        ...formState,
+                        wardId,
+                        wardIndexSelected: index,
+                      });
+                    }}
+                    defaultValueByIndex={
+                      (formState.wardId &&
+                        wards.indexOf(
+                          wards.filter((item) => item.id == formState.wardId)[0]
+                        )) ||
+                      0
+                    }
+                    buttonStyle={styles.select}
+                    rowStyle={styles.select}
+                    buttonTextStyle={styles.selectText}
+                    rowTextStyle={styles.selectText}
+                  />
+                </View>
+
+                <Input
+                  style={styles.input}
+                  value={formState.homeName}
+                  placeholder="Số nhà, tên đường"
+                  onChangeText={(value) => {
+                    setFormState({
+                      ...formState,
+                      homeName: value,
+                    });
+                  }}
+                />
               </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Họ và tên</Text>
-                <TextInput style={styles.input} value={"Hoang van cong"} />
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Số điện thoại</Text>
-                <Text style={[styles.input, styles.disableInput]}>
-                  0868283915
-                </Text>
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Email</Text>
-                <TextInput style={styles.input} value="hvcong@gmail.com" />
-              </View>
-              <Text style={styles.btnSave}>Lưu chỉnh sửa</Text>
             </View>
+            <Text style={styles.btnSave} onPress={onSubmit}>
+              Lưu chỉnh sửa
+            </Text>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -58,48 +282,56 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
-    backgroundColor: backgroundColors.gray,
+    backgroundColor: "white",
   },
   content: {
     marginTop: headerHeight,
   },
   body: {
     paddingHorizontal: 12,
-    backgroundColor: colors.white,
+    paddingTop: 12,
   },
   row: {
     flexDirection: "row",
   },
-  radio: {
-    paddingRight: 24,
+  body: {
+    paddingHorizontal: 12,
+  },
+  form: {
+    paddingVertical: 12,
+  },
+  title: {
+    fontSize: fontSize.XL,
+    textTransform: "uppercase",
+    paddingTop: 12,
+    fontWeight: "bold",
+    color: colors.gray2,
   },
 
-  inputContainer: {
-    borderWidth: 1,
-    borderColor: colors.grayLighter,
-    paddingTop: 8,
-    paddingHorizontal: 16,
-    borderRadius: 4,
-    position: "relative",
-    marginTop: 12,
-  },
-  inputLabel: {
-    position: "absolute",
-    left: 8,
-    top: -10,
-    backgroundColor: colors.white,
-    color: colors.gray1,
-    paddingHorizontal: 8,
-  },
   input: {
-    fontSize: fontSize.L,
-    color: colors.gray2,
-    fontWeight: "bold",
-    paddingBottom: 8,
+    marginBottom: 12,
   },
-  disableInput: {
-    color: colors.gray,
-    paddingTop: 4,
+  gender: {
+    flexDirection: "row",
+  },
+  radioItem: {
+    paddingRight: 24,
+  },
+  inputGroup: {
+    flexDirection: "row",
+    flex: 1,
+  },
+  select: {
+    height: 38,
+    flex: 1,
+    borderRadius: 4,
+    backgroundColor: "#eee",
+    marginBottom: 12,
+    marginHorizontal: 4,
+  },
+
+  selectText: {
+    fontSize: 14,
   },
   btnSave: {
     backgroundColor: colors.green1,

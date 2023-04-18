@@ -15,28 +15,21 @@ import {
 } from "../../utils/constants";
 import Footer from "../../components/home/Footer";
 
-const History = ({ navigation,route }) => {
-  const [tabIndex, setTabIndex] = useState(1);
-  const [phone,setPhone] = useState(route.params)
-
-  const getData = (phone)=>{
-    console.log('get')
-  }
-
+const History = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Header />
-      <SafeAreaView>        
-          <View style={styles.wrap}>
-            <RedirectRouter
-              title="lịch sử mua hàng"
-              navigation={navigation}
-              isTitleCenter={true}
-            />
-            <View style={styles.content}>              
-              <BillBought phone={phone}/>
-            </View>
-          </View>        
+      <SafeAreaView>
+        <View style={styles.wrap}>
+          <RedirectRouter
+            title="lịch sử mua hàng"
+            navigation={navigation}
+            isTitleCenter={true}
+          />
+          <View style={styles.content}>
+            <BillBought />
+          </View>
+        </View>
       </SafeAreaView>
     </View>
   );
