@@ -1,26 +1,62 @@
 import React from "react";
 import { View, StyleSheet, Image, Text } from "react-native";
 import { backgroundColors, colors, fontSize } from "../../utils/constants";
+import { convertToVND } from "../../utils";
+import useOrderContext from "../../store/contexts/OrderContext";
+import { useEffect } from "react";
+import { useState } from "react";
+import { TouchableOpacity } from "react-native";
 
-const SearchResultProductItem = () => {
+const SearchResultProductItem = ({ data, navigation }) => {
+  const { orderFunc, listOrders } = useOrderContext();
+
+  const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() => {
+    setIsInCart(orderFunc.isExistInCart(data.id));
+    return () => {};
+  }, [listOrders]);
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => {
+        navigation.navigate("Details", data.id);
+      }}
+    >
       <View style={styles.imageContainer}>
         <Image
           style={styles.image}
-          source={require("../../../assets/product_tao.jpg")}
+          source={{ uri: data.ProductUnitType.Product.images[0].uri }}
         />
       </View>
       <View style={styles.body}>
-        <Text style={styles.name}>Gạo thơm Vua Gạo Làng Ta túi 5kg</Text>
+        <Text style={styles.name}>{data.ProductUnitType.Product.name}</Text>
         <View style={styles.row}>
-          <Text style={styles.price}>114.000đ</Text>
+          <Text style={styles.price}>{convertToVND(data.price)}</Text>
           <View style={styles.btnContainer}>
-            <Text style={styles.btnLabel}>Mua</Text>
+            {isInCart ? (
+              <Text
+                style={styles.btnLabel}
+                onPress={() => {
+                  navigation.navigate("Cart");
+                }}
+              >
+                Xem giỏ hàng
+              </Text>
+            ) : (
+              <Text
+                style={styles.btnLabel}
+                onPress={() => {
+                  orderFunc.addToCart(data);
+                }}
+              >
+                Mua
+              </Text>
+            )}
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -64,7 +100,7 @@ const styles = StyleSheet.create({
   },
   btnLabel: {
     // fontWeight: "bold",
-    fontSize: fontSize.XL,
+    fontSize: 12,
     textTransform: "uppercase",
     color: colors.green2,
   },

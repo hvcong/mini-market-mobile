@@ -9,16 +9,20 @@ import {
   StyleSheet,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { OrderContext } from "../store/contexts/OrderContext";
+import useOrderContext, { OrderContext } from "../store/contexts/OrderContext";
 import { AntDesign } from "@expo/vector-icons";
 import { useContext, useState } from "react";
 import { colors, btnColors, backgroundColors } from "../utils/constants";
+import { usePriceContext } from "../store/contexts/PriceContext";
+import { convertToVND } from "../utils";
+import { styles } from "@apolloeagle/loading-dots/src/components/animation-style";
 
 const Details = ({ navigation, route }) => {
-  const item = route.params;
-  const { listOrders, setListOrders } = useContext(OrderContext);
-  var newListOrders = [...listOrders];
-  const buyItem = { ...item };
+  const priceLineId = route.params;
+  const { orderFunc } = useOrderContext();
+  const { priceFunc } = usePriceContext();
+
+  let item = priceFunc.getPriceById(priceLineId);
 
   return (
     <SafeAreaView style={style.container}>
@@ -32,7 +36,7 @@ const Details = ({ navigation, route }) => {
       >
         <Icon
           name="arrow-back-ios"
-          style={{ paddingTop: 12, }}
+          style={{ paddingTop: 12 }}
           size={28}
           onPress={navigation.goBack}
         />
@@ -68,63 +72,30 @@ const Details = ({ navigation, route }) => {
             </Text>
           </View>
           <View style={style.behavior}>
-            {/* <TouchableOpacity onPress={onpressDecrease}>
-              <AntDesign name="minuscircle" size={24}  colors= "black"  />
-            </TouchableOpacity> */}
             <Text style={style.amout}>
               Đơn giá 1: {item.ProductUnitType.UnitType.name}
             </Text>
-            {/* <TouchableOpacity onPress={onpressIncrease}>
-              <AntDesign name="pluscircle" size={24} color="black" />
-            </TouchableOpacity> */}
-            <Text style={style.money}> {item.price} VND</Text>
+
+            <Text style={style.money}> {convertToVND(item.price)}</Text>
           </View>
           <Text style={style.detailsText}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries.
+            {item.ProductUnitType.Product.description}
           </Text>
+          <View style={styles.ppContainer}>
+            <Icon name="gift-outline" fill={"red"} style={styles.giftIcon} />
+            <Text style={styles.ppText}>{}</Text>
+          </View>
+
           <View style={{ marginTop: 40, marginBottom: 40, height: 50 }}>
-            <TouchableOpacity
-              onPress={() => {
-                var found = false;
-                for (var i = 0; i < newListOrders.length; i++) {
-                  if (newListOrders[i].name == buyItem.name) {
-                    found = true;
-                    break;
-                  }
-                }
-                if (!found) {
-                  buyItem.amout = 1;
-                  newListOrders.push(buyItem);
-                  setListOrders(newListOrders);
-                }
-                // else {
-                //   const i = newListOrders.findIndex(
-                //     (e) => e.name == buyItem.name
-                //   );
-                //   if (i > -1) {
-                //     newListOrders[i].quantity =
-                //       buyItem.quantity + newListOrders[i].quantity;
-                //     newListOrders[i].price =
-                //       Number(price) + Number(newListOrders[i].price);
-                //   }
-                // }
-                ToastAndroid.showWithGravityAndOffset(
-                  "Add to cart successfully!",
-                  ToastAndroid.LONG,
-                  ToastAndroid.BOTTOM,
-                  25,
-                  50
-                );
-                navigation.navigate("Home");
-              }}
-              style={style.button}
-            >
-              <Text style={style.text}> Add to cart</Text>
-            </TouchableOpacity>
+            {orderFunc.isExistInCart(item.id) ? (
+              <TouchableOpacity style={style.button}>
+                <Text style={style.text}>Xem giỏ hàng</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={style.button}>
+                <Text style={style.text}>Thêm vào giỏ hàng</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -191,6 +162,7 @@ const style = StyleSheet.create({
   text: {
     fontSize: 18,
     fontWeight: "500",
+    color: "white",
   },
 });
 export default Details;

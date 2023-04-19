@@ -24,8 +24,15 @@ import AddToCartModal from "../../components/modal/AddToCartModal";
 import { usePriceContext } from "../../store/contexts/PriceContext";
 
 const Home = ({ navigation }) => {
-  const { priceFunc } = usePriceContext();
-  let data = priceFunc.getLimitPrices();
+  const { priceFunc, allPrices } = usePriceContext();
+  const [data, setData] = useState([]);
+  const [quantity, setQuantity] = useState(9);
+
+  useEffect(() => {
+    setData(priceFunc.getLimitPrices(quantity));
+
+    return () => {};
+  }, [priceFunc, quantity]);
 
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
@@ -41,7 +48,14 @@ const Home = ({ navigation }) => {
               backgroundColor="#eee"
               navigation={navigation}
               data={data || []}
+              onViewMore={
+                quantity < allPrices.length &&
+                (() => {
+                  setQuantity(quantity + 9);
+                })
+              }
             />
+
             <Footer />
           </View>
         </ScrollView>

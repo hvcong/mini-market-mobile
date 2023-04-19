@@ -10,7 +10,7 @@ import { View, StyleSheet } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { backgroundColors, colors, fontSize } from "../../utils/constants";
 import afucntion, { OrderContext } from "../../store/contexts/OrderContext";
-import { convertToVND } from "../../utils";
+import { Toast, convertToVND } from "../../utils";
 
 const Product = ({ navigation, setIsVisibleModal, item }) => {
   const { orderFunc } = useContext(OrderContext);
@@ -22,6 +22,9 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
       item.ProductUnitType.UnitType.convertionQuantity
   );
   let DRP = item.ProductUnitType.DiscountRateProduct;
+  let PP =
+    item.ProductUnitType.ProductPromotions &&
+    item.ProductUnitType.ProductPromotions[0];
 
   if (DRP) {
     newPrice = (item.price * (100 - DRP.discountRate)) / 100;
@@ -30,7 +33,7 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
   return (
     <Pressable
       style={styles.item}
-      onPress={() => navigation.navigate("Details", item)}
+      onPress={() => navigation.navigate("Details", item.id)}
     >
       <View style={styles.imageContainer}>
         <Image
@@ -57,6 +60,18 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
               </>
             )}
           </View>
+          {PP && (
+            <View style={styles.ppContainer}>
+              <Text style={styles.ppText}>
+                <Icon
+                  name="gift-outline"
+                  fill={"red"}
+                  style={styles.giftIcon}
+                />
+                {PP.title}
+              </Text>
+            </View>
+          )}
         </View>
 
         {orderFunc.isExistInCart(item.id) ? (
@@ -74,14 +89,7 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
             style={styles.btnContainer}
             onPress={() => {
               orderFunc.addToCart(item);
-
-              ToastAndroid.showWithGravityAndOffset(
-                "Add to cart successfully!",
-                ToastAndroid.LONG,
-                ToastAndroid.BOTTOM,
-                25,
-                50
-              );
+              Toast.infor("Thêm vào giỏ hàng thành công");
             }}
             disabled={maxQuantity <= 0}
           >
@@ -91,9 +99,6 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
           </TouchableOpacity>
         )}
       </View>
-      {/* <View style={styles.heartContainer}>
-        <Icon name="heart" fill={colors.white} style={styles.heartIcon} />
-      </View> */}
     </Pressable>
   );
 };
@@ -183,9 +188,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#82b478",
   },
-  heartIcon: {
-    width: 20,
-    height: 20,
+  giftIcon: {
+    width: 14,
+    height: 14,
+  },
+
+  ppContainer: {},
+  ppText: {
+    fontSize: 12,
+    color: "green",
   },
 });
 

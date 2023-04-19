@@ -14,16 +14,25 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LocationModal from "../modal/LocationModal";
 import { useGlobalContext } from "../../store/contexts/GlobalContext";
+import QRCode from "../qrCode/QRCode";
+import { TouchableOpacity } from "react-native";
 
 const Header = ({ navigation }) => {
   const [isShowLocationModal, setIsShowLocationModal] = useState(false);
-  const { account } = useGlobalContext();
+  const { account, globalFunc } = useGlobalContext();
+  let name = "";
+  if (account.firstName) {
+    name += account.firstName + " ";
+  }
+  if (account.lastName) {
+    name += account.lastName;
+  }
   return (
     <SafeAreaView style={styles.wrap}>
       <View style={styles.container}>
         <View style={styles.top}>
           <View style={styles.helloUserContainer}>
-            <Text style={styles.helloUserLabel}>Xin chào bạn </Text>
+            <Text style={styles.helloUserLabel}>Xin chào bạn {name}</Text>
             <Text style={styles.helloUserName}>
               {/* {account && account.lastName} */}
             </Text>
@@ -48,7 +57,7 @@ const Header = ({ navigation }) => {
           onPress={() => navigation.navigate("Search")}
           style={styles.bottom}
         >
-          <Pressable
+          {/* <Pressable
             onPress={() => {
               navigation.openDrawer();
             }}
@@ -60,7 +69,7 @@ const Header = ({ navigation }) => {
               style={styles.menuBarIcon}
             />
             <Text style={styles.menuText}>MENU</Text>
-          </Pressable>
+          </Pressable> */}
           <View style={styles.searchContainer}>
             <Icon
               fill={colors.gray1}
@@ -83,6 +92,15 @@ const Header = ({ navigation }) => {
               />
             </View> */}
           </View>
+          <TouchableOpacity
+            style={styles.qrContainer}
+            onPress={() => globalFunc.setIsShowQr(true)}
+          >
+            <Image
+              source={require("../../../assets/qrIcon.jpg")}
+              style={styles.qrImage}
+            />
+          </TouchableOpacity>
         </Pressable>
       </View>
       <LocationModal
@@ -189,8 +207,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: headerInputHeight,
     backgroundColor: colors.white,
-    borderTopRightRadius: 4,
-    borderBottomRightRadius: 4,
+    borderRadius: 4,
   },
   searchIcon: {
     width: 32,
@@ -214,6 +231,17 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
   },
+  qrContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 12,
+  },
+  qrImage: {
+    width: 32,
+    height: 32,
+  },
+  qrBtnStart: {},
 });
 
 export default Header;

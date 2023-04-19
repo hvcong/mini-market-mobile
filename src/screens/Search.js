@@ -7,9 +7,11 @@ import SearchResult from "../components/search/SearchResult";
 import SpecialOffer from "../components/search/SpecialOffer";
 import { colors } from "../utils/constants";
 import Test from "./Test";
+import { usePriceContext } from "../store/contexts/PriceContext";
 
 const Search = ({ navigation }) => {
   const [isShowResult, setIsShowResult] = useState(false);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -24,14 +26,12 @@ const Search = ({ navigation }) => {
           }}
         >
           <View style={styles.body}>
-            {isShowResult ? (
-              <SearchResult />
-            ) : (
-              <>
+            <SearchResult navigation={navigation} />
+
+            {/* <>
                 <SearchPopular />
                 <SpecialOffer />
-              </>
-            )}
+              </> */}
           </View>
         </ScrollView>
       </View>

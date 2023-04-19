@@ -7,10 +7,13 @@ import Profile from "../screens/Profile";
 import { Icon } from "@ui-kitten/components";
 import { bottomTabHeight } from "../utils/constants";
 import Account from "../screens/account/Account";
+import useOrderContext from "../store/contexts/OrderContext";
+import { Text } from "react-native";
 
 const TabNavigator = createBottomTabNavigator();
 
 const Tab = () => {
+  const { listOrders } = useOrderContext();
   return (
     <TabNavigator.Navigator
       screenOptions={{

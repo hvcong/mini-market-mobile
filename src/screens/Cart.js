@@ -35,11 +35,15 @@ const Cart = ({ navigation }) => {
               navigation={navigation}
             />
             <View style={styles.body}>
-              <View style={styles.list}>
-                {listOrders.map((item, index) => (
-                  <CartItem item={item} key={index} />
-                ))}
-              </View>
+              {(listOrders || []).length == 0 ? (
+                <Text style={styles.emptyText}>Chưa có sản phẩm nào</Text>
+              ) : (
+                <View style={styles.list}>
+                  {listOrders.map((item, index) => (
+                    <CartItem item={item} key={index} />
+                  ))}
+                </View>
+              )}
               <View style={styles.btnList}>
                 {listOrders && listOrders.length > 0 && (
                   <TouchableOpacity
@@ -72,40 +76,52 @@ const Cart = ({ navigation }) => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <SpaceLine />
-              <Voucher setIsVisibleVoucherModal={setIsVisibleVoucherModal} />
-              <View style={styles.totalPrice}>
-                <Text style={styles.totalPriceLabel}>Tạm tính: </Text>
-                <Text style={styles.totalPriceValue}>
-                  {convertToVND(amountMoney.subTotal)}
-                </Text>
-              </View>
-              <View style={styles.totalPrice}>
-                <Text style={styles.totalPriceLabel}>
-                  Giảm giá theo giá trị đơn hàng:{" "}
-                </Text>
-                <Text style={styles.totalPriceValue}>
-                  -{convertToVND(amountMoney.discountOnBill)}
-                </Text>
-              </View>
-              <View style={styles.totalPrice}>
-                <Text style={styles.totalPriceLabel}>Phiếu giảm giá: </Text>
-                <Text style={styles.totalPriceValue}>
-                  -{convertToVND(amountMoney.discountByVoucher)}
-                </Text>
-              </View>
-              <View style={styles.totalPrice}>
-                <Text
-                  style={[styles.totalPriceLabel, styles.totalPriceLabelLast]}
-                >
-                  Tổng cần thanh toán:{" "}
-                </Text>
-                <Text
-                  style={[styles.totalPriceValue, styles.totalPriceValueLast]}
-                >
-                  {convertToVND(amountMoney.total)}
-                </Text>
-              </View>
+              {(listOrders || []).length > 0 && (
+                <>
+                  <SpaceLine />
+                  <Voucher
+                    setIsVisibleVoucherModal={setIsVisibleVoucherModal}
+                  />
+                  <View style={styles.totalPrice}>
+                    <Text style={styles.totalPriceLabel}>Tạm tính: </Text>
+                    <Text style={styles.totalPriceValue}>
+                      {convertToVND(amountMoney.subTotal)}
+                    </Text>
+                  </View>
+                  <View style={styles.totalPrice}>
+                    <Text style={styles.totalPriceLabel}>
+                      Giảm giá theo giá trị đơn hàng:{" "}
+                    </Text>
+                    <Text style={styles.totalPriceValue}>
+                      -{convertToVND(amountMoney.discountOnBill)}
+                    </Text>
+                  </View>
+                  <View style={styles.totalPrice}>
+                    <Text style={styles.totalPriceLabel}>Phiếu giảm giá: </Text>
+                    <Text style={styles.totalPriceValue}>
+                      -{convertToVND(amountMoney.discountByVoucher)}
+                    </Text>
+                  </View>
+                  <View style={styles.totalPrice}>
+                    <Text
+                      style={[
+                        styles.totalPriceLabel,
+                        styles.totalPriceLabelLast,
+                      ]}
+                    >
+                      Tổng cần thanh toán:{" "}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.totalPriceValue,
+                        styles.totalPriceValueLast,
+                      ]}
+                    >
+                      {convertToVND(amountMoney.total)}
+                    </Text>
+                  </View>
+                </>
+              )}
             </View>
           </View>
         </ScrollView>
@@ -158,6 +174,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.gray2,
     paddingLeft: 12,
+  },
+  emptyText: {
+    textAlign: "center",
+    paddingVertical: 12,
   },
   list: {},
   btnList: {

@@ -20,6 +20,7 @@ import LoadingModal from "./src/components/modal/LoadingModal";
 import { OrderProvider } from "./src/store/contexts/OrderContext";
 import PromotionContextProvider from "./src/store/contexts/PromotionContext";
 import PriceContextProvider from "./src/store/contexts/PriceContext";
+import QRCode from "./src/components/qrCode/QRCode";
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
                   <Drawer />
                 </NavigationContainer>
                 <LoadingModal />
+                {/* <QRCode /> */}
               </OrderProvider>
             </PriceContextProvider>
           </PromotionContextProvider>

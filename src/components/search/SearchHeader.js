@@ -1,15 +1,44 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { Icon } from "@ui-kitten/components";
 import {
   colors,
   headerInputHeight,
   headerSearchHeight,
 } from "../../utils/constants";
+import { usePriceContext } from "../../store/contexts/PriceContext";
+import { useEffect } from "react";
 
 const SearchHeader = ({ isShowResult, setIsShowResult, navigation }) => {
   const [searchInput, setSearchInput] = useState("");
   const [isShowCloseIcon, setIsShowCloseIcon] = useState(false);
+  const { priceFunc } = usePriceContext();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    let timoutId = null;
+    if (searchInput) {
+      timoutId = setTimeout(() => {
+        priceFunc.searchByProductName(searchInput);
+        setIsLoading(false);
+      }, 300);
+    } else {
+      priceFunc.searchByProductName(searchInput);
+      setIsLoading(false);
+    }
+    return () => {
+      clearTimeout(timoutId);
+    };
+  }, [searchInput]);
 
   return (
     <View style={styles.container}>
@@ -37,6 +66,7 @@ const SearchHeader = ({ isShowResult, setIsShowResult, navigation }) => {
           value={searchInput}
           onChangeText={(text) => {
             setSearchInput(text);
+
             if (text.length > 0) {
               setIsShowCloseIcon(true);
               setIsShowResult(true);
@@ -46,13 +76,11 @@ const SearchHeader = ({ isShowResult, setIsShowResult, navigation }) => {
             }
           }}
         />
-        <View style={styles.loaderIconContainer}>
-          <Icon
-            name="loader-outline"
-            fill={colors.greenLighter}
-            style={styles.loaderIcon}
-          />
-        </View>
+        {isLoading && (
+          <View style={styles.loaderIconContainer}>
+            <ActivityIndicator size="small" color={colors.greenLighter} />
+          </View>
+        )}
 
         {isShowCloseIcon ? (
           <Pressable
@@ -77,8 +105,7 @@ const SearchHeader = ({ isShowResult, setIsShowResult, navigation }) => {
               style={styles.micIcon}
             /> */}
           </View>
-        )
-        }
+        )}
       </View>
     </View>
   );

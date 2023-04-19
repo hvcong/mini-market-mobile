@@ -195,6 +195,16 @@ function OrderProvider({ children }) {
     }
   }
 
+  async function cancelOrder(billId) {
+    globalFunc.setLoadingModalState(true, "Đang cập nhật...");
+    let res = await billApi.updateType(billId, "cancel");
+    if (res.isSuccess) {
+      await globalFunc.refresh();
+      Toast.infor("Hủy đơn hàng thành công");
+    }
+    globalFunc.setLoadingModalState(false);
+  }
+
   async function paymentOke() {
     console.log("tạo bill, xử lí abc tại đây...");
 
@@ -294,6 +304,7 @@ function OrderProvider({ children }) {
     setVoucherUsed,
     paymentOke,
     clearCart,
+    cancelOrder,
   };
 
   const orderContextData = {
@@ -302,6 +313,7 @@ function OrderProvider({ children }) {
     amountMoney,
     voucherUsed,
     customerType,
+    MPlist,
   };
 
   return (

@@ -9,9 +9,12 @@ import userApi from "../../api/userApi";
 import { Image } from "react-native";
 import { useGlobalContext } from "../../store/contexts/GlobalContext";
 import { convertToVND, sqlToHHmmDDmmYYYY } from "../../utils";
+import billApi from "../../api/billApi";
+import useOrderContext from "../../store/contexts/OrderContext";
 
 const BillBought = () => {
   const { account } = useGlobalContext();
+  const { orderFunc } = useOrderContext();
 
   let bills = account.Bills || [];
   const OneItem = ({ item }) => {
@@ -41,16 +44,55 @@ const BillBought = () => {
           />
         </View>
         <View style={styles.details}>
-          <Text style={styles.id}>Mã đơn hàng: {bill.id}</Text>
-          <Text style={styles.date}>
-            Ngày đặt hàng:{sqlToHHmmDDmmYYYY(bill.orderDate)}
-          </Text>
-          <Text style={styles.cost}>Tổng tiền: {convertToVND(bill.cost)}</Text>
-          <Text style={styles.status}>{status}</Text>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Mã đơn hàng:</Text>
+            <Text style={styles.detailValue}>{bill.id}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Ngày đặt hàng:</Text>
+            <Text style={styles.detailValue}>
+              {sqlToHHmmDDmmYYYY(bill.orderDate)}
+            </Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Tổng tiền:</Text>
+            <Text style={styles.detailValue}>{convertToVND(bill.cost)}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Tình trạng đơn hàng</Text>
+            <Text style={styles.detailValue}>{status}</Text>
+          </View>
+
+          <View style={styles.btns}>
+            {bill.type == "pending" && (
+              <Text
+                style={styles.btnCancel}
+                onPress={() => {
+                  cancelOrder(bill.id);
+                }}
+              >
+                Hủy đơn hàng
+              </Text>
+            )}
+            <Text
+              style={styles.btnMore}
+              onPress={() => {
+                detailOrder(bill.id);
+              }}
+            >
+              Chi tiết
+            </Text>
+          </View>
         </View>
       </View>
     );
   };
+
+  async function cancelOrder(billId) {
+    orderFunc.cancelOrder(billId);
+  }
+
+  function detailOrder(billId) {}
 
   const itemSeparator = () => {
     return <View style={styles.separator} />;
@@ -61,12 +103,11 @@ const BillBought = () => {
       <View style={styles.flatList}>
         <FlatList
           keyExtractor={(item) => item.id}
-          data={bills}
+          data={[...bills].reverse()}
           renderItem={OneItem}
           ItemSeparatorComponent={itemSeparator}
           ListEmptyComponent={<Text> bạn chưa có đơn hàng nào </Text>}
           style={styles.flatList}
-          inverted
         />
       </View>
     </SafeAreaView>
@@ -80,40 +121,61 @@ const styles = StyleSheet.create({
     backgroundColor: "#CCC",
   },
   item: {
-    flex: 1,
-    margin: 1,
     flexDirection: "row",
-    // justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 13,
-    paddingHorizontal: 13,
-    // backgroundColor: "skyblue",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
   avatarContainer: {
-    backgroundColor: "#D9D9D9",
-    borderRadius: 100,
-    height: 89,
-    width: 89,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "red",
+    borderRadius: 50,
+    overflow: "hidden",
   },
   avatar: {
     height: 55,
     width: 55,
   },
-  name: {
-    fontWeight: "600",
-    fontSize: 16,
-  },
+
   details: {
     flex: 1,
-    flexDirection: "column",
+    paddingLeft: 12,
+    marginVertical: 12,
   },
   text: {
     color: "black",
   },
   flatList: {
     marginBottom: 64,
+  },
+
+  detailItem: {
+    flexDirection: "row",
+    paddingBottom: 4,
+  },
+  detailLabel: {
+    width: 140,
+  },
+  detailValue: {
+    fontWeight: "bold",
+  },
+  btns: {
+    flexDirection: "row",
+    paddingTop: 4,
+  },
+  btnCancel: {
+    marginRight: 12,
+    backgroundColor: "red",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    color: "white",
+  },
+  btnMore: {
+    backgroundColor: "green",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    color: "white",
   },
 });
 

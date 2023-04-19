@@ -9,98 +9,75 @@ import {
 import Category from "../components/home/Category";
 import { SafeAreaView } from "react-native";
 import Header from "../components/header/Header";
-import { colors, headerHeight } from "../utils/constants";
+import { backgroundColors, colors, headerHeight } from "../utils/constants";
 import Group from "../components/home/Group";
 import AddToCartModal from "../components/modal/AddToCartModal";
 import promotionApi from "../api/promotionApi";
+import { usePriceContext } from "../store/contexts/PriceContext";
 
 const Profile = ({ navigation }) => {
-  const [productPromotions, setProductPromotions] = useState();
-  const [ratePromotions, setRatePromotion] = useState();
+  const { priceFunc, allPriceDRPList, allPricePPList } = usePriceContext();
 
-  const getProductPromotions = async () => {
-    const pdt = await promotionApi.getProductPromtion(10, 0);
-    setProductPromotions(pdt);
-  };
-  const getRatePromotions = async () => {
-    const rdt = await promotionApi.getRatePromotion(10, 0);
-    setRatePromotion(rdt);
-  };
+  const [ppData, setPpData] = useState([]);
+  const [drpData, setDrpData] = useState([]);
+  const [numOfPP, setNumOfPP] = useState(9);
+  const [numOfDRP, setNumOfDRP] = useState(9);
+
   useEffect(() => {
-    getProductPromotions();
-    getRatePromotions();
-  }, []);
+    setPpData(priceFunc.getLimitPPList(numOfPP));
 
-  let productsData = [];
-  let ratesData = [];
-  if (productPromotions) {
-    productsData = productPromotions.promotions[0].ProductPromotions;
-  }
-  if (ratePromotions) {
-    ratesData = ratePromotions.promotions[0].DiscountRateProducts;
-  }
+    return () => {};
+  }, [numOfPP]);
+
+  useEffect(() => {
+    setDrpData(priceFunc.getLimitDRPList(numOfDRP));
+
+    return () => {};
+  }, [numOfDRP]);
+
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
       <Header navigation={navigation} />
+
       <View style={styles.container}>
         <ScrollView style={styles.promotion}>
           <View>
             <Group
-              title="Khuyến mãi trên sản phẩm"
+              title="Siêu ưu đãi giảm giá"
               type="special"
               setIsVisibleModal={setIsVisibleModal}
               backgroundColor="#d3db76"
               navigation={navigation}
-              data={[]}
+              data={priceFunc.getLimitPPList(numOfPP)}
+              onViewMore={
+                numOfPP < allPricePPList.length &&
+                (() => {
+                  setNumOfPP(numOfPP + 9);
+                })
+              }
             />
-            <TouchableOpacity
-              style={styles.more}
-              onPress={() => {
-                console.log("go to product promotion");
-              }}
-            >
-              <Text> xem thêm {" >"}</Text>
-            </TouchableOpacity>
           </View>
+
           <View>
             <Group
-              title="Khuyến mãi giảm giá"
+              title="Tặng sản phẩm"
               type="special"
               setIsVisibleModal={setIsVisibleModal}
-              backgroundColor="#d3db76"
+              backgroundColor={backgroundColors.greenLighter}
               navigation={navigation}
-              data={[]}
+              data={priceFunc.getLimitDRPList(numOfDRP) || []}
+              onViewMore={
+                numOfDRP < allPriceDRPList.length &&
+                (() => {
+                  setNumOfDRP(numOfDRP + 9);
+                })
+              }
             />
-            <TouchableOpacity
-              style={styles.more}
-              onPress={() => {
-                console.log("go to discount promotion");
-              }}
-            >
-              <Text> xem thêm {" >"}</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Group
-              title="Khuyến mãi quà tặng"
-              type="special"
-              setIsVisibleModal={setIsVisibleModal}
-              backgroundColor="#d3db76"
-              navigation={navigation}
-              data={[]}
-            />
-            <TouchableOpacity
-              style={styles.more}
-              onPress={() => {
-                console.log("go to gift promotion");
-              }}
-            >
-              <Text> xem thêm {" >"}</Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
+
       <AddToCartModal visible={isVisibleModal} setVisible={setIsVisibleModal} />
     </SafeAreaView>
   );
@@ -109,6 +86,7 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
+    marginBottom: 32,
   },
   promotion: {
     marginTop: headerHeight + 32,

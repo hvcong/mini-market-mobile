@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import store from "..";
 import authApi from "../../api/authApi";
 import userApi from "../../api/userApi";
+import cateApi from "../../api/cateApi";
 
 const GlobalContext = createContext();
 
@@ -10,8 +11,8 @@ function GlobalContextProvider({ children }) {
     isLogin: true,
     account: {
       id: "KH7638711",
-      firstName: null,
-      lastName: null,
+      firstName: "Hoàng",
+      lastName: "Công",
       phonenumber: "0868283915",
       email: null,
       HomeAddressId: null,
@@ -43,6 +44,9 @@ function GlobalContextProvider({ children }) {
     token: null,
   });
 
+  const [categories, setCategories] = useState([]);
+  const [isShowQr, setIsShowQr] = useState(false);
+
   const [loadingModalState, setLoadingModalState] = useState({
     visible: false,
     label: "Đang tải...",
@@ -50,6 +54,7 @@ function GlobalContextProvider({ children }) {
 
   // function
   const globalFunc = {
+    setIsShowQr,
     // login by phone
     login: async (phone) => {
       setLoadingModalState({
@@ -112,6 +117,8 @@ function GlobalContextProvider({ children }) {
     token: state.token,
     loadingModalState,
     globalFunc,
+    categories,
+    isShowQr,
   };
 
   return (

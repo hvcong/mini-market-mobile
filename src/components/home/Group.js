@@ -5,7 +5,17 @@ import LabelHeading from "../common/LabelHeading";
 import Product from "./Product";
 import { useEffect } from "react";
 import { useState } from "react";
-const Group = ({ title, type, backgroundColor, navigation, data }) => {
+import { ActivityIndicator } from "react-native";
+import { TouchableOpacity } from "react-native";
+const Group = ({
+  title,
+  type,
+  backgroundColor,
+  navigation,
+  data,
+  onViewMore,
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <View style={[styles.container]}>
       <View style={styles.head}>
@@ -26,6 +36,40 @@ const Group = ({ title, type, backgroundColor, navigation, data }) => {
           return <Product navigation={navigation} item={item} key={index} />;
         })}
       </View>
+
+      {onViewMore && (
+        <TouchableOpacity
+          style={{
+            backgroundColor: backgroundColor,
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            if (!isLoading) {
+              setIsLoading(true);
+              setTimeout(() => {
+                onViewMore();
+                setIsLoading(false);
+              }, 1000);
+            }
+          }}
+        >
+          {isLoading && (
+            <ActivityIndicator style={{}} color="green" size="small" />
+          )}
+          <Text
+            style={{
+              color: "green",
+              paddingVertical: 4,
+              textAlign: "center",
+            }}
+          >
+            Xem thêm
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -41,7 +85,7 @@ const styles = StyleSheet.create({
   list: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     paddingHorizontal: 8,
   },
 });
