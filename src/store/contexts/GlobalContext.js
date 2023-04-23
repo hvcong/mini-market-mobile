@@ -8,38 +8,38 @@ const GlobalContext = createContext();
 
 function GlobalContextProvider({ children }) {
   const [state, setState] = useState({
-    isLogin: true,
-    account: {
-      id: "KH7638711",
-      firstName: "Hoàng",
-      lastName: "Công",
-      phonenumber: "0868283915",
-      email: null,
-      HomeAddressId: null,
-      TypeCustomerId: "BT",
-      Bills: [
-        {
-          id: "Bill1681571119913",
-          orderDate: "2023-04-15T15:05:19.000Z",
-          cost: 863000,
-          type: "success",
-          CustomerId: "KH7638711",
-          EmployeeId: "NV2976561",
-        },
-        {
-          id: "Bill1681571216036",
-          orderDate: "2023-04-15T15:06:56.000Z",
-          cost: 209150,
-          type: "success",
-          CustomerId: "KH7638711",
-          EmployeeId: "NV2976561",
-        },
-      ],
-      TypeCustomer: {
-        id: "BT",
-        name: "Khách hàng thường",
-      },
-    },
+    // isLogin: true,
+    // account: {
+    //   id: "KH7638711",
+    //   firstName: "Hoàng",
+    //   lastName: "Công",
+    //   phonenumber: "0868283915",
+    //   email: null,
+    //   HomeAddressId: null,
+    //   TypeCustomerId: "BT",
+    //   Bills: [
+    //     {
+    //       id: "Bill1681571119913",
+    //       orderDate: "2023-04-15T15:05:19.000Z",
+    //       cost: 863000,
+    //       type: "success",
+    //       CustomerId: "KH7638711",
+    //       EmployeeId: "NV2976561",
+    //     },
+    //     {
+    //       id: "Bill1681571216036",
+    //       orderDate: "2023-04-15T15:06:56.000Z",
+    //       cost: 209150,
+    //       type: "success",
+    //       CustomerId: "KH7638711",
+    //       EmployeeId: "NV2976561",
+    //     },
+    //   ],
+    //   TypeCustomer: {
+    //     id: "BT",
+    //     name: "Khách hàng thường",
+    //   },
+    // },
 
     token: null,
   });
