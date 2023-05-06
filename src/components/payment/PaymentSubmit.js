@@ -6,22 +6,72 @@ import { TouchableOpacity } from "react-native";
 import { Toast, convertToVND } from "../../utils";
 import { useGlobalContext } from "../../store/contexts/GlobalContext";
 import useOrderContext from "../../store/contexts/OrderContext";
+import axiosClient from "../../api/axiosClient";
+import billApi from "../../api/billApi";
+import { Linking } from "react-native";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const PaymentSubmit = ({ style, navigation }) => {
   const { account } = useGlobalContext();
   const { amountMoney, orderFunc } = useOrderContext();
+  const [tranId, setTranId] = useState(null);
 
   async function onSubmit() {
     let resultPayment = false;
-    Toast.infor("Tiến hành thanh toán bằng zalo pay ở đây");
+    if (amountMoney.total == 0) {
+      resultPayment = true;
+    }
 
-    resultPayment = true;
-    if (resultPayment) {
-      // payment oke
-      let result = await orderFunc.paymentOke();
-      if (result) {
-        navigation.navigate("History");
+    if (!resultPayment) {
+      let res = await billApi.requestPayment(amountMoney.total);
+
+      if (!res) {
+        return;
       }
+      setTranId(res.appTransId);
+      Linking.openURL(res.zalo.order_url).catch((err) =>
+        console.error("Couldn't load page", err)
+      );
+    }
+
+    if (resultPayment) {
+      paymentOke();
+    }
+  }
+
+  useEffect(() => {
+    if (tranId) {
+      checkStatusPayment();
+    }
+    return () => {};
+  }, [tranId]);
+
+  useEffect(() => {
+    let id = setInterval(() => {
+      if (tranId) {
+        checkStatusPayment();
+      }
+    }, 3000);
+    return () => {
+      clearInterval(id);
+    };
+  }, [tranId]);
+
+  async function checkStatusPayment() {
+    let res = await billApi.getStatusPayment(tranId);
+    if (res.return_code == 1) {
+      Toast.infor("Thanh toán thành công");
+
+      paymentOke();
+      setTranId(null);
+    }
+  }
+
+  async function paymentOke() {
+    let result = await orderFunc.paymentOke();
+    if (result) {
+      navigation.navigate("History");
     }
   }
 

@@ -41,6 +41,21 @@ class BillApi {
     let url = `bill/fail?_page=${page}&_limit=${limit}`;
     return axiosClient.get(url);
   }
+
+  //
+  requestPayment(totalMoney) {
+    let url = `payment/pay`;
+    return axiosClient.post(url, {
+      totalMoney,
+    });
+  }
+
+  getStatusPayment(appTransId) {
+    let url = `payment/paystatus`;
+    return axiosClient.post(url, {
+      appTransId,
+    });
+  }
 }
 
 const billApi = new BillApi();

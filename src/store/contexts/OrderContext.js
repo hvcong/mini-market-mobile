@@ -206,7 +206,7 @@ function OrderProvider({ children }) {
   }
 
   async function paymentOke() {
-    console.log("tạo bill, xử lí abc tại đây...");
+    globalFunc.setLoadingModalState(true, "Tiến hành đặt hàng...");
 
     let formData = {
       cost: amountMoney.total,

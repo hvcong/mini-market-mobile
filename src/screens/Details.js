@@ -8,7 +8,6 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import useOrderContext, { OrderContext } from "../store/contexts/OrderContext";
 import { AntDesign } from "@expo/vector-icons";
 import { useContext, useState } from "react";
@@ -16,6 +15,8 @@ import { colors, btnColors, backgroundColors } from "../utils/constants";
 import { usePriceContext } from "../store/contexts/PriceContext";
 import { convertToVND } from "../utils";
 import { styles } from "@apolloeagle/loading-dots/src/components/animation-style";
+import { Icon } from "@ui-kitten/components";
+import RedirectRouter from "../components/RedirectRouter";
 
 const Details = ({ navigation, route }) => {
   const priceLineId = route.params;
@@ -34,15 +35,11 @@ const Details = ({ navigation, route }) => {
           paddingHorizontal: 8,
         }}
       >
-        <Icon
-          name="arrow-back-ios"
-          style={{ paddingTop: 12 }}
-          size={28}
-          onPress={navigation.goBack}
+        <RedirectRouter
+          title={"Chi tiết sản phẩm"}
+          isTitleCenter={false}
+          navigation={navigation}
         />
-        <Text style={{ fontSize: 17, fontWeight: "500" }}>
-          Chi tiết sản phẩm
-        </Text>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View

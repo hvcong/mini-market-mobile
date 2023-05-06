@@ -19,6 +19,7 @@ class UserApi {
 
   getOrCreateByPhone(phone) {
     let url = `user/getOrCreateByPhone?phonenumber=${phone}`;
+
     return axiosClient.get(url);
   }
 

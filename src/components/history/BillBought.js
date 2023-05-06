@@ -63,7 +63,7 @@ const BillBought = () => {
             <Text style={styles.detailValue}>{status}</Text>
           </View>
 
-          <View style={styles.btns}>
+          {/* <View style={styles.btns}>
             {bill.type == "pending" && (
               <Text
                 style={styles.btnCancel}
@@ -82,7 +82,7 @@ const BillBought = () => {
             >
               Chi tiết
             </Text>
-          </View>
+          </View> */}
         </View>
       </View>
     );
