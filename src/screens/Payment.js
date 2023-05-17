@@ -98,8 +98,8 @@ const Payment = ({ navigation }) => {
 
           <SpaceLine />
           <PaymentBill />
-          <SpaceLine />
-          <DeliveryNote />
+          {/* <SpaceLine /> */}
+          {/* <DeliveryNote /> */}
         </View>
       </ScrollView>
       <View style={styles.submit}>

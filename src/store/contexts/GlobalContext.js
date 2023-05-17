@@ -103,7 +103,9 @@ function GlobalContextProvider({ children }) {
 
   // function
   const globalFunc = {
-    setIsShowQr,
+    setIsShowQr: (is) => {
+      setIsShowQr(is);
+    },
     // login by phone
     login: async (phone) => {
       setLoadingModalState({

@@ -22,6 +22,7 @@ import {
 } from "../../utils/constants";
 import AddToCartModal from "../../components/modal/AddToCartModal";
 import { usePriceContext } from "../../store/contexts/PriceContext";
+import QRCode from "../../components/qrCode/QRCode";
 
 const Home = ({ navigation }) => {
   const { priceFunc, allPrices } = usePriceContext();
@@ -60,6 +61,7 @@ const Home = ({ navigation }) => {
           </View>
         </ScrollView>
       </View>
+      <QRCode />
     </SafeAreaView>
   );
 };

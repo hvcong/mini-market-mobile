@@ -105,7 +105,10 @@ const Header = ({ navigation }) => {
           </View>
           <TouchableOpacity
             style={styles.qrContainer}
-            onPress={() => globalFunc.setIsShowQr(true)}
+            onPress={() => {
+              console.log("press");
+              globalFunc.setIsShowQr(true);
+            }}
           >
             <Image
               source={require("../../../assets/qrIcon.jpg")}

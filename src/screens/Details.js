@@ -19,11 +19,7 @@ import { Icon } from "@ui-kitten/components";
 import RedirectRouter from "../components/RedirectRouter";
 
 const Details = ({ navigation, route }) => {
-  const priceLineId = route.params;
-  const { orderFunc } = useOrderContext();
-  const { priceFunc } = usePriceContext();
-
-  let item = priceFunc.getPriceById(priceLineId);
+  const productId = route.params;
 
   return (
     <SafeAreaView style={style.container}>
@@ -42,7 +38,7 @@ const Details = ({ navigation, route }) => {
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View
+        {/* <View
           style={{
             justifyContent: "center",
             alignItems: "center",
@@ -94,6 +90,9 @@ const Details = ({ navigation, route }) => {
               </TouchableOpacity>
             )}
           </View>
+        </View> */}
+        <View>
+          <Text>{productId}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
