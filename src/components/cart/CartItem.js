@@ -4,7 +4,7 @@ import { colors, fontSize, backgroundColors } from "../../utils/constants";
 import { Icon } from "@ui-kitten/components";
 import { OrderContext } from "../../store/contexts/OrderContext";
 import { useContext, useState, useEffect } from "react";
-import { convertToVND } from "../../utils";
+import { Toast, convertToVND } from "../../utils";
 
 const CartItem = ({ item }) => {
   const { orderFunc } = useContext(OrderContext);
@@ -61,9 +61,17 @@ const CartItem = ({ item }) => {
               <Pressable
                 style={styles.quantityBtn}
                 onPress={() => {
-                  console.log("oke");
+                  let maxQuantity = item.ProductUnitType.Product.quantity;
 
-                  orderFunc.increaseQuantity(item.id);
+                  let current = item.amount;
+
+                  if (maxQuantity == current) {
+                    Toast.error(
+                      "Số lượng sản phẩm bên cửa hàng không đủ, mong quý khách thông cảm!"
+                    );
+                  } else {
+                    orderFunc.increaseQuantity(item.id);
+                  }
                 }}
               >
                 <Icon

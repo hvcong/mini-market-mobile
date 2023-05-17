@@ -35,7 +35,7 @@ const Profile = ({ navigation }) => {
     return () => {};
   }, [numOfDRP]);
 
-  const [isVisibleModal, setIsVisibleModal] = useState(false);
+  const [isVisibleModal, setIsVisibleModal] = useState(true);
   return (
     <SafeAreaView style={{ backgroundColor: colors.green2 }}>
       <Header navigation={navigation} />
@@ -77,8 +77,6 @@ const Profile = ({ navigation }) => {
           </View>
         </ScrollView>
       </View>
-
-      <AddToCartModal visible={isVisibleModal} setVisible={setIsVisibleModal} />
     </SafeAreaView>
   );
 };
@@ -86,7 +84,6 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    marginBottom: 32,
   },
   promotion: {
     marginTop: headerHeight + 32,

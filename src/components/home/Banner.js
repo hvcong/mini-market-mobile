@@ -20,7 +20,7 @@ const Banner = ({ navigation }) => {
               </Text>
             ) : (
               <Text category="h2" style={styles.title}>
-                {convertToVND(MPlist[0].discountMoney)}% OFF
+                GIẢM GIÁ {convertToVND(MPlist[0].discountMoney)}
               </Text>
             )}
             <Text category="s2" style={styles.subtitle}>

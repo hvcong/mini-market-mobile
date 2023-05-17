@@ -94,9 +94,6 @@ const Tab = () => {
             />
           ),
           tabBarLabel: "Giỏ hàng",
-          tabBarStyle: {
-            display: "none",
-          },
         }}
       />
       <TabNavigator.Screen

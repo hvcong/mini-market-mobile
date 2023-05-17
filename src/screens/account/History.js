@@ -18,7 +18,6 @@ import Footer from "../../components/home/Footer";
 const History = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
-      <Header />
       <SafeAreaView>
         <View style={styles.wrap}>
           <RedirectRouter
@@ -39,10 +38,10 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     width: "100%",
-    backgroundColor: backgroundColors.gray,
+    backgroundColor: "#fff",
   },
   wrap: {
-    marginTop: headerHeight,
+    marginTop: 12,
   },
   content: {
     paddingHorizontal: 12,

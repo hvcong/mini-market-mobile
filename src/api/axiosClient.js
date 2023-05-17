@@ -1,10 +1,10 @@
 import axios from "axios";
 
 // let baseURL = "http://localhost:3000/";
-let baseURL = "http://10.0.2.2:3000/";
+// let baseURL = "http://10.0.2.2:3000/";
 // let baseURL = "http://192.168.1.87/3000";
 // let baseURL = "http://127.0.0.1:3000/";
-// let baseURL = "https://minimarket-server.onrender.com/";
+let baseURL = "https://minimarket-server.onrender.com/";
 
 const axiosClient = axios.create({
   baseURL: baseURL,

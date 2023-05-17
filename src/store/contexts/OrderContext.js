@@ -273,6 +273,7 @@ function OrderProvider({ children }) {
       }
       return item;
     });
+
     setListOrders(_newList);
     setRefreshPromotion(true);
   };

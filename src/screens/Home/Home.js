@@ -26,7 +26,7 @@ import { usePriceContext } from "../../store/contexts/PriceContext";
 const Home = ({ navigation }) => {
   const { priceFunc, allPrices } = usePriceContext();
   const [data, setData] = useState([]);
-  const [quantity, setQuantity] = useState(9);
+  const [quantity, setQuantity] = useState(8);
 
   useEffect(() => {
     setData(priceFunc.getLimitPrices(quantity));

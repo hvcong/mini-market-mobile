@@ -115,7 +115,7 @@ const InforUpdate = ({ navigation }) => {
   }
   return (
     <View style={styles.container}>
-      <Header />
+      {/* <Header /> */}
       <SafeAreaView>
         <ScrollView>
           <View style={styles.content}>
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   content: {
-    marginTop: headerHeight,
+    marginTop: 12,
   },
   body: {
     paddingHorizontal: 12,

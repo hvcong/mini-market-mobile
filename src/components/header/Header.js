@@ -16,23 +16,34 @@ import LocationModal from "../modal/LocationModal";
 import { useGlobalContext } from "../../store/contexts/GlobalContext";
 import QRCode from "../qrCode/QRCode";
 import { TouchableOpacity } from "react-native";
+import { useEffect } from "react";
+
+function getText(name) {
+  let date = new Date();
+  let text = "";
+  let hh = date.getHours();
+
+  if (hh < 9) {
+    text = "Chào buổi sáng " + name;
+    return text;
+  }
+
+  if (hh < 13) {
+    text = "Chúc " + name + " một ngày mua sắm vui vẻ!";
+  }
+  return text;
+}
 
 const Header = ({ navigation }) => {
   const [isShowLocationModal, setIsShowLocationModal] = useState(false);
   const { account, globalFunc } = useGlobalContext();
-  let name = "";
-  if (account.firstName) {
-    name += account.firstName + " ";
-  }
-  if (account.lastName) {
-    name += account.lastName;
-  }
+
   return (
     <SafeAreaView style={styles.wrap}>
       <View style={styles.container}>
         <View style={styles.top}>
           <View style={styles.helloUserContainer}>
-            <Text style={styles.helloUserLabel}>Xin chào bạn {name}</Text>
+            {/* <Text style={styles.helloUserLabel}>{text}</Text> */}
             <Text style={styles.helloUserName}>
               {/* {account && account.lastName} */}
             </Text>

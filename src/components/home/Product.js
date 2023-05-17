@@ -11,8 +11,9 @@ import { Icon } from "@ui-kitten/components";
 import { backgroundColors, colors, fontSize } from "../../utils/constants";
 import afucntion, { OrderContext } from "../../store/contexts/OrderContext";
 import { Toast, convertToVND } from "../../utils";
+import AddToCartModal from "../modal/AddToCartModal";
 
-const Product = ({ navigation, setIsVisibleModal, item }) => {
+const Product = ({ navigation, item }) => {
   const { orderFunc } = useContext(OrderContext);
 
   let newPrice = item.price;
@@ -76,7 +77,7 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
 
         {orderFunc.isExistInCart(item.id) ? (
           <TouchableOpacity
-            style={styles.btnContainer}
+            style={[styles.btnContainer]}
             onPress={() => {
               navigation.navigate("Cart");
             }}
@@ -86,15 +87,23 @@ const Product = ({ navigation, setIsVisibleModal, item }) => {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            style={styles.btnContainer}
+            style={[
+              styles.btnContainer,
+              maxQuantity <= 0 && styles.btnContainerSoldOut,
+            ]}
             onPress={() => {
               orderFunc.addToCart(item);
               Toast.infor("Thêm vào giỏ hàng thành công");
             }}
             disabled={maxQuantity <= 0}
           >
-            <Text style={styles.btnLabel}>
-              {maxQuantity <= 0 ? "Hết hàng" : "Mua"}
+            <Text
+              style={[
+                styles.btnLabel,
+                maxQuantity <= 0 && styles.btnLabelSoldOut,
+              ]}
+            >
+              {maxQuantity <= 0 ? "Đã hết hàng" : "Mua"}
             </Text>
           </TouchableOpacity>
         )}
@@ -108,7 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 8,
     backgroundColor: "white",
-    width: "32%",
+    width: "45%",
     alignItems: "center",
     marginBottom: 12,
     overflow: "hidden",
@@ -121,7 +130,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 80,
+    height: 160,
   },
   content: {
     paddingBottom: 12,
@@ -172,9 +181,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: backgroundColors.gray,
   },
+
+  btnContainerSoldOut: {
+    borderColor: "red",
+  },
   btnLabel: {
     color: colors.green2,
     fontSize: fontSize.L,
+  },
+  btnLabelSoldOut: {
+    color: "red",
   },
   heartContainer: {
     position: "absolute",

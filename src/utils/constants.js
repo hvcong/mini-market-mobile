@@ -37,7 +37,7 @@ export const fontSize = {
   XXL: 18,
 };
 
-export const headerHeight = 108;
+export const headerHeight = 64;
 export const headerSearchHeight = 64;
 export const headerInputHeight = 48;
 export const bottomTabHeight = 52;

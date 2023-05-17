@@ -31,6 +31,7 @@ const Payment = ({ navigation }) => {
   const [isVisibleVoucherModal, setIsVisibleVoucherModal] = useState(false);
 
   const { account, isLogin } = useGlobalContext();
+  const { listOrders = [] } = useOrderContext();
   console.log(account);
 
   let address = "";
@@ -45,6 +46,13 @@ const Payment = ({ navigation }) => {
       ", " +
       account.HomeAddress.Ward.District.City.name;
   }
+
+  useEffect(() => {
+    if (listOrders && listOrders.length == 0) {
+      navigation.navigate("Cart");
+    }
+    return () => {};
+  }, [listOrders]);
 
   return (
     <SafeAreaView style={styles.wrap}>

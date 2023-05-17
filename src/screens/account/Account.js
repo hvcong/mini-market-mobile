@@ -18,21 +18,34 @@ const Account = ({ navigation }) => {
   const [phone, setPhone] = useState("0868283915");
   const [isShowVerifyModal, setIsShowVerifyModal] = useState(false);
   const { account, isLogin, globalFunc } = useGlobalContext();
-
+  let name = "";
+  if (account.firstName) {
+    name += account.firstName + " ";
+  }
+  if (account.lastName) {
+    name += account.lastName;
+  }
   return (
     <View style={styles.container}>
-      <Header navigation={navigation} />
+      {/* <Header navigation={navigation} /> */}
       <SafeAreaView>
         <ScrollView>
           <View style={styles.content}>
             <View style={styles.infor}>
               <Text style={styles.title}>Thông tin cá nhân</Text>
+
+              <View style={styles.group}>
+                <View style={[styles.row, styles.userNameContainer]}>
+                  <Text style={styles.nameUser}>{name}</Text>
+                  <Text style={styles.phone}>{account.phonenumber}</Text>
+                </View>
+              </View>
               {/* <View style={styles.group}>
-                {isLogin && account ? (
                   <View style={styles.row}>
                     <Text style={styles.nameUser}>Bạn {account.name}</Text>
                     <Text style={styles.phone}>{account.phonenumber}</Text>
                   </View>
+                {isLogin && account ? (
                 ) : (
                   <View style={styles.enterPhone}>
                     <Text style={styles.enterPhoneDes}>
@@ -153,13 +166,13 @@ const Account = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: backgroundColors.gray,
+    backgroundColor: "#fff",
     paddingHorizontal: 12,
     paddingVertical: 12,
     height: "100%",
   },
   content: {
-    marginTop: headerHeight,
+    marginTop: 12,
   },
   infor: {
     backgroundColor: colors.white,
@@ -168,10 +181,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   title: {
-    padding: 12,
+    padding: 13,
     fontSize: fontSize.L,
     borderBottomWidth: 1,
     borderColor: colors.grayLighter,
+    fontWeight: "bold",
   },
   group: {
     paddingHorizontal: 12,
@@ -181,12 +195,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 12,
   },
+  userNameContainer: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grayLighter,
+  },
   nameUser: {
     fontSize: fontSize.L,
     fontWeight: "bold",
     flex: 1,
+    color: colors.green,
   },
-  phone: {},
+  phone: {
+    fontSize: fontSize.L,
+    fontWeight: "bold",
+    color: colors.green,
+  },
   enterPhone: {
     paddingTop: 12,
   },
