@@ -34,7 +34,9 @@ const Product = ({ navigation, item }) => {
   return (
     <Pressable
       style={styles.item}
-      onPress={() => navigation.navigate("Details", item.id)}
+      onPress={() =>
+        navigation.navigate("Details", item.ProductUnitType.Product.id)
+      }
     >
       <View style={styles.imageContainer}>
         <Image

@@ -88,7 +88,8 @@ function PriceContextProvider({ children }) {
     if (productName) {
       _listFounds = allPrices.filter((item) => {
         let product = item.ProductUnitType.Product;
-        return product.name.includes(productName);
+
+        return product.name.toLowerCase().includes(productName.toLowerCase());
       });
     }
 

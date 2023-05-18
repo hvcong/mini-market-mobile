@@ -32,53 +32,39 @@ export default function QRCode() {
     }
   };
 
-  if (hasPermission === null) {
-    return <></>;
-  }
-  if (hasPermission === false) {
-    return <></>;
-  }
-
   useEffect(() => {
     if (hasPermission == null || hasPermission == false) {
       Toast.error("Yêu cầu truy cập camera");
-      globalFunc.setIsShowQr(false);
     }
     return () => {};
   }, [hasPermission]);
 
   return (
-    <>
-      {isShowQr && (
-        <View style={styles.container}>
-          <View style={styles.wrap}>
-            <BarCodeScanner
-              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-              style={StyleSheet.absoluteFillObject}
+    <View style={styles.container}>
+      <View style={styles.wrap}>
+        <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={StyleSheet.absoluteFillObject}
+        />
+        {/* {scanned && (
+          <>
+            <Button title={"Scan lại"} onPress={() => setScanned(false)} />
+            <Button
+              title={"Dừng scan"}
+              onPress={() => {
+              }}
             />
-            {scanned && (
-              <>
-                <Button title={"Scan lại"} onPress={() => setScanned(false)} />
-                <Button
-                  title={"Dừng scan"}
-                  onPress={() => {
-                    globalFunc.setIsShowQr(false);
-                  }}
-                />
-              </>
-            )}
-            {!scanned && (
-              <Button
-                title={"Dừng scan"}
-                onPress={() => {
-                  globalFunc.setIsShowQr(false);
-                }}
-              />
-            )}
-          </View>
-        </View>
-      )}
-    </>
+          </>
+        )}
+        {!scanned && (
+          <Button
+            title={"Dừng scan"}
+            onPress={() => {
+            }}
+          />
+        )} */}
+      </View>
+    </View>
   );
 }
 
@@ -96,6 +82,5 @@ const styles = StyleSheet.create({
   wrap: {
     height: 300,
     width: 300,
-    marginTop: 300,
   },
 });

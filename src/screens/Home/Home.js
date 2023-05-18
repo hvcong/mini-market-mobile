@@ -61,7 +61,6 @@ const Home = ({ navigation }) => {
           </View>
         </ScrollView>
       </View>
-      <QRCode />
     </SafeAreaView>
   );
 };

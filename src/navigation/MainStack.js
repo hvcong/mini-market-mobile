@@ -16,6 +16,7 @@ import DeliveryAddress from "../screens/account/DeliveryAddress";
 import Details from "../screens/Details";
 import Product from "../components/home/Product";
 import { useGlobalContext } from "../store/contexts/GlobalContext";
+import BarcodeScreen from "../screens/BarcodeScreen";
 
 const Stack = createNativeStackNavigator();
 const MainStack = () => {
@@ -40,6 +41,7 @@ const MainStack = () => {
           <Stack.Screen name="DeliveryAddress" component={DeliveryAddress} />
           <Stack.Screen name="Details" component={Details} />
           <Stack.Screen name="Product" component={Product} />
+          <Stack.Screen name="BarcodeScreen" component={BarcodeScreen} />
         </>
       )}
     </Stack.Navigator>

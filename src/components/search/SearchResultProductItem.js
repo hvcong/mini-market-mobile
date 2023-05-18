@@ -20,7 +20,7 @@ const SearchResultProductItem = ({ data, navigation }) => {
     <TouchableOpacity
       style={styles.container}
       onPress={() => {
-        navigation.navigate("Details", data.id);
+        navigation.navigate("Details", data.ProductUnitType.ProductId);
       }}
     >
       <View style={styles.imageContainer}>

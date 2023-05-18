@@ -21,7 +21,7 @@ const History = ({ navigation, route }) => {
       <SafeAreaView>
         <View style={styles.wrap}>
           <RedirectRouter
-            title="lịch sử mua hàng"
+            title="Lịch sử mua hàng"
             navigation={navigation}
             isTitleCenter={true}
           />

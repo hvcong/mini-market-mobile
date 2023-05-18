@@ -107,7 +107,7 @@ const Header = ({ navigation }) => {
             style={styles.qrContainer}
             onPress={() => {
               console.log("press");
-              globalFunc.setIsShowQr(true);
+              navigation.navigate("BarcodeScreen");
             }}
           >
             <Image

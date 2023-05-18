@@ -44,7 +44,7 @@ const Profile = ({ navigation }) => {
         <ScrollView style={styles.promotion}>
           <View>
             <Group
-              title="Siêu ưu đãi giảm giá"
+              title=" Tặng sản phẩm"
               type="special"
               setIsVisibleModal={setIsVisibleModal}
               backgroundColor="#d3db76"
@@ -61,7 +61,7 @@ const Profile = ({ navigation }) => {
 
           <View>
             <Group
-              title="Tặng sản phẩm"
+              title="Siêu ưu đãi giảm giá"
               type="special"
               setIsVisibleModal={setIsVisibleModal}
               backgroundColor={backgroundColors.greenLighter}
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   promotion: {
-    marginTop: headerHeight + 32,
+    marginTop: headerHeight + 12,
   },
   more: {
     alignItems: "center",

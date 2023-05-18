@@ -7,158 +7,363 @@ import {
   ScrollView,
   Text,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import useOrderContext, { OrderContext } from "../store/contexts/OrderContext";
 import { AntDesign } from "@expo/vector-icons";
-import { useContext, useState } from "react";
-import { colors, btnColors, backgroundColors } from "../utils/constants";
+import { useContext, useEffect, useState } from "react";
+import {
+  colors,
+  btnColors,
+  backgroundColors,
+  fontSize,
+} from "../utils/constants";
 import { usePriceContext } from "../store/contexts/PriceContext";
-import { convertToVND } from "../utils";
-import { styles } from "@apolloeagle/loading-dots/src/components/animation-style";
-import { Icon } from "@ui-kitten/components";
+import { Toast, convertToVND } from "../utils";
+import { Button, Icon } from "@ui-kitten/components";
 import RedirectRouter from "../components/RedirectRouter";
+import ProductQuantityChange from "../components/common/ProductQuantityChange";
+import SelectDropdown from "react-native-select-dropdown";
+import { useGlobalContext } from "../store/contexts/GlobalContext";
 
 const Details = ({ navigation, route }) => {
   const productId = route.params;
+  const { allPrices = [] } = usePriceContext();
+  const { orderFunc, listOrders } = useOrderContext();
+  const [unitTypeName, setUnitTypeName] = useState("");
+
+  const [onePrice, setOnePrice] = useState(null);
+  const [priceList, setPriceList] = useState([]);
+  const [ppList, setPpList] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    let _ppList = [];
+    let _priceList = [];
+    let _onePrice = null;
+
+    allPrices.map((item) => {
+      if (item.ProductUnitType.Product.id == productId) {
+        _priceList.push(item);
+        if (item.ProductUnitType.ProductPromotions?.length > 0) {
+          _ppList.push(item.ProductUnitType.ProductPromotions[0]);
+        }
+      }
+    });
+    if (unitTypeName && _priceList.length > 1) {
+      _priceList.map((item) => {
+        if (item.ProductUnitType.UnitType.name == unitTypeName) {
+          _onePrice = item;
+        }
+      });
+    }
+    if (!_onePrice) {
+      _onePrice = _priceList[0];
+    }
+    setOnePrice(_onePrice);
+    setPpList(_ppList);
+    setPriceList(_priceList);
+    return () => {};
+  }, [allPrices, productId, unitTypeName]);
+
+  let maxQuantity = 0;
+  if (onePrice) {
+    maxQuantity = Math.floor(
+      onePrice?.ProductUnitType.Product.quantity /
+        onePrice?.ProductUnitType.UnitType.convertionQuantity
+    );
+  }
+
+  useEffect(() => {
+    if (onePrice && orderFunc.isExistInCart(onePrice.id)) {
+      listOrders.map((item) => {
+        if (item.id == onePrice.id) {
+          setQuantity(item.amount);
+        }
+      });
+    }
+    return () => {};
+  }, [onePrice]);
 
   return (
-    <SafeAreaView style={style.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingHorizontal: 8,
-        }}
-      >
+    <SafeAreaView style={styles.container}>
+      <View>
         <RedirectRouter
           title={"Chi tiết sản phẩm"}
           isTitleCenter={false}
           navigation={navigation}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            height: 280,
-            backgroundColor: backgroundColors.gray,
-            borderRadius: 10,
-          }}
-        >
-          <Image
-            source={{ uri: item.ProductUnitType.Product.images[0].uri }}
-            style={{ height: 220, width: 220, borderRadius: 10 }}
-          />
-        </View>
-        <View style={style.details}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 25, fontWeight: "bold", color: "white" }}>
-              {item.ProductUnitType.Product.name}
-            </Text>
-          </View>
-          <View style={style.behavior}>
-            <Text style={style.amout}>
-              Đơn giá 1: {item.ProductUnitType.UnitType.name}
-            </Text>
+      {onePrice ? (
+        <>
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.header}>
+              <View style={styles.imageContainer}>
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri: onePrice.ProductUnitType.Product.images[0].uri,
+                  }}
+                />
+              </View>
+            </View>
+            <View style={styles.body}>
+              <View style={styles.row}>
+                <View style={styles.nameContainer}>
+                  <Text style={styles.name}>
+                    {onePrice.ProductUnitType.Product.name}
+                  </Text>
+                  <View style={styles.listUTs}>
+                    {priceList.map((item, index) => {
+                      let utName = item.ProductUnitType.UnitType.name;
+                      return (
+                        <Text
+                          onPress={() => {
+                            setUnitTypeName(utName);
+                          }}
+                          style={[
+                            styles.utItem,
+                            unitTypeName == utName && styles.utSelected,
+                            !unitTypeName && index == 0 && styles.utSelected,
+                          ]}
+                        >
+                          {utName}
+                        </Text>
+                      );
+                    })}
+                  </View>
+                </View>
+                <View style={styles.priceContainer}>
+                  {onePrice.ProductUnitType.DiscountRateProduct ? (
+                    <>
+                      <Text style={styles.oldPrice}>
+                        {convertToVND(onePrice.price)}
+                      </Text>
+                      <Text style={styles.discountPercent}>
+                        -
+                        {
+                          onePrice.ProductUnitType.DiscountRateProduct
+                            .discountRate
+                        }
+                        %
+                      </Text>
+                      <Text style={styles.newPrice}>
+                        {convertToVND(
+                          Math.floor(
+                            (onePrice.price *
+                              (100 -
+                                onePrice.ProductUnitType.DiscountRateProduct
+                                  .discountRate)) /
+                              100
+                          )
+                        )}
+                      </Text>
+                    </>
+                  ) : (
+                    <Text style={styles.newPrice}>
+                      {convertToVND(onePrice.price)}
+                    </Text>
+                  )}
+                </View>
+              </View>
 
-            <Text style={style.money}> {convertToVND(item.price)}</Text>
-          </View>
-          <Text style={style.detailsText}>
-            {item.ProductUnitType.Product.description}
-          </Text>
-          <View style={styles.ppContainer}>
-            <Icon name="gift-outline" fill={"red"} style={styles.giftIcon} />
-            <Text style={styles.ppText}>{}</Text>
-          </View>
+              {ppList?.length > 0 &&
+                ppList.map((item) => {
+                  return (
+                    <View style={styles.promotionPP}>
+                      <Icon
+                        name="gift-outline"
+                        fill={"green"}
+                        style={styles.giftIcon}
+                      />
+                      <Text style={styles.ppText}>{item.title}</Text>
+                    </View>
+                  );
+                })}
 
-          <View style={{ marginTop: 40, marginBottom: 40, height: 50 }}>
-            {orderFunc.isExistInCart(item.id) ? (
-              <TouchableOpacity style={style.button}>
-                <Text style={style.text}>Xem giỏ hàng</Text>
-              </TouchableOpacity>
+              <View style={styles.moreInfor}>
+                <Text style={styles.moreInforTitle}>
+                  Thông tin chi tiết về sản phẩm
+                </Text>
+                {/* <View style={styles.item}>
+              <Text style={styles.label}>Nhóm sản phẩm:</Text>
+              <Text style={styles.value}>{onePrice?.ProductUnitType.Product.}</Text>
+            </View> */}
+                <View style={styles.item}>
+                  <Text style={styles.label}>Tổng số lượng có thể bán:</Text>
+                  <Text style={styles.value}>
+                    {maxQuantity +
+                      " (" +
+                      onePrice.ProductUnitType.UnitType.name +
+                      ")"}
+                  </Text>
+                </View>
+                <View style={styles.item}>
+                  <Text style={styles.label}>Mô tả:</Text>
+                  <Text style={styles.value}>
+                    {onePrice.ProductUnitType.Product.description}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+          <View style={styles.row}>
+            <ProductQuantityChange
+              value={quantity}
+              setValue={(value) => {
+                if (value > maxQuantity) {
+                  Toast.error(
+                    "Số lượng bên cửa hàng không đủ, mong quý khách thông cảm"
+                  );
+                } else if (value > 0) {
+                  if (orderFunc.isExistInCart(onePrice.id)) {
+                    if (value > quantity) {
+                      orderFunc.increaseQuantity(onePrice.id);
+                    } else {
+                      orderFunc.decreaseQuantity(onePrice.id);
+                    }
+                  }
+
+                  setQuantity(value);
+                }
+              }}
+            />
+            {orderFunc.isExistInCart(onePrice.id) ? (
+              <Button
+                style={styles.btn}
+                onPress={() => {
+                  navigation.navigate("Cart");
+                }}
+              >
+                <Text style={styles.btnText}>XEM GIỎ HÀNG</Text>
+              </Button>
             ) : (
-              <TouchableOpacity style={style.button}>
-                <Text style={style.text}>Thêm vào giỏ hàng</Text>
-              </TouchableOpacity>
+              <Button
+                style={styles.btn}
+                onPress={() => {
+                  orderFunc.addToCart(onePrice, quantity);
+                  Toast.infor("Thêm vào giỏ hàng thành công");
+                }}
+              >
+                <Text style={styles.btnText}>THÊM VÀO GIỎ HÀNG</Text>
+              </Button>
             )}
           </View>
-        </View> */}
-        <View>
-          <Text>{productId}</Text>
+        </>
+      ) : (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator />
         </View>
-      </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    paddingVertical: 16,
+    paddingTop: 16,
     paddingHorizontal: 8,
+    flex: 1,
+  },
+  scrollView: {
+    // paddingBottom: 24,
   },
   header: {
-    paddingVertical: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: 20,
-  },
-  details: {
-    paddingHorizontal: 20,
-    paddingTop: 40,
-    paddingBottom: 60,
-    backgroundColor: backgroundColors.greenLighter,
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
-  },
-  iconContainer: {
-    //   backgroundColor: COLORS.white,
-    height: 50,
-    width: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 30,
-  },
-  detailsText: {
-    marginTop: 10,
-    lineHeight: 22,
-    fontSize: 16,
-  },
-  behavior: {
-    flexDirection: "row",
-    paddingVertical: 8,
-  },
-  money: {
-    position: "absolute",
-    right: 0,
-    paddingVertical: 8,
-    fontSize: 17,
-    fontWeight: "bold",
-    borderRadius: 20,
-  },
-  amout: {
-    paddingHorizontal: 16,
-    fontSize: 17,
-    fontWeight: "500",
-  },
-  button: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.green2,
-    borderRadius: 10,
   },
-  text: {
-    fontSize: 18,
-    fontWeight: "500",
+  imageContainer: {
+    width: "100%",
+  },
+  image: {
+    width: "100%",
+    height: 400,
+  },
+  body: {
+    marginTop: 12,
+  },
+  row: {
+    flexDirection: "row",
+  },
+  nameContainer: {
+    flex: 1,
+  },
+  name: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  listUTs: {
+    flexDirection: "row",
+  },
+  utItem: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    backgroundColor: "#ddd",
+    marginBottom: 6,
+    marginRight: 6,
+  },
+  utSelected: {
+    backgroundColor: colors.green,
     color: "white",
+  },
+  priceContainer: {
+    alignItems: "flex-end",
+    marginLeft: 24,
+  },
+  oldPrice: {
+    textDecorationLine: "line-through",
+  },
+  discountPercent: {
+    color: "red",
+  },
+  newPrice: {
+    color: colors.green,
+    fontWeight: "bold",
+    fontSize: 17,
+  },
+  btn: {
+    marginVertical: 12,
+    flex: 1,
+    marginLeft: 24,
+    backgroundColor: colors.green,
+    borderWidth: 0,
+  },
+
+  // pp
+  promotionPP: {
+    marginVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  giftIcon: {
+    width: 24,
+    height: 24,
+  },
+  ppText: {
+    marginLeft: 8,
+    color: colors.greenLighter,
+  },
+
+  moreInfor: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    marginTop: 12,
+  },
+  moreInforTitle: {
+    marginBottom: 12,
+  },
+  item: {
+    flexDirection: "row",
+  },
+  label: {
+    fontSize: 14,
+    width: 100,
+  },
+  value: {
+    flex: 1,
   },
 });
 export default Details;

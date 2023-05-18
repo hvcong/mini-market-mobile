@@ -40,7 +40,14 @@ const CartItem = ({ item }) => {
           </View>
         </View>
         <View style={styles.right}>
-          <Text style={styles.price}> {convertToVND(total)}</Text>
+          {DRP && (
+            <View style={styles.drpContainer}>
+              <Text style={styles.priceOld}>{convertToVND(item.price)}</Text>
+              <Text style={styles.percentDiscount}>-{DRP.discountRate}%</Text>
+            </View>
+          )}
+          <Text style={styles.priceSub}>{convertToVND(newPrice)}</Text>
+
           <View style={styles.quantityContainer}>
             {!item.isPP && (
               <Pressable
@@ -82,14 +89,7 @@ const CartItem = ({ item }) => {
               </Pressable>
             )}
           </View>
-
-          {DRP && (
-            <View style={styles.drpContainer}>
-              <Text style={styles.priceOld}>{convertToVND(item.price)}</Text>
-              <Text style={styles.percentDiscount}>-{DRP.discountRate}%</Text>
-            </View>
-          )}
-          <Text style={styles.priceSub}>{convertToVND(newPrice)}</Text>
+          <Text style={styles.price}> {convertToVND(total)}</Text>
         </View>
       </View>
     </View>
@@ -142,10 +142,21 @@ const styles = StyleSheet.create({
   price: {
     fontSize: fontSize.L,
     fontWeight: "500",
+    textAlign: "right",
+  },
+  priceOld: {
+    fontSize: fontSize.S,
+    textDecorationLine: "line-through",
+    textAlign: "right",
+  },
+  percentDiscount: {
+    color: "red",
+    textAlign: "right",
+    paddingLeft: 4,
   },
   priceSub: {
-    color: colors.gray,
     fontSize: fontSize.S,
+    textAlign: "right",
   },
   quantityContainer: {
     flexDirection: "row",
@@ -175,8 +186,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   drpContainer: { flexDirection: "row" },
-  priceOld: {},
-  percentDiscount: {},
 });
 
 export default CartItem;
