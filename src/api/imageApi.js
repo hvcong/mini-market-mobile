@@ -1,7 +1,5 @@
 class ImageApi {
-  uploadOne(file) {
-    console.log(file);
-  }
+  uploadOne(file) {}
 }
 
 const imageApi = new ImageApi();

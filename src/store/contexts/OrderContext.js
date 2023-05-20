@@ -5,20 +5,21 @@ import { useGlobalContext } from "./GlobalContext";
 import { useContext } from "react";
 import { Toast, handleStoreTranAfterCreateBill } from "../../utils";
 import billApi from "./../../api/billApi";
+import { usePriceContext } from "./PriceContext";
 
 const OrderContext = React.createContext();
 
 function OrderProvider({ children }) {
   const [listOrders, setListOrders] = useState([]);
   const [refreshPromotion, setRefreshPromotion] = useState(false);
-  const { globalFunc } = useGlobalContext();
+  const { globalFunc, account, socket } = useGlobalContext();
+  const { allPrices } = usePriceContext();
   const [amountMoney, setAmountMoney] = useState({
     subTotal: 0,
     discountOnBill: 0,
     discountByVoucher: 0,
     total: 0,
   });
-  const { account } = useGlobalContext();
   let customerType = (account && account.TypeCustomerId) || "BT";
 
   const [voucherUsed, setVoucherUsed] = useState(null);
@@ -35,11 +36,17 @@ function OrderProvider({ children }) {
 
   useEffect(() => {
     if (account) {
-      calcPP();
+      console.log("reload order context");
       loadMPList();
     }
     return () => {};
   }, [account]);
+
+  useEffect(() => {
+    refreshCartWhenHaveUpdateFromServer();
+
+    return () => {};
+  }, [allPrices]);
 
   useEffect(() => {
     if (listOrders) {
@@ -77,7 +84,6 @@ function OrderProvider({ children }) {
           isPP: true,
           PP: ppItem,
         };
-        console.log(ppItem.ProductUnitType);
 
         _listItemPP.push(_newCartItem);
       });
@@ -177,7 +183,6 @@ function OrderProvider({ children }) {
 
     total = costBeforeDiscountVoucher - discountByVoucher;
 
-    console.log(subTotal, discountOnBill, discountByVoucher, total);
     setAmountMoney({
       subTotal,
       discountOnBill,
@@ -236,11 +241,47 @@ function OrderProvider({ children }) {
       // cập nhật lại account để load lại bills
       await globalFunc.refresh();
       Toast.infor("Đặt hàng thành công");
+      socket.emit("have_new_order");
+      globalFunc.setLoadingModalState(false);
       return true;
     } else {
       Toast.error("Đặt hàng thất bại");
+      globalFunc.setLoadingModalState(false);
       return false;
     }
+  }
+
+  function refreshCartWhenHaveUpdateFromServer() {
+    let _newList = [];
+
+    listOrders.map((cartItem) => {
+      if (!cartItem.isPP) {
+        let _newPriceItem = null;
+        let maxQuantity = 0;
+
+        allPrices.map((item) => {
+          if (item.id == cartItem.id) {
+            _newPriceItem = item;
+            maxQuantity = item.ProductUnitType.Product.quantity;
+          }
+        });
+
+        let amount = cartItem.amount;
+
+        if (amount > maxQuantity) {
+          amount = maxQuantity;
+        }
+
+        if (amount > 0 && _newPriceItem) {
+          _newList.push({
+            ..._newPriceItem,
+            amount,
+          });
+        }
+      }
+    });
+    setListOrders(_newList);
+    setRefreshPromotion(true);
   }
 
   function clearCart() {
@@ -296,6 +337,23 @@ function OrderProvider({ children }) {
     setListOrders(_newList);
     setRefreshPromotion(true);
   };
+
+  // socket
+
+  useEffect(() => {
+    if (socket) {
+      console.log("start listent io");
+      socket.on("have_new_order", () => {
+        console.log("have new order");
+        globalFunc.refresh();
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.removeAllListeners();
+      }
+    };
+  }, [socket]);
 
   const orderFunc = {
     isExistInCart,

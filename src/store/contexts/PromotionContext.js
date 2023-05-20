@@ -12,7 +12,6 @@ function PromotionContextProvider({ children }) {
   const promotionFunc = {
     loadAllPromotion: async () => {
       let res = await promotionApi.getAllOnActive();
-      console.log(res);
     },
   };
 

@@ -5,7 +5,6 @@ class AuthApi {
   // login
   login(phoneOrEmail, password) {
     let url = "auth/login";
-    console.log(phoneOrEmail, password);
     return axiosClient.post(url, {
       phonenumber: phoneOrEmail,
       password,

@@ -118,6 +118,7 @@ const Details = ({ navigation, route }) => {
                       let utName = item.ProductUnitType.UnitType.name;
                       return (
                         <Text
+                          key={index}
                           onPress={() => {
                             setUnitTypeName(utName);
                           }}
@@ -168,9 +169,9 @@ const Details = ({ navigation, route }) => {
               </View>
 
               {ppList?.length > 0 &&
-                ppList.map((item) => {
+                ppList.map((item, ind) => {
                   return (
-                    <View style={styles.promotionPP}>
+                    <View style={styles.promotionPP} key={ind}>
                       <Icon
                         name="gift-outline"
                         fill={"green"}
@@ -208,45 +209,55 @@ const Details = ({ navigation, route }) => {
             </View>
           </ScrollView>
           <View style={styles.row}>
-            <ProductQuantityChange
-              value={quantity}
-              setValue={(value) => {
-                if (value > maxQuantity) {
-                  Toast.error(
-                    "Số lượng bên cửa hàng không đủ, mong quý khách thông cảm"
-                  );
-                } else if (value > 0) {
-                  if (orderFunc.isExistInCart(onePrice.id)) {
-                    if (value > quantity) {
-                      orderFunc.increaseQuantity(onePrice.id);
-                    } else {
-                      orderFunc.decreaseQuantity(onePrice.id);
+            {maxQuantity > 0 && (
+              <ProductQuantityChange
+                value={quantity}
+                setValue={(value) => {
+                  if (value > maxQuantity) {
+                    Toast.error(
+                      "Số lượng bên cửa hàng không đủ, mong quý khách thông cảm"
+                    );
+                  } else if (value > 0) {
+                    if (orderFunc.isExistInCart(onePrice.id)) {
+                      if (value > quantity) {
+                        orderFunc.increaseQuantity(onePrice.id);
+                      } else {
+                        orderFunc.decreaseQuantity(onePrice.id);
+                      }
                     }
-                  }
 
-                  setQuantity(value);
-                }
-              }}
-            />
+                    setQuantity(value);
+                  }
+                }}
+              />
+            )}
             {orderFunc.isExistInCart(onePrice.id) ? (
-              <Button
+              <TouchableOpacity
                 style={styles.btn}
                 onPress={() => {
                   navigation.navigate("Cart");
                 }}
               >
                 <Text style={styles.btnText}>XEM GIỎ HÀNG</Text>
-              </Button>
+              </TouchableOpacity>
             ) : (
-              <Button
-                style={styles.btn}
+              <TouchableOpacity
+                style={[styles.btn, maxQuantity == 0 && styles.btnSoldOut]}
                 onPress={() => {
                   orderFunc.addToCart(onePrice, quantity);
                   Toast.infor("Thêm vào giỏ hàng thành công");
                 }}
+                disabled={maxQuantity <= 0}
               >
-                <Text style={styles.btnText}>THÊM VÀO GIỎ HÀNG</Text>
-              </Button>
+                <Text
+                  style={[
+                    styles.btnText,
+                    maxQuantity == 0 && styles.btnTextSoldOut,
+                  ]}
+                >
+                  {maxQuantity == 0 ? "ĐÃ HẾT HÀNG" : "THÊM VÀO GIỎ HÀNG"}
+                </Text>
+              </TouchableOpacity>
             )}
           </View>
         </>
@@ -322,11 +333,27 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   btn: {
+    borderWidth: 1,
+    borderColor: colors.green,
     marginVertical: 12,
+    marginLeft: 12,
     flex: 1,
-    marginLeft: 24,
-    backgroundColor: colors.green,
-    borderWidth: 0,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: backgroundColors.gray,
+    height: 48,
+  },
+
+  btnSoldOut: {
+    borderColor: "red",
+  },
+  btnText: {
+    color: colors.green2,
+    fontSize: fontSize.L,
+  },
+  btnTextSoldOut: {
+    color: "red",
   },
 
   // pp

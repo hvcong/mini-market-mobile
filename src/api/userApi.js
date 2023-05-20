@@ -13,7 +13,6 @@ class UserApi {
 
   getOneCustomerByPhone(phone) {
     let url = `user/getPhone?phonenumber=${phone}`;
-    console.log(url);
     return axiosClient.get(url);
   }
 
@@ -24,7 +23,6 @@ class UserApi {
   }
 
   getAllCustomerLikePhone(phone) {
-    console.log(phone);
     let url = `user/likePhone?phonenumber=${phone}`;
     return axiosClient.get(url);
   }

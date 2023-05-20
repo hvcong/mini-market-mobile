@@ -97,6 +97,7 @@ function PriceContextProvider({ children }) {
   }
   useEffect(() => {
     if (account) {
+      console.log("reload prices");
       // load tất cả dòng giá đang sử dụng
       loadAllPrices();
     }

@@ -106,7 +106,6 @@ const Header = ({ navigation }) => {
           <TouchableOpacity
             style={styles.qrContainer}
             onPress={() => {
-              console.log("press");
               navigation.navigate("BarcodeScreen");
             }}
           >

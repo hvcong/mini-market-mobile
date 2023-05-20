@@ -79,6 +79,7 @@ const InforUpdate = ({ navigation }) => {
 
   async function onSubmit() {
     let homeAddresId = null;
+    globalFunc.setLoadingModalState(true, "Đang cập nhật...");
     if (await checkData()) {
       let res = await userApi.updateOneCustomer({
         firstName: formState.firstName,
@@ -93,6 +94,7 @@ const InforUpdate = ({ navigation }) => {
         Toast.error("Thông tin không hợp lệ, vui lòng thử lại");
       }
     }
+    globalFunc.setLoadingModalState(false);
 
     async function checkData() {
       let isCheck = true;

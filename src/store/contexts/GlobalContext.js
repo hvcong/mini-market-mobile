@@ -3,103 +3,33 @@ import store from "..";
 import authApi from "../../api/authApi";
 import userApi from "../../api/userApi";
 import cateApi from "../../api/cateApi";
+import connectSocketIo from "../../socket";
+import { useRef } from "react";
+import { useEffect } from "react";
 
 const GlobalContext = createContext();
 
 function GlobalContextProvider({ children }) {
   //dataTest
   const [state, setState] = useState({
-    isLogin: true,
-    account: {
-      id: "KH0868283915",
-      firstName: "Hoàng Văn",
-      lastName: "Việt",
-      phonenumber: "0868283915",
-      email: null,
-      HomeAddressId: 27,
-      TypeCustomerId: "BT",
-      Bills: [
-        {
-          id: "Bill1683886533998",
-          orderDate: "2023-05-12T10:15:33.000Z",
-          isDDH: false,
-          cost: 698000,
-          type: "success",
-          CustomerId: "KH0868283915",
-          EmployeeId: "NV2976561",
-        },
-        {
-          id: "Bill1684295761080",
-          orderDate: "2023-05-17T03:56:01.000Z",
-          isDDH: false,
-          cost: 192600,
-          type: "success",
-          CustomerId: "KH0868283915",
-          EmployeeId: "NV2976561",
-        },
-        {
-          id: "Bill1684296533008",
-          orderDate: "2023-05-17T04:08:53.000Z",
-          isDDH: false,
-          cost: 0,
-          type: "pending",
-          CustomerId: "KH0868283915",
-          EmployeeId: null,
-        },
-        {
-          id: "Bill1684296753758",
-          orderDate: "2023-05-17T04:12:33.000Z",
-          isDDH: false,
-          cost: 107000,
-          type: "pending",
-          CustomerId: "KH0868283915",
-          EmployeeId: null,
-        },
-        {
-          id: "Bill1684298583690",
-          orderDate: "2023-05-17T04:43:03.000Z",
-          isDDH: false,
-          cost: 548000,
-          type: "pending",
-          CustomerId: "KH0868283915",
-          EmployeeId: null,
-        },
-      ],
-      TypeCustomer: {
-        id: "BT",
-        name: "Khách hàng thường",
-      },
-      HomeAddress: {
-        id: 27,
-        homeAddress: "45",
-        WardId: "11581",
-        Ward: {
-          id: "11581",
-          name: "Thị trấn An Dương",
-          DistrictId: "312",
-          District: {
-            id: "312",
-            name: "Huyện An Dương",
-            CityId: "31",
-            City: {
-              id: "31",
-              name: "Thành phố Hải Phòng",
-            },
-          },
-        },
-      },
-    },
+    isLogin: false,
+    account: {},
 
     token: null,
   });
 
   const [categories, setCategories] = useState([]);
   const [isShowQr, setIsShowQr] = useState(false);
+  let socket = useRef(null);
 
   const [loadingModalState, setLoadingModalState] = useState({
     visible: false,
     label: "Đang tải...",
   });
+
+  if (!socket.current) {
+    socket.current = connectSocketIo();
+  }
 
   // function
   const globalFunc = {
@@ -136,11 +66,6 @@ function GlobalContextProvider({ children }) {
       });
     },
     refresh: async () => {
-      setLoadingModalState({
-        visible: true,
-        label: "Đang cập nhật...",
-      });
-
       let res = await userApi.getOrCreateByPhone(state.account.phonenumber);
       if (res.isSuccess) {
         setState({
@@ -150,9 +75,6 @@ function GlobalContextProvider({ children }) {
       } else {
         console.log("cos loi xay ra");
       }
-      setLoadingModalState({
-        visible: false,
-      });
     },
 
     setLoadingModalState(visible, title) {
@@ -171,6 +93,7 @@ function GlobalContextProvider({ children }) {
     globalFunc,
     categories,
     isShowQr,
+    socket: socket.current,
   };
 
   return (

@@ -19,20 +19,16 @@ const BillBought = () => {
   let bills = account.Bills || [];
   const OneItem = ({ item }) => {
     const bill = item;
-    console.log(sqlToHHmmDDmmYYYY(bill.orderDate));
     let status = "";
     if (bill.type == "pending") {
       status = "Đang chờ giao hàng";
     }
 
-    if (bill.type == "cancel") {
+    if (bill.type == "cancel" || bill.type == "retrieve") {
       status = "Đơn hàng bị hủy";
     }
     if (bill.type == "success") {
       status = "Thành công";
-    }
-    if (bill.type == "retrieve") {
-      status = "Đơn hàng trả";
     }
 
     return (
@@ -60,7 +56,18 @@ const BillBought = () => {
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Tình trạng đơn hàng</Text>
-            <Text style={styles.detailValue}>{status}</Text>
+
+            <Text
+              style={[
+                styles.statusValue,
+                bill.type == "pending" && styles.pending,
+                bill.type == "success" && styles.success,
+                (bill.type == "retrieve" || bill.type == "cancel") &&
+                  styles.cancel,
+              ]}
+            >
+              {status}
+            </Text>
           </View>
 
           {/* <View style={styles.btns}>
@@ -157,6 +164,26 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     fontWeight: "bold",
+  },
+  statusValue: {
+    borderWidth: 1,
+    paddingHorizontal: 4,
+    backgroundColor: "#ddd",
+    fontSize: 11,
+    borderRadius: 4,
+  },
+  pending: {
+    color: "blue",
+    borderColor: "blue",
+  },
+  success: {
+    color: "green",
+    borderColor: "green",
+  },
+
+  cancel: {
+    color: "red",
+    borderColor: "red",
   },
   btns: {
     flexDirection: "row",

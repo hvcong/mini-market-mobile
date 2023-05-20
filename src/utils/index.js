@@ -144,6 +144,10 @@ export async function handleStoreTranAfterCreateBill(
   // tính lại số lượng để cộng lại cho đồng bộ
   let _quantitys = {};
 
+  listOrders.map((cartItem) => {
+    _quantitys;
+  });
+
   let storeTrans = [];
 
   billDetails.map((billDetail) => {
@@ -232,7 +236,6 @@ export async function handleStoreTranAfterCreateBill(
       };
     }),
   });
-  console.log(res);
 
   // cộng lại số lượng đã trừ trước khi tạo bill
 

@@ -21,10 +21,7 @@ const VoucherModal = ({ visible, setVisible }) => {
   const { voucherUsed, orderFunc, customerType, amountMoney } =
     useContext(OrderContext);
 
-  console.log(amountMoney.discountByVoucher);
-
   let discountByVoucher = convertToVND(amountMoney.discountByVoucher);
-  console.log(discountByVoucher);
 
   async function onSubmit() {
     if (!voucherInput) {

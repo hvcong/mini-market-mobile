@@ -16,6 +16,11 @@ const CartItem = ({ item }) => {
     newPrice = (item.price * (100 - DRP.discountRate)) / 100;
     total = newPrice * item.amount;
   }
+  let maxQuantity =
+    Math.floor(
+      item?.ProductUnitType.Product.quantity /
+        item?.ProductUnitType.UnitType.convertionQuantity
+    ) || 0;
 
   return (
     <View style={styles.wrap}>
@@ -68,8 +73,6 @@ const CartItem = ({ item }) => {
               <Pressable
                 style={styles.quantityBtn}
                 onPress={() => {
-                  let maxQuantity = item.ProductUnitType.Product.quantity;
-
                   let current = item.amount;
 
                   if (maxQuantity == current) {

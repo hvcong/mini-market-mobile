@@ -21,7 +21,6 @@ import BarcodeScreen from "../screens/BarcodeScreen";
 const Stack = createNativeStackNavigator();
 const MainStack = () => {
   const { isLogin } = useGlobalContext();
-  console.log(isLogin);
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}

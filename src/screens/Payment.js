@@ -32,7 +32,6 @@ const Payment = ({ navigation }) => {
 
   const { account, isLogin } = useGlobalContext();
   const { listOrders = [] } = useOrderContext();
-  console.log(account);
 
   let address = "";
 
