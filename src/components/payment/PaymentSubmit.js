@@ -18,28 +18,26 @@ const PaymentSubmit = ({ style, navigation }) => {
   const [tranId, setTranId] = useState(null);
 
   async function onSubmit() {
-    // let resultPayment = false;
-    // if (amountMoney.total == 0) {
-    //   resultPayment = true;
-    // }
+    let resultPayment = false;
+    if (amountMoney.total == 0) {
+      resultPayment = true;
+    }
 
-    // if (!resultPayment) {
-    //   let res = await billApi.requestPayment(amountMoney.total);
+    if (!resultPayment) {
+      let res = await billApi.requestPayment(amountMoney.total);
 
-    //   if (!res) {
-    //     return;
-    //   }
-    //   setTranId(res.appTransId);
-    //   Linking.openURL(res.zalo.order_url).catch((err) =>
-    //     console.error("Couldn't load page", err)
-    //   );
-    // }
+      if (!res) {
+        return;
+      }
+      setTranId(res.appTransId);
+      Linking.openURL(res.zalo.order_url).catch((err) =>
+        console.error("Couldn't load page", err)
+      );
+    }
 
-    // if (resultPayment) {
-    //   paymentOke();
-    // }
-
-    paymentOke();
+    if (resultPayment) {
+      paymentOke();
+    }
   }
 
   useEffect(() => {
