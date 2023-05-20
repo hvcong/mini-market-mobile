@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  Pressable,
+  StatusBar,
+} from "react-native";
 import { Icon } from "@ui-kitten/components";
 import Header from "../../components/header/Header";
 import {
@@ -28,6 +35,13 @@ const Account = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* <Header navigation={navigation} /> */}
+      <StatusBar
+        animated={true}
+        backgroundColor={colors.green2}
+        // barStyle={statusBarStyle}
+        // showHideTransition={statusBarTransition}
+        // hidden={hidden}
+      />
       <SafeAreaView>
         <ScrollView>
           <View style={styles.content}>

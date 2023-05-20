@@ -1,7 +1,7 @@
 import React from "react";
 import { TextInput } from "react-native";
 import { Text } from "react-native";
-import { ScrollView } from "react-native";
+import { ScrollView, StatusBar } from "react-native";
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/header/Header";
@@ -117,6 +117,13 @@ const InforUpdate = ({ navigation }) => {
   }
   return (
     <View style={styles.container}>
+      <StatusBar
+        animated={true}
+        backgroundColor={colors.green2}
+        // barStyle={statusBarStyle}
+        // showHideTransition={statusBarTransition}
+        // hidden={hidden}
+      />
       {/* <Header /> */}
       <SafeAreaView>
         <ScrollView>
@@ -287,7 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   content: {
-    marginTop: 12,
+    // marginTop: 12,
   },
   body: {
     paddingHorizontal: 12,

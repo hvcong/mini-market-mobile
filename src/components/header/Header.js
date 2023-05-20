@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, Image, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Pressable,
+  StatusBar,
+} from "react-native";
 import { Icon } from "@ui-kitten/components";
 import {
   backgroundColors,
@@ -40,6 +47,13 @@ const Header = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.wrap}>
+      <StatusBar
+        animated={true}
+        backgroundColor={colors.green2}
+        // barStyle={statusBarStyle}
+        // showHideTransition={statusBarTransition}
+        // hidden={hidden}
+      />
       <View style={styles.container}>
         <View style={styles.top}>
           <View style={styles.helloUserContainer}>

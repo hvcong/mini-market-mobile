@@ -88,11 +88,7 @@ const Details = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          paddingTop: Platform.OS != "ios" && 20,
-        }}
-      >
+      <View style={{}}>
         <RedirectRouter
           title={"Chi tiết sản phẩm"}
           isTitleCenter={false}
@@ -277,7 +273,7 @@ const Details = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    paddingTop: 16,
+    // paddingTop: 16,
     paddingHorizontal: 8,
     flex: 1,
   },

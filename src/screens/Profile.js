@@ -5,6 +5,7 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import Category from "../components/home/Category";
 import { SafeAreaView } from "react-native";
@@ -84,10 +85,10 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    paddingTop: Platform.OS != "ios" && 24,
+    // paddingTop: Platform.OS != "ios" && 24,
   },
   promotion: {
-    marginTop: headerHeight + 12,
+    marginTop: headerHeight,
   },
   more: {
     alignItems: "center",

@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   Image,
+  StatusBar,
 } from "react-native";
 import { Layout, Text, Input, Icon, Button } from "@ui-kitten/components";
 import {
@@ -47,6 +48,13 @@ const Login = ({ navigation }) => {
 
   return (
     <Layout style={styles.container}>
+      <StatusBar
+        animated={true}
+        backgroundColor={colors.green2}
+        // barStyle={statusBarStyle}
+        // showHideTransition={statusBarTransition}
+        // hidden={hidden}
+      />
       <View style={styles.body}>
         <View style={styles.imageContainer}>
           <Image

@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Text, TextInput, Touchable, TouchableOpacity } from "react-native";
+import {
+  Text,
+  TextInput,
+  Touchable,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import { View, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +24,13 @@ import Footer from "../../components/home/Footer";
 const History = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
+      <StatusBar
+        animated={true}
+        backgroundColor={colors.green2}
+        // barStyle={statusBarStyle}
+        // showHideTransition={statusBarTransition}
+        // hidden={hidden}
+      />
       <SafeAreaView>
         <View style={styles.wrap}>
           <RedirectRouter
@@ -41,7 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   wrap: {
-    marginTop: 12,
+    // marginTop: 12,
   },
   content: {
     paddingHorizontal: 12,
