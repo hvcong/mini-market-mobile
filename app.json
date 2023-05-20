@@ -4,7 +4,7 @@
     "slug": "mini-market-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/logo_app.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/intro.png",
@@ -26,7 +26,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/logo_app.png",
         "backgroundColor": "#FFFFFF"
       },
       "permissions": [
