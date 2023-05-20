@@ -14,7 +14,7 @@ import userApi from "../api/userApi";
 import { useEffect } from "react";
 
 const Login = ({ navigation }) => {
-  const [sdtOrEmail, setSdtOrEmail] = useState("0868283915");
+  const [sdtOrEmail, setSdtOrEmail] = useState("");
   const [sdtEmailCaption, setSdtEmailCaption] = useState("");
   const [errMessage, setErrMessage] = useState("");
   const [verifyModal, setVerifyModal] = useState(false);
@@ -42,7 +42,7 @@ const Login = ({ navigation }) => {
   return (
     <Layout style={styles.container}>
       <View style={styles.body}>
-        <Text category="h1">Đăng nhập</Text>
+        <Text category="h1">Đăng nhập bằng OTP</Text>
         <View style={styles.enter}>
           <Text style={styles.errMessage}>{errMessage}</Text>
           <Input
@@ -58,17 +58,17 @@ const Login = ({ navigation }) => {
             Gửi OTP
           </Button>
 
-          <Text category="s1" style={{ textAlign: "center" }}>
+          {/* <Text category="s1" style={{ textAlign: "center" }}>
             Đăng nhập bằng cách khác
-          </Text>
-          <View style={styles.otherLogin}>
+          </Text> */}
+          {/* <View style={styles.otherLogin}>
             <View style={[styles.item, { backgroundColor: "#db6f21" }]}>
               <Icon fill="#fff" name="google" style={styles.icon} />
             </View>
             <View style={[styles.item, { backgroundColor: "#1559bf" }]}>
               <Icon fill="#fff" name="facebook" style={styles.icon} />
             </View>
-          </View>
+          </View> */}
         </View>
       </View>
       <VerifyOTPModal
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   body: {
     width: "100%",
     alignItems: "center",
-    marginTop: 44,
+    marginTop: "30%",
   },
   enter: {
     width: "80%",
