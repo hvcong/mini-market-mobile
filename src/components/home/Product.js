@@ -10,7 +10,7 @@ import { View, StyleSheet } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { backgroundColors, colors, fontSize } from "../../utils/constants";
 import afucntion, { OrderContext } from "../../store/contexts/OrderContext";
-import { Toast, convertToVND } from "../../utils";
+import { ToastCustom, convertToVND } from "../../utils";
 import AddToCartModal from "../modal/AddToCartModal";
 
 const Product = ({ navigation, item }) => {
@@ -95,7 +95,7 @@ const Product = ({ navigation, item }) => {
             ]}
             onPress={() => {
               orderFunc.addToCart(item);
-              Toast.infor("Thêm vào giỏ hàng thành công");
+              ToastCustom.infor("Thêm vào giỏ hàng thành công");
             }}
             disabled={maxQuantity <= 0}
           >

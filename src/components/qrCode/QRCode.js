@@ -4,12 +4,12 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import { useGlobalContext } from "../../store/contexts/GlobalContext";
 import productApi from "../../api/productApi";
 import { useNavigation } from "@react-navigation/native";
-import { Toast } from "../../utils";
+import { ToastCustom } from "../../utils";
 
-export default function QRCode() {
+export default function QRCode({ scanned, setScanned }) {
   const { isShowQr, globalFunc } = useGlobalContext();
   const [hasPermission, setHasPermission] = useState(null);
-  const [scanned, setScanned] = useState(false);
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -28,13 +28,14 @@ export default function QRCode() {
       if (res.isSuccess) {
         navigation.navigate("Details", res.product.id);
       } else {
+        ToastCustom.error("Không tìm thấy sản phẩm");
       }
     }
   };
 
   useEffect(() => {
     if (hasPermission == null || hasPermission == false) {
-      Toast.error("Yêu cầu truy cập camera");
+      ToastCustom.error("Yêu cầu truy cập camera");
     }
     return () => {};
   }, [hasPermission]);

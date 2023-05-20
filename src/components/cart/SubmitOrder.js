@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Pressable } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { colors, fontSize } from "../../utils/constants";
 import { Shadow } from "react-native-shadow-2";
-import { Toast, convertToVND } from "../../utils";
+import { ToastCustom, convertToVND } from "../../utils";
 import { useGlobalContext } from "../../store/contexts/GlobalContext";
 
 const SubmitOrder = ({ navigation, sum, quantity }) => {
@@ -19,7 +19,7 @@ const SubmitOrder = ({ navigation, sum, quantity }) => {
           <Pressable
             onPress={() => {
               if (!isLogin || !account) {
-                Toast.error("Vui lòng đăng nhập trước!");
+                ToastCustom.error("Vui lòng đăng nhập trước!");
                 navigation.navigate("Account", {
                   beforeScreen: "cart",
                 });

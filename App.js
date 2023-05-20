@@ -20,25 +20,28 @@ import LoadingModal from "./src/components/modal/LoadingModal";
 import { OrderProvider } from "./src/store/contexts/OrderContext";
 import PromotionContextProvider from "./src/store/contexts/PromotionContext";
 import PriceContextProvider from "./src/store/contexts/PriceContext";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 export default function App() {
   return (
     <>
-      <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <GlobalContextProvider>
-          <PromotionContextProvider>
-            <PriceContextProvider>
-              <OrderProvider>
-                <NavigationContainer>
-                  <Drawer />
-                </NavigationContainer>
-                <LoadingModal />
-              </OrderProvider>
-            </PriceContextProvider>
-          </PromotionContextProvider>
-        </GlobalContextProvider>
-      </ApplicationProvider>
+      <RootSiblingParent>
+        <IconRegistry icons={EvaIconsPack} />
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <GlobalContextProvider>
+            <PromotionContextProvider>
+              <PriceContextProvider>
+                <OrderProvider>
+                  <NavigationContainer>
+                    <Drawer />
+                  </NavigationContainer>
+                  <LoadingModal />
+                </OrderProvider>
+              </PriceContextProvider>
+            </PromotionContextProvider>
+          </GlobalContextProvider>
+        </ApplicationProvider>
+      </RootSiblingParent>
     </>
   );
 }

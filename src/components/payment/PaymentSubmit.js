@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Shadow } from "react-native-shadow-2";
 import { colors, fontSize } from "../../utils/constants";
 import { TouchableOpacity } from "react-native";
-import { Toast, convertToVND } from "../../utils";
+import { ToastCustom, convertToVND } from "../../utils";
 import { useGlobalContext } from "../../store/contexts/GlobalContext";
 import useOrderContext from "../../store/contexts/OrderContext";
 import axiosClient from "../../api/axiosClient";
@@ -18,26 +18,28 @@ const PaymentSubmit = ({ style, navigation }) => {
   const [tranId, setTranId] = useState(null);
 
   async function onSubmit() {
-    let resultPayment = false;
-    if (amountMoney.total == 0) {
-      resultPayment = true;
-    }
+    // let resultPayment = false;
+    // if (amountMoney.total == 0) {
+    //   resultPayment = true;
+    // }
 
-    if (!resultPayment) {
-      let res = await billApi.requestPayment(amountMoney.total);
+    // if (!resultPayment) {
+    //   let res = await billApi.requestPayment(amountMoney.total);
 
-      if (!res) {
-        return;
-      }
-      setTranId(res.appTransId);
-      Linking.openURL(res.zalo.order_url).catch((err) =>
-        console.error("Couldn't load page", err)
-      );
-    }
+    //   if (!res) {
+    //     return;
+    //   }
+    //   setTranId(res.appTransId);
+    //   Linking.openURL(res.zalo.order_url).catch((err) =>
+    //     console.error("Couldn't load page", err)
+    //   );
+    // }
 
-    if (resultPayment) {
-      paymentOke();
-    }
+    // if (resultPayment) {
+    //   paymentOke();
+    // }
+
+    paymentOke();
   }
 
   useEffect(() => {
@@ -59,13 +61,15 @@ const PaymentSubmit = ({ style, navigation }) => {
   }, [tranId]);
 
   async function checkStatusPayment() {
-    let res = await billApi.getStatusPayment(tranId);
-    if (res.return_code == 1) {
-      Toast.infor("Thanh toán thành công");
+    try {
+      let res = await billApi.getStatusPayment(tranId);
+      if (res?.return_code == 1) {
+        ToastCustom.infor("Thanh toán thành công");
 
-      paymentOke();
-      setTranId(null);
-    }
+        paymentOke();
+        setTranId(null);
+      }
+    } catch (err) {}
   }
 
   async function paymentOke() {

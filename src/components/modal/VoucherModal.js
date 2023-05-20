@@ -14,7 +14,12 @@ import { OrderContext } from "../../store/contexts/OrderContext";
 import { useState } from "react";
 import { ToastAndroid } from "react-native";
 import promotionApi from "../../api/promotionApi";
-import { Toast, compareDMY, convertToVND, sqlToDDmmYYY } from "../../utils";
+import {
+  ToastCustom,
+  compareDMY,
+  convertToVND,
+  sqlToDDmmYYY,
+} from "../../utils";
 
 const VoucherModal = ({ visible, setVisible }) => {
   const [voucherInput, setVoucherInput] = useState("");
@@ -55,35 +60,35 @@ const VoucherModal = ({ visible, setVisible }) => {
       }
 
       if (!isCheck) {
-        Toast.error("Mã giảm giá không hợp lệ!");
+        ToastCustom.error("Mã giảm giá không hợp lệ!");
       }
 
       if (!headerState || !state) {
         isCheck = false;
-        Toast.error("Khuyến mãi đã ngưng!");
+        ToastCustom.error("Khuyến mãi đã ngưng!");
       } else {
         if (compareDMY(start, now) > 0) {
           isCheck = false;
-          Toast.error("Phiếu giảm giá chưa tới ngày sử dụng!");
+          ToastCustom.error("Phiếu giảm giá chưa tới ngày sử dụng!");
         }
 
         if (compareDMY(end, now) < 0) {
-          Toast.error("Phiếu giảm giá đã hết hạn!");
+          ToastCustom.error("Phiếu giảm giá đã hết hạn!");
           isCheck = false;
         }
       }
 
       if (PromotionResult) {
         isCheck = false;
-        Toast.error("Phiếu giảm giá chỉ được sử dụng một lần");
+        ToastCustom.error("Phiếu giảm giá chỉ được sử dụng một lần");
       }
 
       if (isCheck) {
-        Toast.infor("Áp dụng thành công");
+        ToastCustom.infor("Áp dụng thành công");
         orderFunc.setVoucherUsed(voucher);
       }
     } else {
-      Toast.error("Phiếu giảm giá không hợp lệ!");
+      ToastCustom.error("Phiếu giảm giá không hợp lệ!");
     }
   }
 

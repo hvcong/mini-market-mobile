@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import promotionApi from "../../api/promotionApi";
 import { useGlobalContext } from "./GlobalContext";
 import { useContext } from "react";
-import { Toast, handleStoreTranAfterCreateBill } from "../../utils";
+import { ToastCustom, handleStoreTranAfterCreateBill } from "../../utils";
 import billApi from "./../../api/billApi";
 import { usePriceContext } from "./PriceContext";
 
@@ -12,7 +12,7 @@ const OrderContext = React.createContext();
 function OrderProvider({ children }) {
   const [listOrders, setListOrders] = useState([]);
   const [refreshPromotion, setRefreshPromotion] = useState(false);
-  const { globalFunc, account, socket } = useGlobalContext();
+  const { globalFunc, account, socket, refreshAccount } = useGlobalContext();
   const { allPrices } = usePriceContext();
   const [amountMoney, setAmountMoney] = useState({
     subTotal: 0,
@@ -204,8 +204,8 @@ function OrderProvider({ children }) {
     globalFunc.setLoadingModalState(true, "Đang cập nhật...");
     let res = await billApi.updateType(billId, "cancel");
     if (res.isSuccess) {
-      await globalFunc.refresh();
-      Toast.infor("Hủy đơn hàng thành công");
+      await refreshAccount();
+      ToastCustom.infor("Hủy đơn hàng thành công");
     }
     globalFunc.setLoadingModalState(false);
   }
@@ -239,13 +239,13 @@ function OrderProvider({ children }) {
       );
       clearCart();
       // cập nhật lại account để load lại bills
-      await globalFunc.refresh();
-      Toast.infor("Đặt hàng thành công");
+      await refreshAccount();
+      ToastCustom.infor("Đặt hàng thành công");
       socket.emit("have_new_order");
       globalFunc.setLoadingModalState(false);
       return true;
     } else {
-      Toast.error("Đặt hàng thất bại");
+      ToastCustom.error("Đặt hàng thất bại");
       globalFunc.setLoadingModalState(false);
       return false;
     }
@@ -345,7 +345,7 @@ function OrderProvider({ children }) {
       console.log("start listent io");
       socket.on("have_new_order", () => {
         console.log("have new order");
-        globalFunc.refresh();
+        refreshAccount();
       });
     }
     return () => {

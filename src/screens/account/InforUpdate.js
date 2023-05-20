@@ -21,7 +21,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import addressApi from "../../api/addressApi";
 
 import { addressData } from "../../utils/constants";
-import { Toast } from "../../utils";
+import { ToastCustom } from "../../utils";
 import userApi from "../../api/userApi";
 
 const InforUpdate = ({ navigation }) => {
@@ -89,9 +89,9 @@ const InforUpdate = ({ navigation }) => {
       });
       if (res.isSuccess) {
         await globalFunc.refresh();
-        Toast.infor("Cập nhật thành công");
+        ToastCustom.infor("Cập nhật thành công");
       } else {
-        Toast.error("Thông tin không hợp lệ, vui lòng thử lại");
+        ToastCustom.error("Thông tin không hợp lệ, vui lòng thử lại");
       }
     }
     globalFunc.setLoadingModalState(false);
@@ -110,7 +110,7 @@ const InforUpdate = ({ navigation }) => {
       }
 
       if (!isCheck) {
-        Toast.error("Vui lòng điền đầy đủ thông tin!");
+        ToastCustom.error("Vui lòng điền đầy đủ thông tin!");
       }
       return isCheck;
     }

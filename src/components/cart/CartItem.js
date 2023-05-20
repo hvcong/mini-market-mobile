@@ -4,7 +4,7 @@ import { colors, fontSize, backgroundColors } from "../../utils/constants";
 import { Icon } from "@ui-kitten/components";
 import { OrderContext } from "../../store/contexts/OrderContext";
 import { useContext, useState, useEffect } from "react";
-import { Toast, convertToVND } from "../../utils";
+import { ToastCustom, convertToVND } from "../../utils";
 
 const CartItem = ({ item }) => {
   const { orderFunc } = useContext(OrderContext);
@@ -76,7 +76,7 @@ const CartItem = ({ item }) => {
                   let current = item.amount;
 
                   if (maxQuantity == current) {
-                    Toast.error(
+                    ToastCustom.error(
                       "Số lượng sản phẩm bên cửa hàng không đủ, mong quý khách thông cảm!"
                     );
                   } else {

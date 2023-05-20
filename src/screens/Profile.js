@@ -84,6 +84,7 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
+    paddingTop: Platform.OS != "ios" && 24,
   },
   promotion: {
     marginTop: headerHeight + 12,

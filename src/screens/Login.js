@@ -4,9 +4,15 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import { Layout, Text, Input, Icon, Button } from "@ui-kitten/components";
-import { Toast, validateEmail, validatePassword, validateSdt } from "../utils";
+import {
+  ToastCustom,
+  validateEmail,
+  validatePassword,
+  validateSdt,
+} from "../utils";
 import { useGlobalContext } from "../store/contexts/GlobalContext";
 import { colors, fontSize } from "../utils/constants";
 import VerifyOTPModal from "../components/modal/VerifyOTPModal";
@@ -42,14 +48,24 @@ const Login = ({ navigation }) => {
   return (
     <Layout style={styles.container}>
       <View style={styles.body}>
-        <Text category="h1">Đăng nhập bằng OTP</Text>
+        <View style={styles.imageContainer}>
+          <Image
+            source={require("../../assets/logo.png")}
+            style={{
+              width: 200,
+              height: 200,
+            }}
+          />
+        </View>
+        <Text category="h1">Đăng nhập</Text>
         <View style={styles.enter}>
           <Text style={styles.errMessage}>{errMessage}</Text>
           <Input
             style={styles.input}
             value={sdtOrEmail}
             label="Số điện thoại"
-            placeholder="Emai/ Sđt"
+            placeholder="Số điện thoại"
+            type="number"
             caption={sdtEmailCaption}
             onChangeText={(sdtOrEmail) => setSdtOrEmail(sdtOrEmail)}
           />
@@ -87,9 +103,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   body: {
+    flex: 1,
     width: "100%",
     alignItems: "center",
-    marginTop: "30%",
+  },
+  imageContainer: {
+    paddingVertical: 60,
   },
   enter: {
     width: "80%",

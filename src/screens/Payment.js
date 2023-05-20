@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Text, TextInput } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  TextInput,
+  Platform,
+} from "react-native";
 import Header from "../components/header/Header";
 import RedirectRouter from "../components/RedirectRouter";
 import { colors, fontSize, headerHeight } from "../utils/constants";
@@ -23,7 +30,7 @@ import VoucherModal from "../components/modal/VoucherModal";
 import addressApi from "./../api/addressApi";
 import { useEffect } from "react";
 import { useGlobalContext } from "../store/contexts/GlobalContext";
-import { Toast } from "../utils";
+import { ToastCustom } from "../utils";
 import SelectDropdown from "react-native-select-dropdown";
 import useOrderContext from "../store/contexts/OrderContext";
 
@@ -101,7 +108,9 @@ const Payment = ({ navigation }) => {
           {/* <DeliveryNote /> */}
         </View>
       </ScrollView>
-      <View style={styles.submit}>
+      <View
+        style={[Platform.OS != "ios" ? styles.submitAndroid : styles.submit]}
+      >
         <PaymentSubmit navigation={navigation} />
       </View>
       <VoucherModal
@@ -158,6 +167,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  submitAndroid: {},
 });
 
 export default Payment;

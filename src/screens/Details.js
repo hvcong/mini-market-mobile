@@ -8,6 +8,7 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import useOrderContext, { OrderContext } from "../store/contexts/OrderContext";
 import { AntDesign } from "@expo/vector-icons";
@@ -19,7 +20,7 @@ import {
   fontSize,
 } from "../utils/constants";
 import { usePriceContext } from "../store/contexts/PriceContext";
-import { Toast, convertToVND } from "../utils";
+import { ToastCustom, convertToVND } from "../utils";
 import { Button, Icon } from "@ui-kitten/components";
 import RedirectRouter from "../components/RedirectRouter";
 import ProductQuantityChange from "../components/common/ProductQuantityChange";
@@ -86,8 +87,12 @@ const Details = ({ navigation, route }) => {
   }, [onePrice]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
+    <View style={styles.container}>
+      <View
+        style={{
+          paddingTop: Platform.OS != "ios" && 20,
+        }}
+      >
         <RedirectRouter
           title={"Chi tiết sản phẩm"}
           isTitleCenter={false}
@@ -214,7 +219,7 @@ const Details = ({ navigation, route }) => {
                 value={quantity}
                 setValue={(value) => {
                   if (value > maxQuantity) {
-                    Toast.error(
+                    ToastCustom.error(
                       "Số lượng bên cửa hàng không đủ, mong quý khách thông cảm"
                     );
                   } else if (value > 0) {
@@ -245,7 +250,7 @@ const Details = ({ navigation, route }) => {
                 style={[styles.btn, maxQuantity == 0 && styles.btnSoldOut]}
                 onPress={() => {
                   orderFunc.addToCart(onePrice, quantity);
-                  Toast.infor("Thêm vào giỏ hàng thành công");
+                  ToastCustom.infor("Thêm vào giỏ hàng thành công");
                 }}
                 disabled={maxQuantity <= 0}
               >
@@ -266,7 +271,7 @@ const Details = ({ navigation, route }) => {
           <ActivityIndicator />
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
@@ -291,6 +296,7 @@ const styles = StyleSheet.create({
   },
   body: {
     marginTop: 12,
+    paddingHorizontal: 12,
   },
   row: {
     flexDirection: "row",

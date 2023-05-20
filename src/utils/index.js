@@ -1,4 +1,4 @@
-import { ToastAndroid } from "react-native";
+import Toast from "react-native-root-toast";
 import billApi from "../api/billApi";
 import productApi from "./../api/productApi";
 import promotionApi from "../api/promotionApi";
@@ -56,24 +56,30 @@ export function convertToVND(value) {
   // return num.toLocaleString("it-IT");
 }
 
-export const Toast = {
+export const ToastCustom = {
   infor: (text) => {
-    ToastAndroid.showWithGravityAndOffset(
-      text,
-      ToastAndroid.LONG,
-      ToastAndroid.BOTTOM,
-      25,
-      50
-    );
+    Toast.show(text, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.BOTTOM,
+      backgroundColor: "green",
+
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+    });
   },
   error: (text) => {
-    ToastAndroid.showWithGravityAndOffset(
-      text,
-      ToastAndroid.LONG,
-      ToastAndroid.BOTTOM,
-      25,
-      50
-    );
+    Toast.show(text, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.BOTTOM,
+      backgroundColor: "red",
+      opacity: 1,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+    });
   },
 };
 

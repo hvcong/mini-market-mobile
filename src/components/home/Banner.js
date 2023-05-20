@@ -19,7 +19,7 @@ const Banner = ({ navigation }) => {
                 -{MPlist[0].discountRate}%
               </Text>
             ) : (
-              <Text category="h2" style={styles.title}>
+              <Text category="h4" style={styles.title}>
                 GIẢM GIÁ {convertToVND(MPlist[0].discountMoney)}
               </Text>
             )}
@@ -43,7 +43,7 @@ const Banner = ({ navigation }) => {
       ) : (
         <View style={styles.row}>
           <View style={styles.left}>
-            <Text category="h2" style={styles.title}>
+            <Text category="h4" style={styles.title}>
               ECO-MARK
             </Text>
 

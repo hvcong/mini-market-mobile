@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import QRCode from "../components/qrCode/QRCode";
 import { Button } from "@ui-kitten/components";
 
 const BarcodeScreen = ({ navigation }) => {
+  const [scanned, setScanned] = useState(false);
   return (
     <View style={styles.container}>
-      <View style={styles.barcodeContainer}>{/* <QRCode /> */}</View>
+      <View style={styles.barcodeContainer}>
+        <QRCode scanned={scanned} setScanned={setScanned} />
+      </View>
       <View style={styles.btns}>
         <Button
           style={styles.btnStop}
@@ -16,7 +19,16 @@ const BarcodeScreen = ({ navigation }) => {
         >
           Dừng Scan
         </Button>
-        <Button style={styles.btnRepeat}>Scan lại</Button>
+        {scanned && (
+          <Button
+            style={styles.btnRepeat}
+            onPress={() => {
+              setScanned(false);
+            }}
+          >
+            Scan lại
+          </Button>
+        )}
       </View>
     </View>
   );

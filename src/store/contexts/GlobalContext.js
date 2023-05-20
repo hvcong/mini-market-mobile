@@ -27,9 +27,14 @@ function GlobalContextProvider({ children }) {
     label: "Đang tải...",
   });
 
-  if (!socket.current) {
-    socket.current = connectSocketIo();
-  }
+  useEffect(() => {
+    if (state.isLogin) {
+      socket.current = connectSocketIo();
+    } else {
+      socket.current = null;
+    }
+    return () => {};
+  }, [state.isLogin]);
 
   // function
   const globalFunc = {
@@ -65,17 +70,7 @@ function GlobalContextProvider({ children }) {
         token: null,
       });
     },
-    refresh: async () => {
-      let res = await userApi.getOrCreateByPhone(state.account.phonenumber);
-      if (res.isSuccess) {
-        setState({
-          ...state,
-          account: res.customer,
-        });
-      } else {
-        console.log("cos loi xay ra");
-      }
-    },
+    refresh: async () => {},
 
     setLoadingModalState(visible, title) {
       setLoadingModalState({
@@ -84,6 +79,19 @@ function GlobalContextProvider({ children }) {
       });
     },
   };
+
+  async function refreshAccount() {
+    let res = await userApi.getOrCreateByPhone(state.account.phonenumber);
+
+    if (res.isSuccess) {
+      setState({
+        ...state,
+        account: res.customer,
+      });
+    } else {
+      console.log("cos loi xay ra");
+    }
+  }
 
   const GlobalContextData = {
     isLogin: state.isLogin,
@@ -94,6 +102,7 @@ function GlobalContextProvider({ children }) {
     categories,
     isShowQr,
     socket: socket.current,
+    refreshAccount,
   };
 
   return (
