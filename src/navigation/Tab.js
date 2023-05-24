@@ -9,6 +9,7 @@ import { bottomTabHeight } from "../utils/constants";
 import Account from "../screens/account/Account";
 import useOrderContext from "../store/contexts/OrderContext";
 import { Text } from "react-native";
+import Payment from "../screens/Payment";
 
 const TabNavigator = createBottomTabNavigator();
 

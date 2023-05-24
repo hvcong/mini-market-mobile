@@ -10,6 +10,7 @@ import {
 import { Layout, Text, Input, Icon, Button } from "@ui-kitten/components";
 import {
   ToastCustom,
+  isVietnamesePhoneNumberValid,
   validateEmail,
   validatePassword,
   validateSdt,
@@ -32,8 +33,11 @@ const Login = ({ navigation }) => {
   const { globalFunc } = useGlobalContext();
 
   async function onLogin() {
-    // validate phone here
-    setVerifyModal(true);
+    if (isVietnamesePhoneNumberValid(sdtOrEmail)) {
+      setVerifyModal(true);
+    } else {
+      setErrMessage("Số điện thoại không hợp lệ!");
+    }
   }
 
   useEffect(() => {
@@ -42,6 +46,8 @@ const Login = ({ navigation }) => {
       setResult({
         isSuccess: false,
       });
+    } else {
+      setErrMessage(result.message);
     }
     return () => {};
   }, [result]);
@@ -56,18 +62,17 @@ const Login = ({ navigation }) => {
         // hidden={hidden}
       />
       <View style={styles.body}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require("../../assets/logo.png")}
-            style={{
-              width: 200,
-              height: 200,
-            }}
-          />
-        </View>
-        <Text category="h1">Đăng nhập</Text>
         <View style={styles.enter}>
-          <Text style={styles.errMessage}>{errMessage}</Text>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require("../../assets/logo.png")}
+              style={{
+                width: 200,
+                height: 200,
+              }}
+            />
+          </View>
+          <Text category="h1">Đăng nhập</Text>
           <Input
             style={styles.input}
             value={sdtOrEmail}
@@ -77,6 +82,7 @@ const Login = ({ navigation }) => {
             caption={sdtEmailCaption}
             onChangeText={(sdtOrEmail) => setSdtOrEmail(sdtOrEmail)}
           />
+          <Text style={styles.errMessage}>{errMessage}</Text>
 
           <Button size="medium" style={styles.button} onPress={onLogin}>
             Gửi OTP
@@ -115,17 +121,20 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
-  imageContainer: {
-    paddingVertical: 60,
-  },
+  imageContainer: {},
   enter: {
     width: "80%",
-    marginTop: 36,
+    // marginTop: 36,
+    flex: 1,
+    // backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
   },
   errMessage: {
     paddingBottom: 12,
     fontSize: fontSize.S,
     color: colors.red,
+    width: "100%",
   },
   input: {
     paddingBottom: 12,
@@ -140,6 +149,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 24,
+    width: "100%",
   },
   otherLogin: {
     flexDirection: "row",

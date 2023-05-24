@@ -61,63 +61,68 @@ const Payment = ({ navigation }) => {
   }, [listOrders]);
 
   return (
-    <SafeAreaView style={styles.wrap}>
-      <Header navigation={navigation} />
-      <ScrollView>
-        <View style={styles.container}>
-          <RedirectRouter title={"Xem lại giỏ hàng"} navigation={navigation} />
-          <View style={styles.body}>
-            <Text style={styles.title}>Thông tin người đặt</Text>
+    <>
+      <SafeAreaView style={styles.wrap}>
+        <Header navigation={navigation} />
+        <ScrollView>
+          <View style={styles.container}>
+            <RedirectRouter
+              title={"Xem lại giỏ hàng"}
+              navigation={navigation}
+            />
+            <View style={styles.body}>
+              <Text style={styles.title}>Thông tin người đặt</Text>
 
-            <View style={styles.form}>
-              <Input
-                disabled
-                style={styles.input}
-                placeholder="Số điện thoại"
-                value={account.phonenumber}
-              />
+              <View style={styles.form}>
+                <Input
+                  disabled
+                  style={styles.input}
+                  placeholder="Số điện thoại"
+                  value={account.phonenumber}
+                />
 
-              <Input
-                disabled
-                style={styles.input}
-                placeholder="Họ và tên đệm"
-                value={account.firstName}
-              />
-              <Input
-                style={styles.input}
-                placeholder="Tên"
-                disabled
-                value={account.lastName}
-              />
+                <Input
+                  disabled
+                  style={styles.input}
+                  placeholder="Họ và tên đệm"
+                  value={account.firstName}
+                />
+                <Input
+                  style={styles.input}
+                  placeholder="Tên"
+                  disabled
+                  value={account.lastName}
+                />
 
-              <Input
-                style={styles.input}
-                placeholder="Số nhà, tên đường"
-                value={address}
-                disabled
-              />
+                <Input
+                  style={styles.input}
+                  placeholder="Số nhà, tên đường"
+                  value={address}
+                  disabled
+                />
+              </View>
             </View>
+
+            <SpaceLine />
+            <PaymentWays />
+
+            <SpaceLine />
+            <PaymentBill />
+            {/* <SpaceLine /> */}
+            {/* <DeliveryNote /> */}
           </View>
-
-          <SpaceLine />
-          <PaymentWays />
-
-          <SpaceLine />
-          <PaymentBill />
-          {/* <SpaceLine /> */}
-          {/* <DeliveryNote /> */}
-        </View>
-      </ScrollView>
+        </ScrollView>
+        <VoucherModal
+          visible={isVisibleVoucherModal}
+          setVisible={setIsVisibleVoucherModal}
+        />
+      </SafeAreaView>
       <View
         style={[Platform.OS != "ios" ? styles.submitAndroid : styles.submit]}
       >
         <PaymentSubmit navigation={navigation} />
       </View>
-      <VoucherModal
-        visible={isVisibleVoucherModal}
-        setVisible={setIsVisibleVoucherModal}
-      />
-    </SafeAreaView>
+    </>
   );
 };
 
@@ -167,7 +172,13 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-  submitAndroid: {},
+  submitAndroid: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+
+    bottom: 0,
+  },
 });
 
 export default Payment;

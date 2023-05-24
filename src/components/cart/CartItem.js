@@ -5,9 +5,12 @@ import { Icon } from "@ui-kitten/components";
 import { OrderContext } from "../../store/contexts/OrderContext";
 import { useContext, useState, useEffect } from "react";
 import { ToastCustom, convertToVND } from "../../utils";
+import { useNavigation } from "@react-navigation/native";
 
 const CartItem = ({ item }) => {
   const { orderFunc } = useContext(OrderContext);
+
+  const navigation = useNavigation();
 
   let total = item.price * item.amount;
   let newPrice = item.price;
@@ -25,12 +28,17 @@ const CartItem = ({ item }) => {
   return (
     <View style={styles.wrap}>
       <View style={styles.container}>
-        <View style={styles.imageContainer}>
+        <Pressable
+          style={styles.imageContainer}
+          onPress={() => {
+            navigation.navigate("Details", item?.ProductUnitType.ProductId);
+          }}
+        >
           <Image
             style={styles.image}
             source={{ uri: item.ProductUnitType.Product.images[0].uri }}
           />
-        </View>
+        </Pressable>
         <View style={styles.body}>
           <Text style={styles.nameProduct}>
             {item.ProductUnitType.Product.name}

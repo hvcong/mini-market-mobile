@@ -192,7 +192,7 @@ const Details = ({ navigation, route }) => {
               <Text style={styles.value}>{onePrice?.ProductUnitType.Product.}</Text>
             </View> */}
                 <View style={styles.item}>
-                  <Text style={styles.label}>Tổng số lượng có thể bán:</Text>
+                  <Text style={styles.label}>SL có thể bán:</Text>
                   <Text style={styles.value}>
                     {maxQuantity +
                       " (" +

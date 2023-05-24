@@ -57,10 +57,10 @@ export function convertToVND(value) {
 }
 
 export const ToastCustom = {
-  infor: (text) => {
+  infor: (text, position = "CENTER") => {
     Toast.show(text, {
-      duration: Toast.durations.LONG,
-      position: Toast.positions.BOTTOM,
+      duration: Toast.durations.SHORT,
+      position: Toast.positions[position],
       backgroundColor: "green",
 
       shadow: true,
@@ -69,10 +69,10 @@ export const ToastCustom = {
       delay: 0,
     });
   },
-  error: (text) => {
+  error: (text, position = "CENTER") => {
     Toast.show(text, {
-      duration: Toast.durations.LONG,
-      position: Toast.positions.BOTTOM,
+      duration: Toast.durations.SHORT,
+      position: Toast.positions[position],
       backgroundColor: "red",
       opacity: 1,
       shadow: true,
@@ -115,6 +115,9 @@ export function compareDMY(jsDate1, jsDate2) {
   }
 
   return 1;
+}
+export function isVietnamesePhoneNumberValid(number) {
+  return /0(3|5|7|8|9)+([0-9]{8})\b/.test(number);
 }
 
 export function sqlToDDmmYYY(date) {

@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   btnSave: {
-    backgroundColor: colors.green1,
+    backgroundColor: colors.green2,
     paddingVertical: 12,
     color: colors.white,
     textAlign: "center",
@@ -351,6 +351,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     borderRadius: 4,
     marginVertical: 12,
+    marginHorizontal: 12,
   },
 });
 

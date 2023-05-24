@@ -20,6 +20,7 @@ import {
   convertToVND,
   sqlToDDmmYYY,
 } from "../../utils";
+import { color } from "react-native-reanimated";
 
 const VoucherModal = ({ visible, setVisible }) => {
   const [voucherInput, setVoucherInput] = useState("");
@@ -28,72 +29,69 @@ const VoucherModal = ({ visible, setVisible }) => {
 
   let discountByVoucher = convertToVND(amountMoney.discountByVoucher);
 
+  const [errMessage, setErrMessage] = useState("");
   async function onSubmit() {
+    setErrMessage("");
     if (!voucherInput) {
-      ToastAndroid.showWithGravityAndOffset(
-        "Vui lòng nhập mã code!",
-        ToastAndroid.LONG,
-        ToastAndroid.BOTTOM,
-        25,
-        50
-      );
-    }
-
-    let res = await promotionApi.getOneVByCode(voucherInput);
-    if (res.isSuccess) {
-      let voucher = res.voucher;
-
-      let headerState = voucher.PromotionHeader.state;
-      let TypeCustomers = voucher.PromotionHeader.TypeCustomers;
-      let start = new Date(voucher.startDate);
-      let end = new Date(voucher.endDate);
-      let now = new Date();
-      let state = voucher.state;
-      let PromotionResult = voucher.PromotionResult;
-      let isCheck = false;
-
-      for (const type of TypeCustomers) {
-        if (type.id == customerType) {
-          isCheck = true;
-          break;
-        }
-      }
-
-      if (!isCheck) {
-        ToastCustom.error("Mã giảm giá không hợp lệ!");
-      }
-
-      if (!headerState || !state) {
-        isCheck = false;
-        ToastCustom.error("Khuyến mãi đã ngưng!");
-      } else {
-        if (compareDMY(start, now) > 0) {
-          isCheck = false;
-          ToastCustom.error("Phiếu giảm giá chưa tới ngày sử dụng!");
-        }
-
-        if (compareDMY(end, now) < 0) {
-          ToastCustom.error("Phiếu giảm giá đã hết hạn!");
-          isCheck = false;
-        }
-      }
-
-      if (PromotionResult) {
-        isCheck = false;
-        ToastCustom.error("Phiếu giảm giá chỉ được sử dụng một lần");
-      }
-
-      if (isCheck) {
-        ToastCustom.infor("Áp dụng thành công");
-        orderFunc.setVoucherUsed(voucher);
-      }
+      setErrMessage("Mã không hợp lệ!");
     } else {
-      ToastCustom.error("Phiếu giảm giá không hợp lệ!");
+      let res = await promotionApi.getOneVByCode(voucherInput);
+      if (res.isSuccess) {
+        let voucher = res.voucher;
+
+        let headerState = voucher.PromotionHeader.state;
+        let TypeCustomers = voucher.PromotionHeader.TypeCustomers;
+        let start = new Date(voucher.startDate);
+        let end = new Date(voucher.endDate);
+        let now = new Date();
+        let state = voucher.state;
+        let PromotionResult = voucher.PromotionResult;
+        let isCheck = false;
+
+        for (const type of TypeCustomers) {
+          if (type.id == customerType) {
+            isCheck = true;
+            break;
+          }
+        }
+
+        if (!isCheck) {
+          setErrMessage("Mã giảm giá không hợp lệ!");
+        }
+
+        if (!headerState || !state) {
+          isCheck = false;
+          setErrMessage("Khuyến mãi đã ngưng!");
+        } else {
+          if (compareDMY(start, now) > 0) {
+            isCheck = false;
+            setErrMessage("Phiếu giảm giá chưa tới ngày sử dụng!");
+          }
+
+          if (compareDMY(end, now) < 0) {
+            setErrMessage("Phiếu giảm giá đã hết hạn!");
+            isCheck = false;
+          }
+        }
+
+        if (PromotionResult) {
+          isCheck = false;
+          setErrMessage("Phiếu giảm giá chỉ được sử dụng một lần");
+        }
+
+        if (isCheck) {
+          ToastCustom.infor("Áp dụng thành công");
+          orderFunc.setVoucherUsed(voucher);
+        }
+      } else {
+        setErrMessage("Phiếu giảm giá không hợp lệ!");
+      }
     }
   }
 
   function onCancel() {
     orderFunc.setVoucherUsed(null);
+
     setVoucherInput("");
   }
 
@@ -113,7 +111,12 @@ const VoucherModal = ({ visible, setVisible }) => {
                 style={styles.input}
                 placeholder="Nhập mã giảm giá"
                 value={voucherInput}
-                onChangeText={setVoucherInput}
+                onChangeText={(value) => {
+                  if (errMessage) {
+                    setErrMessage("");
+                  }
+                  setVoucherInput(value);
+                }}
                 editable={!voucherUsed}
               />
               {voucherUsed ? (
@@ -129,6 +132,7 @@ const VoucherModal = ({ visible, setVisible }) => {
                 </Text>
               )}
             </View>
+            <Text style={styles.errMessage}>{errMessage}</Text>
             {voucherUsed && (
               <>
                 <Text style={styles.label}>
@@ -173,7 +177,7 @@ const styles = StyleSheet.create({
   wrap: {
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0,0,0,0.6)",
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
   container: {
     backgroundColor: colors.white,
@@ -226,6 +230,9 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     color: "white",
     borderWidth: 0,
+  },
+  errMessage: {
+    color: "red",
   },
 
   label: {
