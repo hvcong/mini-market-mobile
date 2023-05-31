@@ -20,6 +20,8 @@ import { colors, fontSize } from "../utils/constants";
 import VerifyOTPModal from "../components/modal/VerifyOTPModal";
 import userApi from "../api/userApi";
 import { useEffect } from "react";
+import store from "../store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation }) => {
   const [sdtOrEmail, setSdtOrEmail] = useState("");
@@ -31,6 +33,17 @@ const Login = ({ navigation }) => {
     message: "",
   });
   const { globalFunc } = useGlobalContext();
+
+  async function checkLocalStorage() {
+    let phone = await AsyncStorage.getItem("phone");
+
+    if (phone && isVietnamesePhoneNumberValid(phone)) {
+      globalFunc.login(phone);
+      setResult({
+        isSuccess: false,
+      });
+    }
+  }
 
   async function onLogin() {
     if (isVietnamesePhoneNumberValid(sdtOrEmail)) {
@@ -51,6 +64,11 @@ const Login = ({ navigation }) => {
     }
     return () => {};
   }, [result]);
+
+  useEffect(() => {
+    checkLocalStorage();
+    return () => {};
+  }, []);
 
   return (
     <Layout style={styles.container}>

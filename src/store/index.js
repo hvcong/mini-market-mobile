@@ -1,27 +1,29 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const TOKEN__KEY = "TOKEN__KEY";
+const phone = "phone";
 
 class Store {
-  async getToken() {
+  async getPhoneInLocalStorage() {
     try {
-      let value = await AsyncStorage.getItem(TOKEN__KEY);
+      let value = await AsyncStorage.getItem(phone);
+
       return value;
     } catch (error) {
       return value;
     }
   }
 
-  async setToken(tokenValue) {
+  async setPhoneInLocalStorage(phone) {
     try {
-      let value = await AsyncStorage.setItem(TOKEN__KEY, tokenValue);
-      return value;
+      let value = await AsyncStorage.setItem(phone, phone);
+      value = await AsyncStorage.getItem("phone");
+      console.log(value);
     } catch (err) {
-      return value;
+      console.log(err);
     }
   }
 
-  removeToken() {
-    AsyncStorage.removeItem(TOKEN__KEY);
+  removePhoneInLocalStorage() {
+    AsyncStorage.removeItem(phone);
   }
 }
 

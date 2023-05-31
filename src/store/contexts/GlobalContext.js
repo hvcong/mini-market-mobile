@@ -6,6 +6,7 @@ import cateApi from "../../api/cateApi";
 import connectSocketIo from "../../socket";
 import { useRef } from "react";
 import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GlobalContext = createContext();
 
@@ -51,6 +52,7 @@ function GlobalContextProvider({ children }) {
       let res = await userApi.getOrCreateByPhone(phone);
 
       if (res.isSuccess) {
+        await AsyncStorage.setItem("phone", phone);
         setState({
           isLogin: true,
           account: res.customer,
@@ -64,6 +66,7 @@ function GlobalContextProvider({ children }) {
     },
 
     logOut: () => {
+      AsyncStorage.removeItem("phone");
       setState({
         isLogin: false,
         account: null,

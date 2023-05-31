@@ -20,7 +20,7 @@ function OrderProvider({ children }) {
     discountByVoucher: 0,
     total: 0,
   });
-  let customerType = (account && account.TypeCustomerId) || "BT";
+  let customerType = (account && account?.TypeCustomerId) || "BT";
 
   const [voucherUsed, setVoucherUsed] = useState(null);
   const [MPlist, setMPlist] = useState([]);
@@ -215,7 +215,7 @@ function OrderProvider({ children }) {
 
     let formData = {
       cost: amountMoney.total,
-      customerPhonenumber: account.phonenumber,
+      customerPhonenumber: account?.phonenumber,
       priceIds: listOrders
         .filter((item) => !item.isPP)
         .map((item) => {

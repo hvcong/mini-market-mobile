@@ -17,6 +17,7 @@ import { OrderContext } from "../store/contexts/OrderContext";
 import { convertToVND } from "../utils";
 import { Touchable } from "react-native";
 import { TouchableOpacity } from "react-native";
+import store from "../store";
 
 const Cart = ({ navigation }) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);

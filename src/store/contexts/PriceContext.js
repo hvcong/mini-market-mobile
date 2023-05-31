@@ -19,7 +19,7 @@ function PriceContextProvider({ children }) {
   const [priceListSearch, setPriceListSearch] = useState([]);
 
   const { account } = useGlobalContext();
-  let TypeCustomerId = account.TypeCustomerId || "BT";
+  let TypeCustomerId = account?.TypeCustomerId || "BT";
 
   const priceFunc = {
     getLimitPrices,
@@ -57,7 +57,7 @@ function PriceContextProvider({ children }) {
             let isCanUsed = false;
             let customerTypes = ppItem.PromotionHeader.TypeCustomers || [];
             customerTypes.map((type) => {
-              console.log(type.id, TypeCustomerId);
+              // console.log(type.id, TypeCustomerId);
               if (type.id == TypeCustomerId) {
                 isCanUsed = true;
               }
