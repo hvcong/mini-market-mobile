@@ -3,8 +3,8 @@ import axios from "axios";
 // let baseURL = "http://localhost:3000/";
 // let baseURL = "http://10.0.2.2:3000/";
 // let baseURL = "http://127.0.0.1:3000/";
-// let baseURL = "https://minimarket-server.onrender.com/";
-let baseURL = "http://13.250.27.60:3000/"; //
+let baseURL = "https://minimarket-server.onrender.com/";
+// let baseURL = "http://13.250.27.60:3000/"; //
 
 const axiosClient = axios.create({
   baseURL: baseURL,
